@@ -422,7 +422,12 @@ main { counter-reset: section-num; }
   width: 100%;
 }
 
-.hero-text { max-width: 680px; }
+.hero-content {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+.hero-text { flex: 1; max-width: 580px; }
 
 .hero-badge {
   display: inline-flex;
@@ -503,6 +508,73 @@ main { counter-reset: section-num; }
   line-height: 1.75;
   margin-bottom: 44px;
   max-width: 480px;
+}
+
+/* ── HERO ILLUSTRATION ───────────────────────── */
+.hero-illustration {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+.building {
+  background: #E8E8E4;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  overflow: hidden;
+}
+.building::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 18px,
+      rgba(61,190,108,0.15) 18px,
+      rgba(61,190,108,0.15) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 14px,
+      rgba(61,190,108,0.15) 14px,
+      rgba(61,190,108,0.15) 16px
+    );
+}
+.building-tall  { width: 90px;  height: 380px; }
+.building-mid   { width: 110px; height: 280px; }
+.building-short { width: 75px;  height: 200px; }
+.building-ground {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: #3DBE6C;
+  border-radius: 2px;
+}
+.building-tall::before {
+  content: '';
+  position: absolute;
+  width: 16px; height: 20px;
+  background: #3DBE6C;
+  opacity: 0.6;
+  top: 60px; right: 20px;
+  border-radius: 2px;
+}
+@keyframes buildingRise {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.building-tall  { animation: buildingRise 0.8s ease-out 0.2s both; }
+.building-mid   { animation: buildingRise 0.8s ease-out 0.4s both; }
+.building-short { animation: buildingRise 0.8s ease-out 0.5s both; }
+
+@media (max-width: 768px) {
+  .hero-illustration { display: none; }
 }
 
 .hero-ctas {
