@@ -422,7 +422,97 @@ main { counter-reset: section-num; }
   width: 100%;
 }
 
-.hero-text { max-width: 680px; }
+.hero-content { display: flex; align-items: center; gap: 48px; }
+.hero-text { flex: 1; max-width: 580px; }
+
+/* ── HERO RIGHT CARD ─────────────────────────── */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+}
+.hero-card-main {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 32px;
+  width: 300px;
+  box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+  border: 1px solid #EFEFEF;
+  animation: cardFloat 0.7s ease-out 0.3s both;
+}
+.hero-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3DBE6C;
+  margin-bottom: 10px;
+}
+.hero-card-title {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 10px;
+}
+.hero-card-location {
+  font-size: 14px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #3DBE6C;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.hero-card-stats {
+  display: flex;
+  gap: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #F0F0F0;
+}
+.hero-card-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hero-card-stats span {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111111;
+}
+.hero-card-stats small {
+  font-size: 11px;
+  color: #999;
+}
+.hero-card-mini {
+  background: #3DBE6C;
+  color: #fff;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  animation: cardFloat 0.7s ease-out 0.5s both;
+}
+.mini-icon { font-size: 16px; }
+@keyframes cardFloat {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+  .hero-right { display: none; }
+}
 
 .hero-badge {
   display: inline-flex;
