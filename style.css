@@ -455,7 +455,7 @@ main { counter-reset: section-num; }
 .hero-title {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-display);
+  font-family: 'Fraunces', serif;
   letter-spacing: 0.01em;
   line-height: 0.9;
   margin-bottom: 32px;
