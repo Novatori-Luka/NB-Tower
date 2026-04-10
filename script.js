@@ -27,6 +27,12 @@
     _renderTeam(_storedTeam);
   }
 
+  // Render testimonials from admin if saved
+  const _storedTestimonials = _parseLS('nb_testimonials');
+  if (_storedTestimonials && _storedTestimonials.length) {
+    _renderTestimonials(_storedTestimonials);
+  }
+
   // Update stat targets from admin if saved
   const _storedStats = _parseLS('nb_stats');
   if (_storedStats) {
@@ -106,6 +112,32 @@
       </div>`).join('');
   }
 
+
+  function _renderTestimonials(testimonials) {
+    const track = document.getElementById('testimonials-track');
+    const dotsContainer = document.getElementById('t-dots');
+    if (!track || !dotsContainer) return;
+
+    track.innerHTML = testimonials.map(t => {
+      const stars = '<i class="fa-solid fa-star"></i>'.repeat(t.stars || 5);
+      return `
+        <div class="testimonial-card">
+          <div class="testimonial-stars">${stars}</div>
+          <p class="testimonial-quote" data-ka="${t.quoteKa}" data-en="${t.quoteEn || t.quoteKa}">${t.quoteKa}</p>
+          <div class="testimonial-author">
+            <div class="ta-avatar">${t.author.charAt(0)}</div>
+            <div class="ta-info">
+              <strong class="ta-name">${t.author}</strong>
+              <span class="ta-project">${t.project}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+
+    dotsContainer.innerHTML = testimonials.map((_, i) =>
+      `<button class="t-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Slide ${i + 1}"></button>`
+    ).join('');
+  }
 
   /* ── 1. LANGUAGE TOGGLE ─────────────────────── */
   const langToggle = document.getElementById('lang-toggle');

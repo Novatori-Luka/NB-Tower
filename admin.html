@@ -770,6 +770,10 @@
         შეტყობინებები / Messages
         <span class="nav-badge" id="msg-badge" style="display:none">0</span>
       </button>
+      <button class="nav-item" data-page="testimonials">
+        <i class="fa-solid fa-quote-left"></i>
+        შეფასებები / Testimonials
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1034,6 +1038,36 @@
         </div>
       </div>
 
+      <!-- ── TESTIMONIALS ─────────────────────── -->
+      <div class="page" id="page-testimonials">
+        <div class="page-header">
+          <div>
+            <h2>შეფასებები / Testimonials</h2>
+            <p>კლიენტების შეფასებები — ჩნდება საიტის კარუსელში</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddTestimonialModal()">
+            <i class="fa-solid fa-plus"></i>
+            შეფასების დამატება / Add
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ავტორი / Author</th>
+                <th>პროექტი / Project</th>
+                <th>შეფასება (KA)</th>
+                <th>ვარსკვლავები</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="testimonials-table-body">
+              <tr class="empty-row"><td colspan="5"><i class="fa-solid fa-comment-dots" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>შეფასება არ არის. დაამატეთ პირველი!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div><!-- /page-content -->
   </div><!-- /main-content -->
 </div><!-- /admin-panel -->
@@ -1089,12 +1123,13 @@
   const ADMIN_PASS = 'nbtower2025';
 
   /* ── STORAGE KEYS ────────────────────────────── */
-  const KEY_PROJECTS = 'nb_projects';
-  const KEY_TEAM     = 'nb_team';
-  const KEY_STATS    = 'nb_stats';
-  const KEY_MESSAGES = 'nb_messages';
-  const KEY_VISITS   = 'nb_visits';
-  const KEY_SESSION  = 'nb_admin_session';
+  const KEY_PROJECTS     = 'nb_projects';
+  const KEY_TEAM         = 'nb_team';
+  const KEY_STATS        = 'nb_stats';
+  const KEY_MESSAGES     = 'nb_messages';
+  const KEY_VISITS       = 'nb_visits';
+  const KEY_SESSION      = 'nb_admin_session';
+  const KEY_TESTIMONIALS = 'nb_testimonials';
 
   /* ── DOM REFS ────────────────────────────────── */
   const loginScreen  = document.getElementById('login-screen');
@@ -1179,19 +1214,21 @@
 
   /* ── NAVIGATION ──────────────────────────────── */
   const pageTitles = {
-    dashboard: 'Dashboard',
-    projects:  'პროექტები / Projects',
-    team:      'გუნდი / Team',
-    stats:     'სტატისტიკა / Stats',
-    messages:  'შეტყობინებები / Messages',
+    dashboard:    'Dashboard',
+    projects:     'პროექტები / Projects',
+    team:         'გუნდი / Team',
+    stats:        'სტატისტიკა / Stats',
+    messages:     'შეტყობინებები / Messages',
+    testimonials: 'შეფასებები / Testimonials',
   };
 
   window.navigateTo = function(pageId) {
     navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId));
     pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
     topbarTitle.textContent = pageTitles[pageId] || '';
-    if (pageId === 'dashboard') refreshDashboard();
-    if (pageId === 'messages') { markAllMessagesRead(); renderMessages(); }
+    if (pageId === 'dashboard')    refreshDashboard();
+    if (pageId === 'messages')     { markAllMessagesRead(); renderMessages(); }
+    if (pageId === 'testimonials') renderTestimonialsTable();
   };
 
   navItems.forEach(item => {
@@ -1679,6 +1716,112 @@
   });
 
   /* ═══════════════════════════════════════════════
+     TESTIMONIALS
+  ═══════════════════════════════════════════════ */
+  function getTestimonials()      { return load(KEY_TESTIMONIALS, []); }
+  function saveTestimonials(list) { store(KEY_TESTIMONIALS, list); renderTestimonialsTable(); }
+
+  function renderTestimonialsTable() {
+    const tbody = document.getElementById('testimonials-table-body');
+    const list  = getTestimonials();
+    if (!list.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="5"><i class="fa-solid fa-comment-dots" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>შეფასება არ არის. დაამატეთ პირველი!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(t => {
+      const stars = '★'.repeat(t.stars || 5) + '☆'.repeat(5 - (t.stars || 5));
+      return `<tr>
+        <td><strong>${escHtml(t.author)}</strong></td>
+        <td style="color:#666">${escHtml(t.project)}</td>
+        <td><div class="message-preview">${escHtml(t.quoteKa)}</div></td>
+        <td style="color:var(--green);letter-spacing:2px;font-size:0.85rem">${stars}</td>
+        <td class="td-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editTestimonial('${t.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTestimonial('${t.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function testimonialFormHTML(t = {}) {
+    const stars = t.stars || 5;
+    return `
+      <div class="form-group">
+        <label>შეფასება ქართულად / Quote (KA)</label>
+        <textarea id="f-quoteKa" placeholder="კლიენტის შეფასება ქართულად...">${escHtml(t.quoteKa||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Quote in English (EN)</label>
+        <textarea id="f-quoteEn" placeholder="Client quote in English...">${escHtml(t.quoteEn||'')}</textarea>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>ავტორი / Author</label>
+          <input type="text" id="f-author" value="${escHtml(t.author||'')}" placeholder="მაგ. მარიამ გ." required />
+        </div>
+        <div class="form-group">
+          <label>პროექტი / Project</label>
+          <input type="text" id="f-project" value="${escHtml(t.project||'')}" placeholder="მაგ. NB Residence I" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ვარსკვლავები / Stars (1–5)</label>
+        <select id="f-stars">
+          ${[5,4,3,2,1].map(n => `<option value="${n}" ${stars===n?'selected':''}>${'★'.repeat(n)} (${n})</option>`).join('')}
+        </select>
+      </div>`;
+  }
+
+  function getTestimonialFormData() {
+    return {
+      quoteKa: document.getElementById('f-quoteKa').value.trim(),
+      quoteEn: document.getElementById('f-quoteEn').value.trim(),
+      author:  document.getElementById('f-author').value.trim(),
+      project: document.getElementById('f-project').value.trim(),
+      stars:   parseInt(document.getElementById('f-stars').value) || 5,
+    };
+  }
+
+  function validateTestimonial(data) {
+    return data.quoteKa && data.author && data.project;
+  }
+
+  window.openAddTestimonialModal = function() {
+    openModal('შეფასების დამატება / Add Testimonial', testimonialFormHTML(), () => {
+      const data = getTestimonialFormData();
+      if (!validateTestimonial(data)) { toast('შეავსეთ სავალდებულო ველები', 'error'); return; }
+      const list = getTestimonials();
+      list.push({ id: uid(), ...data });
+      saveTestimonials(list);
+      closeModal();
+      toast('შეფასება დამატებულია! / Testimonial added!');
+    });
+  };
+
+  window.editTestimonial = function(id) {
+    const list = getTestimonials();
+    const t = list.find(x => x.id === id);
+    if (!t) return;
+    openModal('შეფასების რედაქტირება / Edit Testimonial', testimonialFormHTML(t), () => {
+      const data = getTestimonialFormData();
+      if (!validateTestimonial(data)) { toast('შეავსეთ სავალდებულო ველები', 'error'); return; }
+      const idx = list.findIndex(x => x.id === id);
+      list[idx] = { id, ...data };
+      saveTestimonials(list);
+      closeModal();
+      toast('შეფასება განახლებულია! / Testimonial updated!');
+    });
+  };
+
+  window.deleteTestimonial = function(id) {
+    confirm('შეფასება სამუდამოდ წაიშლება. / The testimonial will be permanently deleted.', () => {
+      const list = getTestimonials().filter(x => x.id !== id);
+      saveTestimonials(list);
+      toast('შეფასება წაშლილია / Testimonial deleted');
+    });
+  };
+
+  /* ═══════════════════════════════════════════════
      DASHBOARD
   ═══════════════════════════════════════════════ */
   function refreshDashboard() {
@@ -1723,6 +1866,7 @@
     renderProjectsTable();
     renderTeamTable();
     renderMessages();
+    renderTestimonialsTable();
     loadStatsForm();
     refreshDashboard();
     refreshBadges();

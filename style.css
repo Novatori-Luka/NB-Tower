@@ -501,29 +501,6 @@ main { counter-reset: section-num; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.hero-scroll-indicator {
-  position: absolute;
-  bottom: 36px; left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: var(--text-muted);
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  z-index: 2;
-}
-.scroll-arrow {
-  color: var(--green);
-  font-size: 0.85rem;
-  animation: bounce-arrow 2s ease-in-out infinite;
-}
-@keyframes bounce-arrow {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(5px); }
-}
 
 /* ══════════════════════════════════════════════
    7. STATS — BOLD GREEN FULL-BLEED MOMENT
@@ -939,7 +916,7 @@ main { counter-reset: section-num; }
 
 .team-info { flex: 1; }
 .team-name  { font-size: 22px; font-weight: 700; color: #111111; margin-bottom: 4px; }
-.team-role  { font-size: 15px; color: var(--green); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 10px; }
+.team-role  { font-size: 16px; color: #1a1a1a; font-weight: 600; letter-spacing: 0.01em; margin-bottom: 10px; }
 .team-bio   { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
 
 
