@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NB Tower — სამშენებლო კომპანია</title>
+  <meta name="description" content="NB Tower — საქართველოს წამყვანი სამშენებლო კომპანია. საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#hero" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+        <li><a href="#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+        <li><a href="#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+        <li><a href="#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="hero">
+      <div class="hero-bg">
+        <div class="hero-skyline" aria-hidden="true">
+          <div class="skyline-buildings">
+            <div class="sb sb-1"></div>
+            <div class="sb sb-2"></div>
+            <div class="sb sb-3"></div>
+            <div class="sb sb-4"></div>
+            <div class="sb sb-5"></div>
+          </div>
+          <div class="hero-facade-lines"></div>
+        </div>
+        <div class="hero-gradient" aria-hidden="true"></div>
+        <div class="hero-particles" aria-hidden="true" id="hero-particles"></div>
+      </div>
+
+      <div class="container hero-content">
+        <div class="hero-text">
+          <div class="hero-badge animate-hero" style="--delay:0s">
+            <span class="badge-dot"></span>
+            <span data-ka="საქართველოს №1 სამშენებლო კომპანია" data-en="Georgia's #1 Construction Company">საქართველოს №1 სამშენებლო კომპანია</span>
+          </div>
+          <h1 class="hero-title animate-hero" style="--delay:0.15s">
+            <span class="hero-title-main" data-ka="ვაშენებთ" data-en="Building">ვაშენებთ</span>
+            <span class="hero-title-accent" data-ka="მომავალს" data-en="Tomorrow,">მომავალს</span>
+            <span class="hero-title-sub" data-ka="დღეს" data-en="Today">დღეს</span>
+          </h1>
+          <p class="hero-subline animate-hero" style="--delay:0.3s"
+             data-ka="საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით"
+             data-en="Georgia's premier construction company delivering residential and commercial excellence">
+            საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით
+          </p>
+          <div class="hero-ctas animate-hero" style="--delay:0.45s">
+            <a href="#projects" class="btn-primary btn-lg" data-ka="პროექტების ნახვა" data-en="View Projects">
+              <i class="fa-solid fa-arrow-right"></i>
+              <span data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა</span>
+            </a>
+            <a href="#contact" class="btn-secondary btn-lg" data-ka="დაგვიკავშირდით" data-en="Get in Touch">
+              <span data-ka="დაგვიკავშირდით" data-en="Get in Touch">დაგვიკავშირდით</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll-indicator animate-hero" style="--delay:0.7s">
+        <span class="scroll-text" data-ka="გადაახვიეთ" data-en="Scroll">გადაახვიეთ</span>
+        <div class="scroll-arrow">
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== STATS SECTION ===== -->
+    <section class="stats-section" id="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-card reveal">
+            <div class="stat-number">
+              <span class="count-up" data-target="50">0</span>
+              <span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label" data-ka="დასრულებული პროექტი" data-en="Completed Projects">დასრულებული პროექტი</div>
+          </div>
+          <div class="stat-card reveal" style="--delay:0.1s">
+            <div class="stat-number">
+              <span class="count-up" data-target="200">0</span>
+              <span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label" data-ka="კმაყოფილი კლიენტი" data-en="Happy Clients">კმაყოფილი კლიენტი</div>
+          </div>
+          <div class="stat-card reveal" style="--delay:0.2s">
+            <div class="stat-number">
+              <span class="count-up" data-target="10">0</span>
+              <span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label" data-ka="გამოცდილების წელი" data-en="Years of Experience">გამოცდილების წელი</div>
+          </div>
+          <div class="stat-card reveal" style="--delay:0.3s">
+            <div class="stat-number">
+              <span class="count-up" data-target="150000">0</span>
+              <span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label" data-ka="აშენებული ფართი კვ.მ" data-en="sqm Built">აშენებული ფართი კვ.მ</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT SECTION ===== -->
+    <section class="about-section section" id="about">
+      <div class="container about-grid">
+        <div class="about-content reveal">
+          <div class="section-label" data-ka="ჩვენს შესახებ" data-en="About Us">ჩვენს შესახებ</div>
+          <h2 class="section-title accent-line" data-ka="ვინ ვართ ჩვენ" data-en="Who We Are">ვინ ვართ ჩვენ</h2>
+          <p class="about-text" data-ka="NB Tower არის საქართველოში დაფუძნებული სამშენებლო კომპანია, რომელიც სპეციალიზირებულია საცხოვრებელი კომპლექსებისა და კომერციული სივრცეების განვითარებაში. ჩვენი გუნდი აერთიანებს ინჟინრებს, არქიტექტორებს და მენეჯერებს."
+                 data-en="NB Tower is a Tbilisi-based construction and development company specializing in residential complexes and commercial real estate. Our team of engineers, architects and managers delivers exceptional quality.">
+            NB Tower არის საქართველოში დაფუძნებული სამშენებლო კომპანია, რომელიც სპეციალიზირებულია საცხოვრებელი კომპლექსებისა და კომერციული სივრცეების განვითარებაში. ჩვენი გუნდი აერთიანებს ინჟინრებს, არქიტექტორებს და მენეჯერებს.
+          </p>
+          <p class="about-text about-text-2"
+             data-ka="ათ წელზე მეტია ჩვენ ვქმნით სივრცეებს, სადაც ადამიანები ცხოვრობენ, მუშაობენ და ვითარდებიან. ყოველ პროექტში ვდებთ ჩვენს გამოცდილებას, ევროპულ ხარისხს და ინდივიდუალურ მიდგომას."
+             data-en="For over a decade, we have been creating spaces where people live, work and grow. In every project we invest our experience, European quality standards and an individual approach.">
+            ათ წელზე მეტია ჩვენ ვქმნით სივრცეებს, სადაც ადამიანები ცხოვრობენ, მუშაობენ და ვითარდებიან. ყოველ პროექტში ვდებთ ჩვენს გამოცდილებას, ევროპულ ხარისხს და ინდივიდუალურ მიდგომას.
+          </p>
+          <div class="about-pillars">
+            <div class="about-pillar">
+              <i class="fa-solid fa-award" style="color:var(--green)"></i>
+              <span data-ka="ევროპული სტანდარტი" data-en="European Standard">ევროპული სტანდარტი</span>
+            </div>
+            <div class="about-pillar">
+              <i class="fa-solid fa-clock" style="color:var(--green)"></i>
+              <span data-ka="ვადებში ჩაბარება" data-en="On-Time Delivery">ვადებში ჩაბარება</span>
+            </div>
+            <div class="about-pillar">
+              <i class="fa-solid fa-shield-halved" style="color:var(--green)"></i>
+              <span data-ka="სრული გარანტია" data-en="Full Warranty">სრული გარანტია</span>
+            </div>
+          </div>
+          <a href="#contact" class="btn-primary" data-ka="გაიგეთ მეტი" data-en="Learn More">გაიგეთ მეტი</a>
+        </div>
+
+        <div class="about-visual reveal" style="--delay:0.2s">
+          <img src="assets/about-logo.jpg" alt="NB Tower" class="about-photo" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SERVICES SECTION ===== -->
+    <section class="services-section section" id="services">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="სერვისები" data-en="Services">სერვისები</div>
+          <h2 class="section-title" data-ka="ჩვენი სერვისები" data-en="Our Services">ჩვენი სერვისები</h2>
+          <p class="section-subtitle" data-ka="კომპლექსური სამშენებლო გადაწყვეტილებები — ერთი სახლის ქვეშ" data-en="Comprehensive construction solutions — all under one roof">კომპლექსური სამშენებლო გადაწყვეტილებები — ერთი სახლის ქვეშ</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card reveal" style="--delay:0s">
+            <div class="service-icon">
+              <i class="fa-solid fa-building"></i>
+            </div>
+            <h3 class="service-title" data-ka="საცხოვრებელი კომპლექსები" data-en="Residential Complexes">საცხოვრებელი კომპლექსები</h3>
+            <p class="service-desc" data-ka="პრემიუმ საცხოვრებელი სივრცეების დიზაინი და მშენებლობა. კომფორტი, ხარისხი, მდგრადობა." data-en="Design and construction of premium living spaces. Comfort, quality, sustainability.">პრემიუმ საცხოვრებელი სივრცეების დიზაინი და მშენებლობა. კომფორტი, ხარისხი, მდგრადობა.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="service-card reveal" style="--delay:0.08s">
+            <div class="service-icon">
+              <i class="fa-solid fa-city"></i>
+            </div>
+            <h3 class="service-title" data-ka="კომერციული სივრცეები" data-en="Commercial Spaces">კომერციული სივრცეები</h3>
+            <p class="service-desc" data-ka="ოფისის შენობები, სავაჭრო ცენტრები, სასტუმროები — ყველა ტიპის კომერციული პროექტი." data-en="Office buildings, retail centers, hotels — all types of commercial projects.">ოფისის შენობები, სავაჭრო ცენტრები, სასტუმროები — ყველა ტიპის კომერციული პროექტი.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="service-card reveal" style="--delay:0.16s">
+            <div class="service-icon">
+              <i class="fa-solid fa-hard-hat"></i>
+            </div>
+            <h3 class="service-title" data-ka="გენერალური კონტრაქტინგი" data-en="General Contracting">გენერალური კონტრაქტინგი</h3>
+            <p class="service-desc" data-ka="პროექტის სრული მართვა — დაგეგმვიდან ჩაბარებამდე, გამჭვირვალე კოორდინაციით." data-en="Full project management — from planning to delivery with transparent coordination.">პროექტის სრული მართვა — დაგეგმვიდან ჩაბარებამდე, გამჭვირვალე კოორდინაციით.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="service-card reveal" style="--delay:0.24s">
+            <div class="service-icon">
+              <i class="fa-solid fa-drafting-compass"></i>
+            </div>
+            <h3 class="service-title" data-ka="არქიტექტურული დიზაინი" data-en="Architectural Design">არქიტექტურული დიზაინი</h3>
+            <p class="service-desc" data-ka="ინოვაციური, ფუნქციური სივრცეები — ოპტიმალური განათება, მდგრადი მასალები, ეფექტური გეგმარება." data-en="Innovative, functional spaces — optimal lighting, sustainable materials, efficient layouts.">ინოვაციური, ფუნქციური სივრცეები — ოპტიმალური განათება, მდგრადი მასალები, ეფექტური გეგმარება.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="service-card reveal" style="--delay:0.32s">
+            <div class="service-icon">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <h3 class="service-title" data-ka="პროექტის მენეჯმენტი" data-en="Project Management">პროექტის მენეჯმენტი</h3>
+            <p class="service-desc" data-ka="ბიუჯეტის კონტროლი, ხარისხის მონიტორინგი, პროგრესის რეგულარული ანგარიში კლიენტებისთვის." data-en="Budget control, quality monitoring, regular progress reporting to clients.">ბიუჯეტის კონტროლი, ხარისხის მონიტორინგი, პროგრესის რეგულარული ანგარიში კლიენტებისთვის.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+
+          <div class="service-card reveal" style="--delay:0.4s">
+            <div class="service-icon">
+              <i class="fa-solid fa-leaf"></i>
+            </div>
+            <h3 class="service-title" data-ka="მდგრადი მშენებლობა" data-en="Sustainable Building">მდგრადი მშენებლობა</h3>
+            <p class="service-desc" data-ka="მწვანე ტექნოლოგიები, ენერგოეფექტური სისტემები. ეკოლოგიური პასუხისმგებლობა ყველა პროექტში." data-en="Green technologies, energy-efficient systems. Environmental responsibility in every project.">მწვანე ტექნოლოგიები, ენერგოეფექტური სისტემები. ეკოლოგიური პასუხისმგებლობა ყველა პროექტში.</p>
+            <a href="#contact" class="service-link" data-ka="დეტალები" data-en="Learn more">დეტალები <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS SECTION ===== -->
+    <section class="projects-section section" id="projects">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="პორტფოლიო" data-en="Portfolio">პორტფოლიო</div>
+          <h2 class="section-title" data-ka="ჩვენი პროექტები" data-en="Our Projects">ჩვენი პროექტები</h2>
+          <p class="section-subtitle" data-ka="განხორციელებული და მიმდინარე სამშენებლო პროექტები საქართველოს მასშტაბით" data-en="Completed and ongoing construction projects across Georgia">განხორციელებული და მიმდინარე სამშენებლო პროექტები საქართველოს მასშტაბით</p>
+        </div>
+
+        <div class="filter-tabs reveal">
+          <button class="filter-btn active" data-filter="all" data-ka="ყველა" data-en="All">ყველა</button>
+          <button class="filter-btn" data-filter="residential" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</button>
+          <button class="filter-btn" data-filter="commercial" data-ka="კომერციული" data-en="Commercial">კომერციული</button>
+        </div>
+
+        <div class="projects-grid" id="projects-grid">
+
+          <div class="project-card reveal" data-category="residential" style="--delay:0s">
+            <div class="project-thumb" style="--hue:145">
+              <div class="project-visual pv-1" aria-hidden="true">
+                <div class="pv-building">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-top"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> თბილისი</span>
+                <span class="project-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+              </div>
+              <h3 class="project-name">NB Residence I</h3>
+              <p class="project-type" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</p>
+            </div>
+          </div>
+
+          <div class="project-card reveal" data-category="commercial" style="--delay:0.08s">
+            <div class="project-thumb" style="--hue:160">
+              <div class="project-visual pv-2" aria-hidden="true">
+                <div class="pv-building pv-wide">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> თბილისი</span>
+                <span class="project-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+              </div>
+              <h3 class="project-name">NB Business Center</h3>
+              <p class="project-type" data-ka="კომერციული ცენტრი" data-en="Commercial Center">კომერციული ცენტრი</p>
+            </div>
+          </div>
+
+          <div class="project-card reveal" data-category="residential" style="--delay:0.16s">
+            <div class="project-thumb" style="--hue:130">
+              <div class="project-visual pv-3" aria-hidden="true">
+                <div class="pv-building pv-tall">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-top"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> ბათუმი</span>
+                <span class="project-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+              </div>
+              <h3 class="project-name">NB Residence II</h3>
+              <p class="project-type" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</p>
+            </div>
+          </div>
+
+          <div class="project-card reveal" data-category="commercial" style="--delay:0.24s">
+            <div class="project-thumb" style="--hue:150">
+              <div class="project-visual pv-4" aria-hidden="true">
+                <div class="pv-building">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> თბილისი</span>
+                <span class="project-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+              </div>
+              <h3 class="project-name">NB Plaza</h3>
+              <p class="project-type" data-ka="კომერციული ცენტრი" data-en="Commercial Center">კომერციული ცენტრი</p>
+            </div>
+          </div>
+
+          <div class="project-card reveal" data-category="residential" style="--delay:0.32s">
+            <div class="project-thumb" style="--hue:138">
+              <div class="project-visual pv-5" aria-hidden="true">
+                <div class="pv-building">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-top"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> მცხეთა</span>
+                <span class="project-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+              </div>
+              <h3 class="project-name">NB Garden Towers</h3>
+              <p class="project-type" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</p>
+            </div>
+          </div>
+
+          <div class="project-card reveal" data-category="commercial" style="--delay:0.4s">
+            <div class="project-thumb" style="--hue:155">
+              <div class="project-visual pv-6" aria-hidden="true">
+                <div class="pv-building pv-wide pv-low">
+                  <div class="pv-b-body"></div>
+                  <div class="pv-b-windows">
+                    <div class="pv-row"><span></span><span></span><span></span><span></span><span></span></div>
+                    <div class="pv-row"><span></span><span></span><span></span><span></span><span></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="project-overlay">
+                <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              </div>
+            </div>
+            <div class="project-info">
+              <div class="project-meta">
+                <span class="project-location"><i class="fa-solid fa-location-dot"></i> რუსთავი</span>
+                <span class="project-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+              </div>
+              <h3 class="project-name">NB Logistics Hub</h3>
+              <p class="project-type" data-ka="ლოჯისტიკური ცენტრი" data-en="Logistics Center">ლოჯისტიკური ცენტრი</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TEAM SECTION ===== -->
+    <section class="team-section section" id="team">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="გუნდი" data-en="Team">გუნდი</div>
+          <h2 class="section-title" data-ka="ჩვენი გუნდი" data-en="Our Team">ჩვენი გუნდი</h2>
+          <p class="section-subtitle" data-ka="გამოცდილი სპეციალისტები, რომლებიც თქვენს პროექტს სრულად ეძღვნებიან" data-en="Experienced specialists fully dedicated to your project">გამოცდილი სპეციალისტები, რომლებიც თქვენს პროექტს სრულად ეძღვნებიან</p>
+        </div>
+
+        <div class="team-grid">
+          <div class="team-card reveal" style="--delay:0s">
+            <div class="team-avatar">ნ.ბ.</div>
+            <div class="team-info">
+              <h3 class="team-name">ნიკა ბ.</h3>
+              <p class="team-role" data-ka="აღმასრულებელი დირექტორი" data-en="CEO & Founder">აღმასრულებელი დირექტორი</p>
+              <p class="team-bio" data-ka="15 წლიანი გამოცდილება სამშენებლო ინდუსტრიაში. NB Tower-ის დამფუძნებელი და ხედვა." data-en="15 years of experience in the construction industry. NB Tower founder and visionary.">15 წლიანი გამოცდილება სამშენებლო ინდუსტრიაში. NB Tower-ის დამფუძნებელი და ხედვა.</p>
+            </div>
+          </div>
+
+          <div class="team-card reveal" style="--delay:0.1s">
+            <div class="team-avatar">გ.მ.</div>
+            <div class="team-info">
+              <h3 class="team-name">გიორგი მ.</h3>
+              <p class="team-role" data-ka="მთავარი ინჟინერი" data-en="Chief Engineer">მთავარი ინჟინერი</p>
+              <p class="team-bio" data-ka="სამოქალაქო ინჟინერია, TU Berlin. 12 წელი რთული სამშენებლო პროექტების ხელმძღვანელობის გამოცდილება." data-en="Civil Engineering, TU Berlin. 12 years leading complex construction projects.">სამოქალაქო ინჟინერია, TU Berlin. 12 წელი რთული სამშენებლო პროექტების ხელმძღვანელობის გამოცდილება.</p>
+            </div>
+          </div>
+
+          <div class="team-card reveal" style="--delay:0.2s">
+            <div class="team-avatar">ა.კ.</div>
+            <div class="team-info">
+              <h3 class="team-name">ანა კ.</h3>
+              <p class="team-role" data-ka="არქიტექტურის ხელმძღვანელი" data-en="Architecture Lead">არქიტექტურის ხელმძღვანელი</p>
+              <p class="team-bio" data-ka=" არქიტექტურის სამაგისტრო, სამეფო კოლეჯი ლონდონი. ინოვაციური და მდგრადი დიზაინის ექსპერტი." data-en="Master of Architecture, Royal College London. Expert in innovative and sustainable design.">არქიტექტურის სამაგისტრო, სამეფო კოლეჯი ლონდონი. ინოვაციური და მდგრადი დიზაინის ექსპერტი.</p>
+            </div>
+          </div>
+
+          <div class="team-card reveal" style="--delay:0.3s">
+            <div class="team-avatar">დ.ს.</div>
+            <div class="team-info">
+              <h3 class="team-name">დავით ს.</h3>
+              <p class="team-role" data-ka="პროექტის მენეჯერი" data-en="Project Manager">პროექტის მენეჯერი</p>
+              <p class="team-bio" data-ka="PMP სერტიფიცირებული. 8 წლის გამოცდილება მასშტაბური სამშენებლო პროექტების წარმატებულ მართვაში." data-en="PMP certified. 8 years of experience successfully managing large-scale construction projects.">PMP სერტიფიცირებული. 8 წლის გამოცდილება მასშტაბური სამშენებლო პროექტების წარმატებულ მართვაში.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+    <section class="testimonials-section section" id="testimonials">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="შეფასებები" data-en="Reviews">შეფასებები</div>
+          <h2 class="section-title" data-ka="კლიენტების შეფასება" data-en="What Our Clients Say">კლიენტების შეფასება</h2>
+        </div>
+
+        <div class="testimonials-wrapper reveal">
+          <div class="testimonials-track" id="testimonials-track">
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="testimonial-text" data-ka="&ldquo;NB Tower-მა ჩვენი ბინა ვადაში ჩაგვაბარა. ხარისხი მოლოდინს სცდებოდა — ყოველი დეტალი სრულყოფილი იყო. ამ კომპანიაზე სრული ნდობა მაქვს.&rdquo;"
+                                          data-en="&ldquo;NB Tower delivered our apartment on time. The quality exceeded expectations — every detail was perfect. I have full trust in this company.&rdquo;">
+                &ldquo;NB Tower-მა ჩვენი ბინა ვადაში ჩაგვაბარა. ხარისხი მოლოდინს სცდებოდა — ყოველი დეტალი სრულყოფილი იყო. ამ კომპანიაზე სრული ნდობა მაქვს.&rdquo;
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">მ.გ.</div>
+                <div>
+                  <strong>მარიამ გ.</strong>
+                  <span>NB Residence I</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="testimonial-text" data-ka="&ldquo;პროფესიონალური გუნდი, გამჭვირვალე პროცესი. ყველაფერი ზუსტად ისე გამოვიდა, როგორც შევთანხმდით. ჩვენი ოფისი ზუსტად ისეთია, როგორც ვოცნებობდით.&rdquo;"
+                                          data-en="&ldquo;Professional team, transparent process. Everything turned out exactly as agreed. Our office is exactly what we dreamed of.&rdquo;">
+                &ldquo;პროფესიონალური გუნდი, გამჭვირვალე პროცესი. ყველაფერი ზუსტად ისე გამოვიდა, როგორც შევთანხმდით. ჩვენი ოფისი ზუსტად ისეთია, როგორც ვოცნებობდით.&rdquo;
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">ლ.ა.</div>
+                <div>
+                  <strong>ლევან ა.</strong>
+                  <span>NB Business Center</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <p class="testimonial-text" data-ka="&ldquo;საუკეთესო სამშენებლო კომპანია, ვისთანაც მიმუშავია. NB Garden Towers-ის ყოველი კუთხე სიხარულს მგვრის. ვურჩევ ყველას!&rdquo;"
+                                          data-en="&ldquo;The best construction company I have worked with. Every corner of NB Garden Towers brings joy. I recommend to everyone!&rdquo;">
+                &ldquo;საუკეთესო სამშენებლო კომპანია, ვისთანაც მიმუშავია. NB Garden Towers-ის ყოველი კუთხე სიხარულს მგვრის. ვურჩევ ყველას!&rdquo;
+              </p>
+              <div class="testimonial-author">
+                <div class="testimonial-avatar">ნ.ბ.</div>
+                <div>
+                  <strong>ნინო ბ.</strong>
+                  <span>NB Garden Towers</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="testimonial-nav">
+            <button class="t-prev" id="t-prev" aria-label="Previous">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="t-dots" id="t-dots">
+              <button class="t-dot active" data-idx="0" aria-label="Slide 1"></button>
+              <button class="t-dot" data-idx="1" aria-label="Slide 2"></button>
+              <button class="t-dot" data-idx="2" aria-label="Slide 3"></button>
+            </div>
+            <button class="t-next" id="t-next" aria-label="Next">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT SECTION ===== -->
+    <section class="contact-section section" id="contact">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</div>
+          <h2 class="section-title" data-ka="დაგვიკავშირდით" data-en="Get in Touch">დაგვიკავშირდით</h2>
+          <p class="section-subtitle" data-ka="ჩვენ მზად ვართ ვიმსჯელოთ თქვენს პროექტზე" data-en="We are ready to discuss your project">ჩვენ მზად ვართ ვიმსჯელოთ თქვენს პროექტზე</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-info reveal">
+            <div class="contact-item">
+              <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <div>
+                <strong data-ka="მისამართი" data-en="Address">მისამართი</strong>
+                <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+              <div>
+                <strong data-ka="ტელეფონი" data-en="Phone">ტელეფონი</strong>
+                <a href="tel:+995000000000">+995 XXX XXX XXX</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+              <div>
+                <strong data-ka="ელ-ფოსტა" data-en="Email">ელ-ფოსტა</strong>
+                <a href="mailto:info@nbtower.ge">info@nbtower.ge</a>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="contact-icon"><i class="fa-solid fa-clock"></i></div>
+              <div>
+                <strong data-ka="სამუშაო საათები" data-en="Working Hours">სამუშაო საათები</strong>
+                <span data-ka="ორშ–პარ, 10:00–18:00" data-en="Mon–Fri, 10:00–18:00">ორშ–პარ, 10:00–18:00</span>
+              </div>
+            </div>
+            <div class="contact-social">
+              <a href="#" class="cs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="#" class="cs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="#" class="cs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+          </div>
+
+          <div class="contact-form-wrap reveal" style="--delay:0.15s">
+            <form class="contact-form" id="contact-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name" data-ka="სახელი" data-en="Name">სახელი</label>
+                  <input type="text" id="name" name="name" required
+                         data-ka-placeholder="თქვენი სახელი"
+                         data-en-placeholder="Your name"
+                         placeholder="თქვენი სახელი" />
+                </div>
+                <div class="form-group">
+                  <label for="email" data-ka="ელ-ფოსტა" data-en="Email">ელ-ფოსტა</label>
+                  <input type="email" id="email" name="email" required
+                         data-ka-placeholder="email@example.com"
+                         data-en-placeholder="email@example.com"
+                         placeholder="email@example.com" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="phone" data-ka="ტელეფონი (არასავალდებულო)" data-en="Phone (optional)">ტელეფონი (არასავალდებულო)</label>
+                <input type="tel" id="phone" name="phone"
+                       data-ka-placeholder="+995 XXX XXX XXX"
+                       data-en-placeholder="+995 XXX XXX XXX"
+                       placeholder="+995 XXX XXX XXX" />
+              </div>
+              <div class="form-group">
+                <label for="message" data-ka="შეტყობინება" data-en="Message">შეტყობინება</label>
+                <textarea id="message" name="message" rows="5" required
+                          data-ka-placeholder="მოგვიყევით თქვენს პროექტზე..."
+                          data-en-placeholder="Tell us about your project..."
+                          placeholder="მოგვიყევით თქვენს პროექტზე..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary btn-submit" data-ka="გაგზავნა" data-en="Send Message">
+                <span class="btn-text" data-ka="გაგზავნა" data-en="Send Message">გაგზავნა</span>
+                <i class="fa-solid fa-paper-plane btn-icon"></i>
+              </button>
+
+              <div class="form-success" id="form-success">
+                <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                <h3 data-ka="გმადლობთ!" data-en="Thank you!">გმადლობთ!</h3>
+                <p data-ka="თქვენი შეტყობინება მიღებულია. მოკლე დროში დაგიკავშირდებით." data-en="Your message has been received. We will contact you shortly.">თქვენი შეტყობინება მიღებულია. მოკლე დროში დაგიკავშირდებით.</p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#hero" class="footer-logo">
+          <img src="assets/NB Tower logo.png" alt="NB Tower" height="40" />
+        </a>
+        <p class="footer-desc"
+           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს."
+           data-en="Georgia's premier construction company. Building tomorrow, today.">
+          საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.
+        </p>
+        <div class="footer-social">
+          <a href="#" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+          <li><a href="#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+          <li><a href="#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+          <li><a href="#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>
+          <span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
