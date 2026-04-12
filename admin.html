@@ -696,6 +696,16 @@
       display: none;
       margin-bottom: 8px;
     }
+    .upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #666;
+      font-size: 14px;
+    }
+    .upload-icon { font-size: 24px; }
     .upload-change-hint {
       font-size: 0.75rem;
       color: #aaa;
@@ -1282,6 +1292,37 @@
     confirmFn = null;
   });
 
+  /* ── STORAGE UPLOAD ─────────────────────────────── */
+  async function uploadPhoto(file, folder) {
+    const fileName = `${folder}/${Date.now()}-${file.name.replace(/\s/g, '_')}`;
+    const { error } = await db.storage.from('nb-tower-media').upload(fileName, file, { upsert: true });
+    if (error) throw error;
+    const { data: urlData } = db.storage.from('nb-tower-media').getPublicUrl(fileName);
+    return urlData.publicUrl;
+  }
+
+  let currentProjectFile = null;
+  let currentProjectExistingUrl = null;
+  let currentTeamFile = null;
+  let currentTeamExistingUrl = null;
+
+  function setupUpload(inputId, previewId, fileVar, setFile) {
+    const input   = document.getElementById(inputId);
+    const preview = document.getElementById(previewId);
+    if (!input || !preview) return;
+    input.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      setFile(file);
+      const reader = new FileReader();
+      reader.onload = ev => {
+        preview.src = ev.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   /* ═══════════════════════════════════════════════
      PROJECTS
   ═══════════════════════════════════════════════ */
@@ -1327,10 +1368,18 @@
   }
 
   function projectFormHTML(p = {}) {
+    const existingUrl = p.image_url || p.imageUrl || '';
     return `
       <div class="form-group">
-        <label>ფოტო / Photo (URL)</label>
-        <input type="text" id="f-imageUrl" value="${escHtml(p.imageUrl||p.image_url||'')}" placeholder="https://... (optional)" />
+        <label>ფოტო / Photo</label>
+        <div class="upload-area" id="upload-area">
+          <input type="file" id="photo-upload" accept="image/*" hidden>
+          <img id="photo-preview" src="${escHtml(existingUrl)}" style="${existingUrl ? 'display:block' : 'display:none'};width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+          <label for="photo-upload" class="upload-label">
+            <span class="upload-icon">📁</span>
+            <span>${existingUrl ? 'ფოტოს შეცვლა / Change Photo' : 'ფოტოს ატვირთვა / Upload Photo'}</span>
+          </label>
+        </div>
       </div>
       <div class="form-row-2">
         <div class="form-group">
@@ -1371,7 +1420,6 @@
       category: document.getElementById('f-category').value,
       location: document.getElementById('f-location').value.trim(),
       status:   document.getElementById('f-status').value,
-      imageUrl: document.getElementById('f-imageUrl').value.trim() || null,
     };
   }
 
@@ -1415,26 +1463,42 @@
   }
 
   window.openAddProjectModal = function() {
+    currentProjectFile = null;
+    currentProjectExistingUrl = null;
     openModal('პროექტის დამატება / Add Project', projectFormHTML(), async () => {
       const data = getProjectFormData();
       if (!validateProject(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      await saveProject(data, null);
+      let imageUrl = null;
+      if (currentProjectFile) {
+        try { imageUrl = await uploadPhoto(currentProjectFile, 'projects'); }
+        catch (e) { toast('ფოტოს ატვირთვა ვერ მოხდა / Upload failed', 'error'); return; }
+      }
+      await saveProject({ ...data, imageUrl }, null);
       closeModal();
       toast('პროექტი დამატებულია! / Project added!');
     });
+    setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
   window.editProject = async function(id) {
     const list = await loadProjects();
     const p = list.find(x => x.id === id);
     if (!p) return;
+    currentProjectFile = null;
+    currentProjectExistingUrl = p.image_url || null;
     openModal('პროექტის რედაქტირება / Edit Project', projectFormHTML(p), async () => {
       const data = getProjectFormData();
       if (!validateProject(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      await saveProject(data, id);
+      let imageUrl = currentProjectExistingUrl;
+      if (currentProjectFile) {
+        try { imageUrl = await uploadPhoto(currentProjectFile, 'projects'); }
+        catch (e) { toast('ფოტოს ატვირთვა ვერ მოხდა / Upload failed', 'error'); return; }
+      }
+      await saveProject({ ...data, imageUrl }, id);
       closeModal();
       toast('პროექტი განახლებულია! / Project updated!');
     });
+    setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
   window.deleteProject = function(id) {
@@ -1505,8 +1569,15 @@
         </div>
       </div>
       <div class="form-group">
-        <label>ფოტო URL / Photo URL — optional</label>
-        <input type="text" id="f-imageUrl" value="${escHtml(m.image_url||m.imageUrl||'')}" placeholder="https://..." />
+        <label>ფოტო / Photo</label>
+        <div class="upload-area" id="upload-area">
+          <input type="file" id="photo-upload" accept="image/*" hidden>
+          <img id="photo-preview" src="${escHtml(m.image_url||m.imageUrl||'')}" style="${(m.image_url||m.imageUrl) ? 'display:block' : 'display:none'};width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+          <label for="photo-upload" class="upload-label">
+            <span class="upload-icon">📁</span>
+            <span>${(m.image_url||m.imageUrl) ? 'ფოტოს შეცვლა / Change Photo' : 'ფოტოს ატვირთვა / Upload Photo'}</span>
+          </label>
+        </div>
       </div>`;
   }
 
@@ -1516,7 +1587,6 @@
       initials: document.getElementById('f-initials').value.trim(),
       roleKa:   document.getElementById('f-roleKa').value.trim(),
       roleEn:   document.getElementById('f-roleEn').value.trim(),
-      imageUrl: document.getElementById('f-imageUrl').value.trim() || null,
     };
   }
 
@@ -1559,26 +1629,42 @@
   }
 
   window.openAddTeamModal = function() {
+    currentTeamFile = null;
+    currentTeamExistingUrl = null;
     openModal('გუნდის წევრის დამატება / Add Member', teamFormHTML(), async () => {
       const data = getTeamFormData();
       if (!validateTeam(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      await saveTeamMember(data, null);
+      let imageUrl = null;
+      if (currentTeamFile) {
+        try { imageUrl = await uploadPhoto(currentTeamFile, 'team'); }
+        catch (e) { toast('ფოტოს ატვირთვა ვერ მოხდა / Upload failed', 'error'); return; }
+      }
+      await saveTeamMember({ ...data, imageUrl }, null);
       closeModal();
       toast('წევრი დამატებულია! / Member added!');
     });
+    setupUpload('photo-upload', 'photo-preview', currentTeamFile, f => { currentTeamFile = f; });
   };
 
   window.editTeam = async function(id) {
     const list = await loadTeam();
     const m = list.find(x => x.id === id);
     if (!m) return;
+    currentTeamFile = null;
+    currentTeamExistingUrl = m.image_url || null;
     openModal('წევრის რედაქტირება / Edit Member', teamFormHTML(m), async () => {
       const data = getTeamFormData();
       if (!validateTeam(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      await saveTeamMember(data, id);
+      let imageUrl = currentTeamExistingUrl;
+      if (currentTeamFile) {
+        try { imageUrl = await uploadPhoto(currentTeamFile, 'team'); }
+        catch (e) { toast('ფოტოს ატვირთვა ვერ მოხდა / Upload failed', 'error'); return; }
+      }
+      await saveTeamMember({ ...data, imageUrl }, id);
       closeModal();
       toast('წევრი განახლებულია! / Member updated!');
     });
+    setupUpload('photo-upload', 'photo-preview', currentTeamExistingUrl, f => { currentTeamFile = f; });
   };
 
   window.deleteTeam = function(id) {
