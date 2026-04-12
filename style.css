@@ -1417,6 +1417,7 @@ main { counter-reset: section-num; }
   .nav-link:hover { color: var(--green); }
 
   /* ── Hero ───────────────────────────────── */
+  .hero { padding-top: 18px; }
   .hero-badge {
     max-width: 90%;
     margin: 24px auto 0;
