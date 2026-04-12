@@ -1421,7 +1421,13 @@
         </div>
         <div class="form-group">
           <label>ფართი კვ.მ / Area sqm</label>
-          <input type="number" id="f-areaSqm" value="${escHtml(String(p.area_sqm||''))}" placeholder="მაგ. 75" min="1" />
+          <select id="f-areaSqm">
+            <option value="" ${!p.area_sqm?'selected':''}>აირჩიეთ / Select</option>
+            <option value="45"  ${p.area_sqm==45 ?'selected':''}>30 – 60 კვ.მ (45 საშ.)</option>
+            <option value="75"  ${p.area_sqm==75 ?'selected':''}>60 – 90 კვ.მ (75 საშ.)</option>
+            <option value="105" ${p.area_sqm==105?'selected':''}>90 – 120 კვ.მ (105 საშ.)</option>
+            <option value="150" ${p.area_sqm==150?'selected':''}>120+ კვ.მ (150 საშ.)</option>
+          </select>
         </div>
       </div>
       <div class="form-group">
