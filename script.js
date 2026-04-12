@@ -513,6 +513,38 @@ CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
   }
 
 
+  /* ── 10. HERO SEARCH ───────────────────────── */
+  window.handleHeroSearch = function() {
+    const city    = document.querySelector('.search-field:nth-child(1) select')?.value || '';
+    const area    = document.querySelector('.search-field:nth-child(3) select')?.value || '';
+    const payment = document.querySelector('.search-field:nth-child(5) select')?.value || '';
+
+    document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+
+    // Reset filter to all
+    const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+    if (allBtn) allBtn.click();
+
+    showSearchToast(city, area, payment);
+  };
+
+  function showSearchToast(city, area, payment) {
+    const existing = document.querySelector('.search-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'search-toast';
+    toast.textContent = `${city} · ${area} · ${payment}`;
+    toast.style.cssText = `
+      position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+      background:#111; color:#fff; padding:12px 24px; border-radius:50px;
+      font-size:14px; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.2);
+      white-space:nowrap; font-family:inherit;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();
 

@@ -80,33 +80,62 @@
       </div>
 
       <div class="container hero-content">
-        <div class="hero-text">
-          <div class="hero-badge animate-hero" style="--delay:0s">
-            <span class="badge-dot"></span>
-            <span data-ka="საქართველოს №1 მარკეტინგული კომპანია სამშენებლო სექტორში" data-en="Georgia's #1 Construction Company">საქართველოს №1 სამშენებლო კომპანია</span>
+        <div class="hero-badge animate-hero" style="--delay:0s">
+          <span class="badge-dot"></span>
+          <span data-ka="საქართველოს №1 სამშენებლო კომპანია" data-en="Georgia's #1 Construction Company">საქართველოს №1 სამშენებლო კომპანია</span>
+        </div>
+
+        <div class="hero-headline animate-hero" style="--delay:0.15s">
+          <div class="headline-text">
+            <span class="line-1" data-ka="თქვენ, ვინც" data-en="For Those Who">თქვენ, ვინც</span>
+            <span class="line-2" data-ka="მყუდრო ბინას" data-en="Seek a Comfortable">მყუდრო ბინას</span>
+            <span class="line-3" data-ka="ეძებთ" data-en="Home">ეძებთ</span>
           </div>
-          <div class="hero-headline animate-hero" style="--delay:0.15s">
-            <div class="headline-accent-line"></div>
-            <div class="headline-text">
-              <span class="line-1" data-ka="მათთვის, ვინც" data-en="For Those Who">მათთვის, ვინც</span>
-              <span class="line-2" data-ka="მყუდრო ბინას" data-en="Seek a Comfortable">მყუდრო ბინას</span>
-              <span class="line-3" data-ka="ეძებს" data-en="Home">ეძებს</span>
-            </div>
+        </div>
+
+        <p class="hero-subline animate-hero" style="--delay:0.3s"
+           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით"
+           data-en="Georgia's premier construction company delivering residential and commercial excellence">
+          საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით
+        </p>
+
+        <div class="hero-search animate-hero" style="--delay:0.45s">
+          <div class="search-field">
+            <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
+            <select>
+              <option data-ka="თბილისი" data-en="Tbilisi">თბილისი</option>
+              <option data-ka="ბათუმი" data-en="Batumi">ბათუმი</option>
+              <option data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</option>
+              <option data-ka="მცხეთა" data-en="Mtskheta">მცხეთა</option>
+            </select>
           </div>
-          <p class="hero-subline animate-hero" style="--delay:0.3s"
-             data-ka="საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით"
-             data-en="Georgia's premier construction company delivering residential and commercial excellence">
-            საქართველოს წამყვანი სამშენებლო კომპანია — საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით
-          </p>
-          <div class="hero-ctas animate-hero" style="--delay:0.45s">
-            <a href="#projects" class="btn-primary btn-lg" data-ka="პროექტების ნახვა" data-en="View Projects">
-              <i class="fa-solid fa-arrow-right"></i>
-              <span data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა</span>
-            </a>
-            <a href="#contact" class="btn-secondary btn-lg" data-ka="დაგვიკავშირდით" data-en="Get in Touch">
-              <span data-ka="დაგვიკავშირდით" data-en="Get in Touch">დაგვიკავშირდით</span>
-            </a>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label data-ka="ფართი (კვ.მ)" data-en="Area (sqm)">ფართი (კვ.მ)</label>
+            <select>
+              <option data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
+              <option>30 – 60 კვ.მ</option>
+              <option>60 – 90 კვ.მ</option>
+              <option>90 – 120 კვ.მ</option>
+              <option>120+ კვ.მ</option>
+            </select>
           </div>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
+            <select>
+              <option data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
+              <option data-ka="იპოთეკა" data-en="Mortgage">იპოთეკა</option>
+              <option data-ka="განვადება" data-en="Installment">განვადება</option>
+              <option data-ka="სრული გადახდა" data-en="Full Payment">სრული გადახდა</option>
+            </select>
+          </div>
+          <button class="search-btn" onclick="handleHeroSearch()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <span data-ka="ძებნა" data-en="Search">ძებნა</span>
+          </button>
         </div>
       </div>
 
