@@ -24,7 +24,9 @@
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_percent int DEFAULT 0;
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_stage text DEFAULT 'საძირკველი';
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_updated text;
-    ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_total int DEFAULT 0;
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_per_sqm_full int DEFAULT 0;
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_per_sqm_mortgage int DEFAULT 0;
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_per_sqm_installment int DEFAULT 0;
     */
 </script>
 
@@ -1469,9 +1471,19 @@
         <label>Description in English (EN)</label>
         <textarea id="f-descEn" placeholder="Project description in English...">${escHtml(p.description_en||'')}</textarea>
       </div>
-      <div class="form-group">
-        <label>ფასი (₾) / Price (GEL)</label>
-        <input type="number" id="f-priceTotal" value="${escHtml(String(p.price_total||''))}" placeholder="მაგ. 250000" min="0" />
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>სრული გადახდა ₾/კვ.მ / Full Payment ₾/sqm</label>
+          <input type="number" id="f-priceFull" value="${escHtml(String(p.price_per_sqm_full||''))}" placeholder="მაგ. 2500" min="0" />
+        </div>
+        <div class="form-group">
+          <label>იპოთეკა ₾/კვ.მ / Mortgage ₾/sqm</label>
+          <input type="number" id="f-priceMortgage" value="${escHtml(String(p.price_per_sqm_mortgage||''))}" placeholder="მაგ. 2800" min="0" />
+        </div>
+      </div>
+      <div class="form-group" style="max-width:50%">
+        <label>განვადება ₾/კვ.მ / Installment ₾/sqm</label>
+        <input type="number" id="f-priceInstallment" value="${escHtml(String(p.price_per_sqm_installment||''))}" placeholder="მაგ. 2650" min="0" />
       </div>
       <div class="form-row-2">
         <div class="form-group">
@@ -1508,7 +1520,9 @@
       paymentType:      document.getElementById('f-paymentType')?.value || null,
       descKa:           document.getElementById('f-descKa')?.value.trim() || null,
       descEn:           document.getElementById('f-descEn')?.value.trim() || null,
-      priceTotal:       parseInt(document.getElementById('f-priceTotal')?.value) || null,
+      priceFull:        parseInt(document.getElementById('f-priceFull')?.value) || null,
+      priceMortgage:    parseInt(document.getElementById('f-priceMortgage')?.value) || null,
+      priceInstallment: parseInt(document.getElementById('f-priceInstallment')?.value) || null,
       progressPercent:  parseInt(document.getElementById('f-progressPercent')?.value) || 0,
       progressStage:    document.getElementById('f-progressStage')?.value || null,
       progressUpdated:  document.getElementById('f-progressUpdated')?.value.trim() || null,
@@ -1532,7 +1546,9 @@
       payment_type:   data.paymentType || null,
       description_ka:  data.descKa || null,
       description_en:  data.descEn || null,
-      price_total:     data.priceTotal || null,
+      price_per_sqm_full:        data.priceFull        || null,
+      price_per_sqm_mortgage:    data.priceMortgage    || null,
+      price_per_sqm_installment: data.priceInstallment || null,
       progress_percent: data.progressPercent ?? 0,
       progress_stage:  data.progressStage || null,
       progress_updated: data.progressUpdated || null,
