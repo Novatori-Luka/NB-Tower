@@ -103,7 +103,7 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
         ? `style="background-image:url('${p.imageUrl}');background-size:cover;background-position:center"`
         : '';
       return `
-        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s;cursor:pointer" onclick="window.location.href='project.html?id=${p.id}'">
+        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s;cursor:pointer" onclick="window.location.href='/project?id=${p.id}'">
           <div class="project-thumb" ${thumbStyle}>
             ${!p.imageUrl ? `<div class="project-visual">
               <div class="pv-building ${pvClass}">
@@ -117,7 +117,7 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
               </div>
             </div>` : ''}
             <div class="project-overlay">
-              <a href="project.html?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              <a href="/project?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
             </div>
           </div>
           <div class="project-info">
@@ -539,7 +539,7 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
     const area    = document.getElementById('h-area')?.value    || '';
     const payment = document.getElementById('h-payment')?.value || '';
     const params  = new URLSearchParams({ city, area, payment });
-    window.location.href = 'search.html?' + params.toString();
+    window.location.href = '/search?' + params.toString();
   };
 
   function showSearchToast(city, area, payment) {

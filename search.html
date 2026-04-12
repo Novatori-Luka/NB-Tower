@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ძიება / Search — NB Tower</title>
-  <meta name="description" content="NB Tower — პროექტების ძიება / Search Projects" />
+  <title>ძიება — NB Tower</title>
+  <meta name="description" content="მოძებნეთ თქვენი იდეალური ბინა NB Tower-ის პროექტებში" />
+  <meta name="robots" content="noindex" />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -339,7 +340,7 @@
       const pvClass = isWide ? 'pv-wide' : '';
 
       return `
-        <div class="project-card" onclick="window.location.href='project.html?id=${p.id}'" style="cursor:pointer">
+        <div class="project-card" onclick="window.location.href='/project?id=${p.id}'" style="cursor:pointer">
           <div class="project-thumb" ${thumbStyle}>
             ${!p.image_url ? `<div class="project-visual">
               <div class="pv-building ${pvClass}">
@@ -353,7 +354,7 @@
               </div>
             </div>` : ''}
             <div class="project-overlay">
-              <a href="project.html?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              <a href="/project?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
             </div>
           </div>
           <div class="project-info">
@@ -418,7 +419,7 @@
       const area    = areaSelect?.value || '';
       const payment = paymentSelect?.value || '';
       const newParams = new URLSearchParams({ city, area, payment });
-      window.location.href = 'search.html?' + newParams.toString();
+      window.location.href = '/search?' + newParams.toString();
     });
 
   })();

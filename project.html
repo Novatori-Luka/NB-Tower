@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>პროექტი — NB Tower</title>
-  <meta name="description" content="NB Tower — პროექტის დეტალები / Project Details" />
+  <meta name="description" content="NB Tower — პროექტის დეტალები" />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -89,6 +89,10 @@
     @media (max-width: 900px) {
       .project-details-grid { grid-template-columns: 1fr; }
       .floor-selector { position: static !important; }
+    }
+    @media (max-width: 768px) {
+      .project-hero { height: 300px; }
+      .project-hero-text { padding: 24px 20px; }
     }
 
     /* ── Info Cards ──────────────────────── */
@@ -634,8 +638,10 @@
         // Store reference for lang toggle
         window._currentProject = p;
 
-        // Update page title
+        // Update page title + description
         document.title = `${p.name_ka || 'პროექტი'} — NB Tower`;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) metaDesc.content = p.description_ka || `${p.name_ka} — NB Tower-ის პროექტი`;
 
         populateHero(p);
         populateInfoCards(p);
