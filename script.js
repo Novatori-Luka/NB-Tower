@@ -1,3 +1,71 @@
+/*
+SQL TO RUN IN SUPABASE SQL EDITOR:
+
+CREATE TABLE projects (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name_ka text, name_en text,
+  category text, location text,
+  status text, image_url text,
+  created_at timestamp DEFAULT now()
+);
+
+CREATE TABLE team (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text, role_ka text, role_en text,
+  initials text, image_url text,
+  created_at timestamp DEFAULT now()
+);
+
+CREATE TABLE stats (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  projects_count text,
+  clients_count text,
+  years_count text,
+  sqm_count text
+);
+
+CREATE TABLE testimonials (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  quote_ka text, quote_en text,
+  author text, project text, stars int,
+  created_at timestamp DEFAULT now()
+);
+
+CREATE TABLE messages (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text, email text, phone text,
+  message text, created_at timestamp DEFAULT now()
+);
+
+CREATE TABLE site_settings (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  site_title text,
+  meta_description text,
+  favicon_url text
+);
+
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE team ENABLE ROW LEVEL SECURITY;
+ALTER TABLE stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "public read" ON projects FOR SELECT USING (true);
+CREATE POLICY "public read" ON team FOR SELECT USING (true);
+CREATE POLICY "public read" ON stats FOR SELECT USING (true);
+CREATE POLICY "public read" ON testimonials FOR SELECT USING (true);
+CREATE POLICY "public insert" ON messages FOR INSERT WITH CHECK (true);
+CREATE POLICY "public read" ON site_settings FOR SELECT USING (true);
+
+CREATE POLICY "admin all" ON projects FOR ALL USING (true);
+CREATE POLICY "admin all" ON team FOR ALL USING (true);
+CREATE POLICY "admin all" ON stats FOR ALL USING (true);
+CREATE POLICY "admin all" ON testimonials FOR ALL USING (true);
+CREATE POLICY "admin all" ON messages FOR ALL USING (true);
+CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
+*/
+
 /* =============================================
    NB TOWER — script.js
    ============================================= */
@@ -6,49 +74,9 @@
   'use strict';
 
   /* ══════════════════════════════════════════════
-     0. LOCALSTORAGE → LIVE SITE SYNC
-     Runs first so rendered elements are in DOM
-     before observers and language toggle fire.
+     RENDER HELPERS
+     Defined first so initSite() can call them.
   ══════════════════════════════════════════════ */
-
-  // Track site visits
-  const _visits = parseInt(localStorage.getItem('nb_visits') || '0') + 1;
-  localStorage.setItem('nb_visits', String(_visits));
-
-  // Render projects from admin if saved
-  const _storedProjects = _parseLS('nb_projects');
-  if (_storedProjects && _storedProjects.length) {
-    _renderProjects(_storedProjects);
-  }
-
-  // Render team from admin if saved
-  const _storedTeam = _parseLS('nb_team');
-  if (_storedTeam && _storedTeam.length) {
-    _renderTeam(_storedTeam);
-  }
-
-  // Render testimonials from admin if saved
-  const _storedTestimonials = _parseLS('nb_testimonials');
-  if (_storedTestimonials && _storedTestimonials.length) {
-    _renderTestimonials(_storedTestimonials);
-  }
-
-  // Update stat targets from admin if saved
-  const _storedStats = _parseLS('nb_stats');
-  if (_storedStats) {
-    const _countEls = document.querySelectorAll('.count-up');
-    const _keys = ['projects', 'clients', 'years', 'sqm'];
-    _countEls.forEach((el, i) => {
-      if (_keys[i] && _storedStats[_keys[i]] !== undefined) {
-        el.dataset.target = _storedStats[_keys[i]];
-      }
-    });
-  }
-
-  function _parseLS(key) {
-    try { return JSON.parse(localStorage.getItem(key)); }
-    catch { return null; }
-  }
 
   function _renderProjects(projects) {
     const grid = document.getElementById('projects-grid');
@@ -94,6 +122,9 @@
           </div>
         </div>`;
     }).join('');
+
+    // Re-observe newly rendered cards
+    grid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
   function _renderTeam(team) {
@@ -110,8 +141,9 @@
           <p class="team-bio" data-ka="${m.bioKa || ''}" data-en="${m.bioEn || ''}">${m.bioKa || ''}</p>
         </div>
       </div>`).join('');
-  }
 
+    grid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  }
 
   function _renderTestimonials(testimonials) {
     const track = document.getElementById('testimonials-track');
@@ -137,6 +169,86 @@
     dotsContainer.innerHTML = testimonials.map((_, i) =>
       `<button class="t-dot${i === 0 ? ' active' : ''}" data-idx="${i}" aria-label="Slide ${i + 1}"></button>`
     ).join('');
+
+    // Re-wire dot clicks after re-render
+    dotsContainer.querySelectorAll('.t-dot').forEach((dot, i) => {
+      dot.addEventListener('click', () => { goToSlide(i); startAuto(); });
+    });
+  }
+
+  /* ══════════════════════════════════════════════
+     SUPABASE DATA INIT
+  ══════════════════════════════════════════════ */
+
+  async function initSite() {
+    // PROJECTS
+    try {
+      const { data: projects, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
+      if (!error && projects && projects.length) {
+        _renderProjects(projects.map(p => ({
+          id:       p.id,
+          nameKa:   p.name_ka,
+          nameEn:   p.name_en,
+          category: p.category,
+          location: p.location,
+          status:   p.status,
+          imageUrl: p.image_url
+        })));
+      }
+    } catch (e) { console.warn('Projects fetch failed', e); }
+
+    // TEAM
+    try {
+      const { data: team, error } = await db.from('team').select('*').order('created_at', { ascending: false });
+      if (!error && team && team.length) {
+        _renderTeam(team.map(m => ({
+          id:       m.id,
+          name:     m.name,
+          roleKa:   m.role_ka,
+          roleEn:   m.role_en,
+          initials: m.initials,
+          imageUrl: m.image_url
+        })));
+      }
+    } catch (e) { console.warn('Team fetch failed', e); }
+
+    // TESTIMONIALS
+    try {
+      const { data: testimonials, error } = await db.from('testimonials').select('*').order('created_at', { ascending: false });
+      if (!error && testimonials && testimonials.length) {
+        _renderTestimonials(testimonials.map(t => ({
+          id:      t.id,
+          quoteKa: t.quote_ka,
+          quoteEn: t.quote_en,
+          author:  t.author,
+          project: t.project,
+          stars:   t.stars
+        })));
+      }
+    } catch (e) { console.warn('Testimonials fetch failed', e); }
+
+    // STATS
+    try {
+      const { data: stats, error } = await db.from('stats').select('*').limit(1).single();
+      if (!error && stats) {
+        const map = {
+          projects: stats.projects_count,
+          clients:  stats.clients_count,
+          years:    stats.years_count,
+          sqm:      stats.sqm_count
+        };
+        const keys = ['projects', 'clients', 'years', 'sqm'];
+        document.querySelectorAll('.count-up').forEach((el, i) => {
+          const key = keys[i];
+          if (key && map[key] !== undefined && map[key] !== null) {
+            el.dataset.target = map[key];
+          }
+        });
+      }
+    } catch (e) { console.warn('Stats fetch failed', e); }
+
+    // Re-apply language after dynamic content renders
+    applyLang(currentLang);
   }
 
   /* ── 1. LANGUAGE TOGGLE ─────────────────────── */
@@ -255,7 +367,6 @@
     { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
   );
 
-  // Observes both original and localStorage-rendered elements
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 
@@ -302,7 +413,6 @@
       btn.classList.add('active');
 
       const filter = btn.dataset.filter;
-      // Query dynamically so localStorage-rendered cards are included
       document.querySelectorAll('.project-card').forEach(card => {
         const show = filter === 'all' || card.dataset.category === filter;
         card.classList.toggle('hidden', !show);
@@ -317,17 +427,24 @@
 
   /* ── 8. TESTIMONIALS CAROUSEL ───────────────── */
   const track   = document.getElementById('testimonials-track');
-  const dots    = document.querySelectorAll('.t-dot');
   const prevBtn = document.getElementById('t-prev');
   const nextBtn = document.getElementById('t-next');
   let currentSlide = 0;
-  const totalSlides = dots.length || 3;
   let autoTimer = null;
 
+  function getDots() {
+    return document.querySelectorAll('.t-dot');
+  }
+
+  function getTotalSlides() {
+    return getDots().length || 3;
+  }
+
   function goToSlide(idx) {
-    currentSlide = (idx + totalSlides) % totalSlides;
+    const total = getTotalSlides();
+    currentSlide = (idx + total) % total;
     if (track) track.style.transform = `translateX(-${currentSlide * 100}%)`;
-    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
+    getDots().forEach((dot, i) => dot.classList.toggle('active', i === currentSlide));
   }
 
   function startAuto() { stopAuto(); autoTimer = setInterval(() => goToSlide(currentSlide + 1), 4000); }
@@ -335,7 +452,9 @@
 
   if (prevBtn) prevBtn.addEventListener('click', () => { goToSlide(currentSlide - 1); startAuto(); });
   if (nextBtn) nextBtn.addEventListener('click', () => { goToSlide(currentSlide + 1); startAuto(); });
-  dots.forEach((dot, i) => dot.addEventListener('click', () => { goToSlide(i); startAuto(); }));
+
+  // Wire initial static dots
+  getDots().forEach((dot, i) => dot.addEventListener('click', () => { goToSlide(i); startAuto(); }));
 
   if (track) {
     let touchStartX = 0;
@@ -357,7 +476,7 @@
   const formSuccess = document.getElementById('form-success');
 
   if (contactForm && formSuccess) {
-    contactForm.addEventListener('submit', e => {
+    contactForm.addEventListener('submit', async e => {
       e.preventDefault();
 
       const btn     = contactForm.querySelector('.btn-submit');
@@ -368,21 +487,17 @@
       if (btnText) btnText.textContent = currentLang === 'ka' ? 'იგზავნება...' : 'Sending...';
       if (btnIcon) btnIcon.className = 'fa-solid fa-spinner fa-spin btn-icon';
 
-      // Save to localStorage for admin panel
-      const submission = {
-        id:      Date.now().toString(36) + Math.random().toString(36).slice(2),
-        name:    contactForm.querySelector('#name').value.trim(),
-        email:   contactForm.querySelector('#email').value.trim(),
-        phone:   contactForm.querySelector('#phone').value.trim(),
-        message: contactForm.querySelector('#message').value.trim(),
-        date:    new Date().toISOString(),
-        read:    false,
-      };
+      const name    = contactForm.querySelector('#name').value.trim();
+      const email   = contactForm.querySelector('#email').value.trim();
+      const phone   = contactForm.querySelector('#phone').value.trim();
+      const message = contactForm.querySelector('#message').value.trim();
+
       try {
-        const existing = JSON.parse(localStorage.getItem('nb_messages') || '[]');
-        existing.push(submission);
-        localStorage.setItem('nb_messages', JSON.stringify(existing));
-      } catch (_) {}
+        const { error } = await db.from('messages').insert([{ name, email, phone, message }]);
+        if (error) console.warn('Message save failed', error);
+      } catch (err) {
+        console.warn('Message insert error', err);
+      }
 
       setTimeout(() => {
         formSuccess.classList.add('visible');
@@ -396,5 +511,9 @@
       }, 1200);
     });
   }
+
+
+  /* ── FIRE SUPABASE INIT ─────────────────────── */
+  initSite();
 
 })();

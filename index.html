@@ -17,6 +17,14 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
 </head>
 <body>
 

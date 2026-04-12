@@ -8,6 +8,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
   <style>
     /* ── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1113,7 +1122,7 @@
 
 <script>
 /* =============================================
-   NB TOWER ADMIN — script
+   NB TOWER ADMIN — script (Supabase backend)
    ============================================= */
 (function () {
   'use strict';
@@ -1121,15 +1130,7 @@
   /* ── CREDENTIALS ─────────────────────────────── */
   const ADMIN_USER = 'admin';
   const ADMIN_PASS = 'nbtower2025';
-
-  /* ── STORAGE KEYS ────────────────────────────── */
-  const KEY_PROJECTS     = 'nb_projects';
-  const KEY_TEAM         = 'nb_team';
-  const KEY_STATS        = 'nb_stats';
-  const KEY_MESSAGES     = 'nb_messages';
-  const KEY_VISITS       = 'nb_visits';
-  const KEY_SESSION      = 'nb_admin_session';
-  const KEY_TESTIMONIALS = 'nb_testimonials';
+  const KEY_SESSION = 'nb_admin_session';
 
   /* ── DOM REFS ────────────────────────────────── */
   const loginScreen  = document.getElementById('login-screen');
@@ -1144,19 +1145,6 @@
   const toastC       = document.getElementById('toast-container');
 
   /* ── UTILITIES ───────────────────────────────── */
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2);
-  }
-
-  function store(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-  }
-
-  function load(key, fallback = null) {
-    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
-    catch { return fallback; }
-  }
-
   function toast(msg, type = 'success') {
     const t = document.createElement('div');
     t.className = `toast ${type}`;
@@ -1227,7 +1215,7 @@
     pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
     topbarTitle.textContent = pageTitles[pageId] || '';
     if (pageId === 'dashboard')    refreshDashboard();
-    if (pageId === 'messages')     { markAllMessagesRead(); renderMessages(); }
+    if (pageId === 'messages')     renderMessages();
     if (pageId === 'testimonials') renderTestimonialsTable();
   };
 
@@ -1260,8 +1248,14 @@
     modalSaveFn = null;
   }
 
-  modalClose.addEventListener('click', closeModal);
-  modalCancel.addEventListener('click', closeModal);
+  modalClose.addEventListener('click', () => {
+    closeModal();
+    document.getElementById('modal-save').style.display = '';
+  });
+  modalCancel.addEventListener('click', () => {
+    closeModal();
+    document.getElementById('modal-save').style.display = '';
+  });
   modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
   modalSave.addEventListener('click', () => { if (modalSaveFn) modalSaveFn(); });
 
@@ -1291,28 +1285,36 @@
   /* ═══════════════════════════════════════════════
      PROJECTS
   ═══════════════════════════════════════════════ */
-  function getProjects()        { return load(KEY_PROJECTS, []); }
-  function saveProjects(list)   { store(KEY_PROJECTS, list); renderProjectsTable(); refreshBadges(); }
+  async function loadProjects() {
+    try {
+      const { data, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadProjects error', e); return []; }
+  }
 
-  function renderProjectsTable() {
+  async function renderProjectsTable() {
     const tbody = document.getElementById('projects-table-body');
-    const list  = getProjects();
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="7" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadProjects();
     if (!list.length) {
       tbody.innerHTML = `<tr class="empty-row"><td colspan="7"><i class="fa-solid fa-folder-open" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>პროექტი არ არის. დაამატეთ პირველი!</td></tr>`;
       return;
     }
     tbody.innerHTML = list.map(p => {
+      const nameKa   = p.name_ka || '';
+      const nameEn   = p.name_en || '';
+      const imageUrl = p.image_url || null;
       const catLabel = p.category === 'residential' ? 'საცხოვრებელი' : 'კომერციული';
       const catBadge = p.category === 'residential' ? 'badge-blue' : 'badge-gray';
       const stLabel  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
       const stBadge  = p.status === 'completed' ? 'badge-green' : 'badge-outline';
-      const thumb    = p.imageUrl
-        ? `<img src="${p.imageUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;display:block">`
+      const thumb    = imageUrl
+        ? `<img src="${imageUrl}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;display:block">`
         : `<div style="width:40px;height:40px;border-radius:4px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-image" style="color:#ccc;font-size:0.8rem"></i></div>`;
       return `<tr>
         <td>${thumb}</td>
-        <td><strong>${escHtml(p.nameKa)}</strong></td>
-        <td style="color:#666">${escHtml(p.nameEn)}</td>
+        <td><strong>${escHtml(nameKa)}</strong></td>
+        <td style="color:#666">${escHtml(nameEn)}</td>
         <td><span class="badge ${catBadge}">${catLabel}</span></td>
         <td>${escHtml(p.location)}</td>
         <td><span class="badge ${stBadge}">${stLabel}</span></td>
@@ -1327,33 +1329,25 @@
   function projectFormHTML(p = {}) {
     return `
       <div class="form-group">
-        <label>ფოტო / Photo</label>
-        <div class="upload-area" id="proj-upload-area" onclick="document.getElementById('f-image').click()">
-          <input type="file" id="f-image" accept="image/*">
-          <img id="f-image-preview" class="upload-preview-img" alt="preview">
-          <div class="upload-placeholder" id="f-image-placeholder">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <span>ფოტოს ატვირთვა / Upload Photo</span>
-          </div>
-          <div class="upload-change-hint" id="f-image-hint" style="display:none">დააჭირეთ სხვა ფოტოს ასარჩევად</div>
-        </div>
+        <label>ფოტო / Photo (URL)</label>
+        <input type="text" id="f-imageUrl" value="${escHtml(p.imageUrl||p.image_url||'')}" placeholder="https://... (optional)" />
       </div>
       <div class="form-row-2">
         <div class="form-group">
           <label>სახელი ქართულად / Name (KA)</label>
-          <input type="text" id="f-nameKa" value="${escHtml(p.nameKa||'')}" placeholder="მაგ. NB Residence III" required />
+          <input type="text" id="f-nameKa" value="${escHtml(p.nameKa||p.name_ka||'')}" placeholder="მაგ. NB Residence III" required />
         </div>
         <div class="form-group">
           <label>Name in English (EN)</label>
-          <input type="text" id="f-nameEn" value="${escHtml(p.nameEn||'')}" placeholder="e.g. NB Residence III" required />
+          <input type="text" id="f-nameEn" value="${escHtml(p.nameEn||p.name_en||'')}" placeholder="e.g. NB Residence III" required />
         </div>
       </div>
       <div class="form-row-2">
         <div class="form-group">
           <label>კატეგორია / Category</label>
           <select id="f-category">
-            <option value="residential" ${p.category==='residential'?'selected':''}>საცხოვრებელი / Residential</option>
-            <option value="commercial"  ${p.category==='commercial' ?'selected':''}>კომერციული / Commercial</option>
+            <option value="residential" ${(p.category==='residential')?'selected':''}>საცხოვრებელი / Residential</option>
+            <option value="commercial"  ${(p.category==='commercial') ?'selected':''}>კომერციული / Commercial</option>
           </select>
         </div>
         <div class="form-group">
@@ -1364,8 +1358,8 @@
       <div class="form-group">
         <label>სტატუსი / Status</label>
         <select id="f-status">
-          <option value="completed" ${p.status==='completed'?'selected':''}>დასრულებული / Completed</option>
-          <option value="ongoing"   ${p.status==='ongoing'  ?'selected':''}>მიმდინარე / Ongoing</option>
+          <option value="completed" ${(p.status==='completed')?'selected':''}>დასრულებული / Completed</option>
+          <option value="ongoing"   ${(p.status==='ongoing')  ?'selected':''}>მიმდინარე / Ongoing</option>
         </select>
       </div>`;
   }
@@ -1377,6 +1371,7 @@
       category: document.getElementById('f-category').value,
       location: document.getElementById('f-location').value.trim(),
       status:   document.getElementById('f-status').value,
+      imageUrl: document.getElementById('f-imageUrl').value.trim() || null,
     };
   }
 
@@ -1384,69 +1379,67 @@
     return data.nameKa && data.nameEn && data.location;
   }
 
-  let _projectImageData = null;
-
-  function setupProjectImageUpload(existingUrl) {
-    _projectImageData = existingUrl || null;
-    const input       = document.getElementById('f-image');
-    const preview     = document.getElementById('f-image-preview');
-    const placeholder = document.getElementById('f-image-placeholder');
-    const hint        = document.getElementById('f-image-hint');
-    if (existingUrl) {
-      preview.src           = existingUrl;
-      preview.style.display = 'block';
-      placeholder.style.display = 'none';
-      hint.style.display    = '';
+  async function saveProject(data, id = null) {
+    const row = {
+      name_ka:   data.nameKa,
+      name_en:   data.nameEn,
+      category:  data.category,
+      location:  data.location,
+      status:    data.status,
+      image_url: data.imageUrl || null,
+    };
+    try {
+      if (id) {
+        const { error } = await db.from('projects').update(row).eq('id', id);
+        if (error) throw error;
+      } else {
+        const { error } = await db.from('projects').insert([row]);
+        if (error) throw error;
+      }
+      await renderProjectsTable();
+    } catch (e) {
+      console.error('saveProject error', e);
+      toast('შეცდომა შენახვისას / Save error', 'error');
     }
-    input.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        _projectImageData     = ev.target.result;
-        preview.src           = _projectImageData;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-        hint.style.display    = '';
-      };
-      reader.readAsDataURL(file);
-    });
+  }
+
+  async function deleteProjectById(id) {
+    try {
+      const { error } = await db.from('projects').delete().eq('id', id);
+      if (error) throw error;
+      await renderProjectsTable();
+    } catch (e) {
+      console.error('deleteProject error', e);
+      toast('შეცდომა წაშლისას / Delete error', 'error');
+    }
   }
 
   window.openAddProjectModal = function() {
-    _projectImageData = null;
-    openModal('პროექტის დამატება / Add Project', projectFormHTML(), () => {
+    openModal('პროექტის დამატება / Add Project', projectFormHTML(), async () => {
       const data = getProjectFormData();
       if (!validateProject(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      const list = getProjects();
-      list.push({ id: uid(), ...data, imageUrl: _projectImageData });
-      saveProjects(list);
+      await saveProject(data, null);
       closeModal();
       toast('პროექტი დამატებულია! / Project added!');
     });
-    setupProjectImageUpload(null);
   };
 
-  window.editProject = function(id) {
-    const list = getProjects();
+  window.editProject = async function(id) {
+    const list = await loadProjects();
     const p = list.find(x => x.id === id);
     if (!p) return;
-    openModal('პროექტის რედაქტირება / Edit Project', projectFormHTML(p), () => {
+    openModal('პროექტის რედაქტირება / Edit Project', projectFormHTML(p), async () => {
       const data = getProjectFormData();
       if (!validateProject(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      const idx = list.findIndex(x => x.id === id);
-      list[idx] = { id, ...data, imageUrl: _projectImageData };
-      saveProjects(list);
+      await saveProject(data, id);
       closeModal();
       toast('პროექტი განახლებულია! / Project updated!');
     });
-    setupProjectImageUpload(p.imageUrl || null);
   };
 
   window.deleteProject = function(id) {
-    confirm('პროექტი სამუდამოდ წაიშლება. / The project will be permanently deleted.', () => {
-      const list = getProjects().filter(x => x.id !== id);
-      saveProjects(list);
+    confirm('პროექტი სამუდამოდ წაიშლება. / The project will be permanently deleted.', async () => {
+      await deleteProjectById(id);
       toast('პროექტი წაშლილია / Project deleted');
     });
   };
@@ -1456,25 +1449,31 @@
   /* ═══════════════════════════════════════════════
      TEAM
   ═══════════════════════════════════════════════ */
-  function getTeam()        { return load(KEY_TEAM, []); }
-  function saveTeam(list)   { store(KEY_TEAM, list); renderTeamTable(); refreshBadges(); }
+  async function loadTeam() {
+    try {
+      const { data, error } = await db.from('team').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadTeam error', e); return []; }
+  }
 
-  function renderTeamTable() {
+  async function renderTeamTable() {
     const tbody = document.getElementById('team-table-body');
-    const list  = getTeam();
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="5" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadTeam();
     if (!list.length) {
       tbody.innerHTML = `<tr class="empty-row"><td colspan="5"><i class="fa-solid fa-users" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>გუნდის წევრი არ არის. დაამატეთ პირველი!</td></tr>`;
       return;
     }
     tbody.innerHTML = list.map(m => {
-      const avatar = m.imageUrl
-        ? `<img src="${m.imageUrl}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;display:block">`
+      const imageUrl = m.image_url || null;
+      const avatar = imageUrl
+        ? `<img src="${imageUrl}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;display:block">`
         : `<div style="width:38px;height:38px;border-radius:50%;background:var(--green);color:#fff;font-weight:700;font-size:0.75rem;display:flex;align-items:center;justify-content:center;">${escHtml(m.initials)}</div>`;
       return `<tr>
         <td>${avatar}</td>
         <td><strong>${escHtml(m.name)}</strong></td>
-        <td>${escHtml(m.roleKa)}</td>
-        <td style="color:#666">${escHtml(m.roleEn)}</td>
+        <td>${escHtml(m.role_ka)}</td>
+        <td style="color:#666">${escHtml(m.role_en)}</td>
         <td class="td-actions">
           <button class="btn btn-secondary btn-sm" onclick="editTeam('${m.id}')"><i class="fa-solid fa-pen"></i></button>
           <button class="btn btn-danger btn-sm" onclick="deleteTeam('${m.id}')"><i class="fa-solid fa-trash"></i></button>
@@ -1485,18 +1484,6 @@
 
   function teamFormHTML(m = {}) {
     return `
-      <div class="form-group" style="display:flex;flex-direction:column;align-items:center">
-        <label style="align-self:flex-start">ფოტო / Photo</label>
-        <div class="upload-area upload-area-circle" id="team-upload-area" onclick="document.getElementById('f-image').click()" style="width:160px;padding:20px 16px">
-          <input type="file" id="f-image" accept="image/*">
-          <img id="f-image-preview" class="upload-preview-circle" alt="preview">
-          <div class="upload-placeholder" id="f-image-placeholder">
-            <i class="fa-solid fa-camera"></i>
-            <span style="font-size:0.78rem">ფოტო / Photo</span>
-          </div>
-          <div class="upload-change-hint" id="f-image-hint" style="display:none">შეცვლა</div>
-        </div>
-      </div>
       <div class="form-row-2">
         <div class="form-group">
           <label>სახელი / Name</label>
@@ -1510,20 +1497,16 @@
       <div class="form-row-2">
         <div class="form-group">
           <label>პოზიცია ქართულად / Role (KA)</label>
-          <input type="text" id="f-roleKa" value="${escHtml(m.roleKa||'')}" placeholder="მაგ. მთავარი ინჟინერი" required />
+          <input type="text" id="f-roleKa" value="${escHtml(m.role_ka||m.roleKa||'')}" placeholder="მაგ. მთავარი ინჟინერი" required />
         </div>
         <div class="form-group">
           <label>Position in English (EN)</label>
-          <input type="text" id="f-roleEn" value="${escHtml(m.roleEn||'')}" placeholder="e.g. Chief Engineer" required />
+          <input type="text" id="f-roleEn" value="${escHtml(m.role_en||m.roleEn||'')}" placeholder="e.g. Chief Engineer" required />
         </div>
       </div>
       <div class="form-group">
-        <label>ბიოგრაფია ქართულად / Bio (KA) — optional</label>
-        <textarea id="f-bioKa" placeholder="მოკლე ბიოგრაფია...">${escHtml(m.bioKa||'')}</textarea>
-      </div>
-      <div class="form-group">
-        <label>Biography in English (EN) — optional</label>
-        <textarea id="f-bioEn" placeholder="Short biography...">${escHtml(m.bioEn||'')}</textarea>
+        <label>ფოტო URL / Photo URL — optional</label>
+        <input type="text" id="f-imageUrl" value="${escHtml(m.image_url||m.imageUrl||'')}" placeholder="https://..." />
       </div>`;
   }
 
@@ -1533,8 +1516,7 @@
       initials: document.getElementById('f-initials').value.trim(),
       roleKa:   document.getElementById('f-roleKa').value.trim(),
       roleEn:   document.getElementById('f-roleEn').value.trim(),
-      bioKa:    document.getElementById('f-bioKa').value.trim(),
-      bioEn:    document.getElementById('f-bioEn').value.trim(),
+      imageUrl: document.getElementById('f-imageUrl').value.trim() || null,
     };
   }
 
@@ -1542,69 +1524,66 @@
     return data.name && data.initials && data.roleKa && data.roleEn;
   }
 
-  let _teamImageData = null;
-
-  function setupTeamImageUpload(existingUrl) {
-    _teamImageData = existingUrl || null;
-    const input       = document.getElementById('f-image');
-    const preview     = document.getElementById('f-image-preview');
-    const placeholder = document.getElementById('f-image-placeholder');
-    const hint        = document.getElementById('f-image-hint');
-    if (existingUrl) {
-      preview.src           = existingUrl;
-      preview.style.display = 'block';
-      placeholder.style.display = 'none';
-      hint.style.display    = '';
+  async function saveTeamMember(data, id = null) {
+    const row = {
+      name:      data.name,
+      initials:  data.initials,
+      role_ka:   data.roleKa,
+      role_en:   data.roleEn,
+      image_url: data.imageUrl || null,
+    };
+    try {
+      if (id) {
+        const { error } = await db.from('team').update(row).eq('id', id);
+        if (error) throw error;
+      } else {
+        const { error } = await db.from('team').insert([row]);
+        if (error) throw error;
+      }
+      await renderTeamTable();
+    } catch (e) {
+      console.error('saveTeam error', e);
+      toast('შეცდომა შენახვისას / Save error', 'error');
     }
-    input.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        _teamImageData        = ev.target.result;
-        preview.src           = _teamImageData;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-        hint.style.display    = '';
-      };
-      reader.readAsDataURL(file);
-    });
+  }
+
+  async function deleteTeamById(id) {
+    try {
+      const { error } = await db.from('team').delete().eq('id', id);
+      if (error) throw error;
+      await renderTeamTable();
+    } catch (e) {
+      console.error('deleteTeam error', e);
+      toast('შეცდომა წაშლისას / Delete error', 'error');
+    }
   }
 
   window.openAddTeamModal = function() {
-    _teamImageData = null;
-    openModal('გუნდის წევრის დამატება / Add Member', teamFormHTML(), () => {
+    openModal('გუნდის წევრის დამატება / Add Member', teamFormHTML(), async () => {
       const data = getTeamFormData();
       if (!validateTeam(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      const list = getTeam();
-      list.push({ id: uid(), ...data, imageUrl: _teamImageData });
-      saveTeam(list);
+      await saveTeamMember(data, null);
       closeModal();
       toast('წევრი დამატებულია! / Member added!');
     });
-    setupTeamImageUpload(null);
   };
 
-  window.editTeam = function(id) {
-    const list = getTeam();
+  window.editTeam = async function(id) {
+    const list = await loadTeam();
     const m = list.find(x => x.id === id);
     if (!m) return;
-    openModal('წევრის რედაქტირება / Edit Member', teamFormHTML(m), () => {
+    openModal('წევრის რედაქტირება / Edit Member', teamFormHTML(m), async () => {
       const data = getTeamFormData();
       if (!validateTeam(data)) { toast('შეავსეთ ყველა სავალდებულო ველი', 'error'); return; }
-      const idx = list.findIndex(x => x.id === id);
-      list[idx] = { id, ...data, imageUrl: _teamImageData };
-      saveTeam(list);
+      await saveTeamMember(data, id);
       closeModal();
       toast('წევრი განახლებულია! / Member updated!');
     });
-    setupTeamImageUpload(m.imageUrl || null);
   };
 
   window.deleteTeam = function(id) {
-    confirm('გუნდის წევრი სამუდამოდ წაიშლება. / The member will be permanently deleted.', () => {
-      const list = getTeam().filter(x => x.id !== id);
-      saveTeam(list);
+    confirm('გუნდის წევრი სამუდამოდ წაიშლება. / The member will be permanently deleted.', async () => {
+      await deleteTeamById(id);
       toast('წევრი წაშლილია / Member deleted');
     });
   };
@@ -1614,67 +1593,93 @@
   /* ═══════════════════════════════════════════════
      STATS
   ═══════════════════════════════════════════════ */
-  function loadStatsForm() {
-    const s = load(KEY_STATS, { projects:50, clients:200, years:10, sqm:150000 });
-    document.getElementById('stat-projects').value = s.projects;
-    document.getElementById('stat-clients').value  = s.clients;
-    document.getElementById('stat-years').value    = s.years;
-    document.getElementById('stat-sqm').value      = s.sqm;
+  async function loadStats() {
+    try {
+      const { data, error } = await db.from('stats').select('*').limit(1).single();
+      return error ? null : data;
+    } catch (e) { console.warn('loadStats error', e); return null; }
   }
 
-  document.getElementById('save-stats-btn').addEventListener('click', () => {
-    const data = {
-      projects: parseInt(document.getElementById('stat-projects').value) || 0,
-      clients:  parseInt(document.getElementById('stat-clients').value)  || 0,
-      years:    parseInt(document.getElementById('stat-years').value)    || 0,
-      sqm:      parseInt(document.getElementById('stat-sqm').value)      || 0,
+  async function loadStatsForm() {
+    const s = await loadStats();
+    document.getElementById('stat-projects').value = s ? (s.projects_count || 50)  : 50;
+    document.getElementById('stat-clients').value  = s ? (s.clients_count  || 200) : 200;
+    document.getElementById('stat-years').value    = s ? (s.years_count    || 10)  : 10;
+    document.getElementById('stat-sqm').value      = s ? (s.sqm_count      || 150000) : 150000;
+  }
+
+  document.getElementById('save-stats-btn').addEventListener('click', async () => {
+    const values = {
+      projects_count: String(parseInt(document.getElementById('stat-projects').value) || 0),
+      clients_count:  String(parseInt(document.getElementById('stat-clients').value)  || 0),
+      years_count:    String(parseInt(document.getElementById('stat-years').value)    || 0),
+      sqm_count:      String(parseInt(document.getElementById('stat-sqm').value)      || 0),
     };
-    store(KEY_STATS, data);
-    toast('სტატისტიკა შენახულია! / Stats saved!');
+    try {
+      const existing = await loadStats();
+      if (existing) {
+        const { error } = await db.from('stats').update(values).eq('id', existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await db.from('stats').insert([values]);
+        if (error) throw error;
+      }
+      toast('სტატისტიკა შენახულია! / Stats saved!');
+    } catch (e) {
+      console.error('saveStats error', e);
+      toast('შეცდომა შენახვისას / Save error', 'error');
+    }
   });
 
   /* ═══════════════════════════════════════════════
      MESSAGES
   ═══════════════════════════════════════════════ */
-  function getMessages()    { return load(KEY_MESSAGES, []); }
-  function saveMessages(l)  { store(KEY_MESSAGES, l); }
+  async function loadMessages() {
+    try {
+      const { data, error } = await db.from('messages').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadMessages error', e); return []; }
+  }
 
-  function renderMessages() {
+  async function renderMessages() {
     const tbody = document.getElementById('messages-table-body');
-    const list  = getMessages().slice().reverse(); // newest first
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadMessages();
+
+    // Update badge with total message count
+    if (list.length > 0) {
+      msgBadge.textContent = list.length;
+      msgBadge.style.display = '';
+    } else {
+      msgBadge.style.display = 'none';
+    }
+
     if (!list.length) {
       tbody.innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fa-solid fa-inbox" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>შეტყობინება ჯერ არ არის</td></tr>`;
       return;
     }
-    tbody.innerHTML = list.map(m => {
-      const unread = !m.read;
-      return `<tr class="${unread?'unread-row':''}">
-        <td class="${unread?'unread':''}">${escHtml(m.name)}</td>
-        <td>${escHtml(m.email)}</td>
-        <td>${escHtml(m.phone || '—')}</td>
-        <td><div class="message-preview ${unread?'unread':''}">${escHtml(m.message)}</div></td>
-        <td style="white-space:nowrap;color:#888;font-size:0.82rem">${fmt(m.date)}</td>
-        <td class="td-actions">
-          <button class="btn btn-secondary btn-sm" onclick="viewMessage('${m.id}')" title="ნახვა"><i class="fa-solid fa-eye"></i></button>
-          <button class="btn btn-danger btn-sm" onclick="deleteMessage('${m.id}')" title="წაშლა"><i class="fa-solid fa-trash"></i></button>
-        </td>
-      </tr>`;
-    }).join('');
+    tbody.innerHTML = list.map(m => `<tr>
+      <td>${escHtml(m.name)}</td>
+      <td>${escHtml(m.email)}</td>
+      <td>${escHtml(m.phone || '—')}</td>
+      <td><div class="message-preview">${escHtml(m.message)}</div></td>
+      <td style="white-space:nowrap;color:#888;font-size:0.82rem">${fmt(m.created_at)}</td>
+      <td class="td-actions">
+        <button class="btn btn-secondary btn-sm" onclick="viewMessage('${m.id}')" title="ნახვა"><i class="fa-solid fa-eye"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteMessage('${m.id}')" title="წაშლა"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
   }
 
-  window.viewMessage = function(id) {
-    const list = getMessages();
+  window.viewMessage = async function(id) {
+    const list = await loadMessages();
     const m = list.find(x => x.id === id);
     if (!m) return;
-    // Mark as read
-    m.read = true;
-    saveMessages(list);
-    refreshBadges();
 
     openModal('შეტყობინება / Message', `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">სახელი</div><div style="font-weight:600">${escHtml(m.name)}</div></div>
-        <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">თარიღი</div><div>${fmt(m.date)}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">თარიღი</div><div>${fmt(m.created_at)}</div></div>
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">ელ-ფოსტა</div><a href="mailto:${escHtml(m.email)}" style="color:var(--green)">${escHtml(m.email)}</a></div>
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">ტელეფონი</div><div>${escHtml(m.phone || '—')}</div></div>
       </div>
@@ -1682,48 +1687,40 @@
       <div style="background:#F5F4F0;border-radius:8px;padding:16px;font-size:0.92rem;line-height:1.7;color:#333;white-space:pre-wrap">${escHtml(m.message)}</div>
     `, null);
     document.getElementById('modal-save').style.display = 'none';
-    renderMessages();
   };
 
   window.deleteMessage = function(id) {
-    confirm('შეტყობინება სამუდამოდ წაიშლება. / The message will be permanently deleted.', () => {
-      const list = getMessages().filter(x => x.id !== id);
-      saveMessages(list);
-      renderMessages();
-      refreshBadges();
-      toast('შეტყობინება წაშლილია / Message deleted');
+    confirm('შეტყობინება სამუდამოდ წაიშლება. / The message will be permanently deleted.', async () => {
+      try {
+        const { error } = await db.from('messages').delete().eq('id', id);
+        if (error) throw error;
+        await renderMessages();
+        toast('შეტყობინება წაშლილია / Message deleted');
+      } catch (e) {
+        console.error('deleteMessage error', e);
+        toast('შეცდომა წაშლისას / Delete error', 'error');
+      }
     });
   };
 
-  function markAllMessagesRead() {
-    const list = getMessages().map(m => ({ ...m, read: true }));
-    saveMessages(list);
-    refreshBadges();
-  }
-
-  document.getElementById('mark-all-read-btn').addEventListener('click', () => {
-    markAllMessagesRead();
-    renderMessages();
-    toast('ყველა წაკითხულია / All marked as read');
-  });
-
-  /* Fix modal-save display when reopened */
-  document.getElementById('modal-close').addEventListener('click', () => {
-    document.getElementById('modal-save').style.display = '';
-  });
-  document.getElementById('modal-cancel').addEventListener('click', () => {
-    document.getElementById('modal-save').style.display = '';
-  });
+  // Remove mark-all-read button (no read column in DB) — hide it
+  const markAllBtn = document.getElementById('mark-all-read-btn');
+  if (markAllBtn) markAllBtn.style.display = 'none';
 
   /* ═══════════════════════════════════════════════
      TESTIMONIALS
   ═══════════════════════════════════════════════ */
-  function getTestimonials()      { return load(KEY_TESTIMONIALS, []); }
-  function saveTestimonials(list) { store(KEY_TESTIMONIALS, list); renderTestimonialsTable(); }
+  async function loadTestimonials() {
+    try {
+      const { data, error } = await db.from('testimonials').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadTestimonials error', e); return []; }
+  }
 
-  function renderTestimonialsTable() {
+  async function renderTestimonialsTable() {
     const tbody = document.getElementById('testimonials-table-body');
-    const list  = getTestimonials();
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="5" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadTestimonials();
     if (!list.length) {
       tbody.innerHTML = `<tr class="empty-row"><td colspan="5"><i class="fa-solid fa-comment-dots" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>შეფასება არ არის. დაამატეთ პირველი!</td></tr>`;
       return;
@@ -1733,7 +1730,7 @@
       return `<tr>
         <td><strong>${escHtml(t.author)}</strong></td>
         <td style="color:#666">${escHtml(t.project)}</td>
-        <td><div class="message-preview">${escHtml(t.quoteKa)}</div></td>
+        <td><div class="message-preview">${escHtml(t.quote_ka)}</div></td>
         <td style="color:var(--green);letter-spacing:2px;font-size:0.85rem">${stars}</td>
         <td class="td-actions">
           <button class="btn btn-secondary btn-sm" onclick="editTestimonial('${t.id}')"><i class="fa-solid fa-pen"></i></button>
@@ -1748,11 +1745,11 @@
     return `
       <div class="form-group">
         <label>შეფასება ქართულად / Quote (KA)</label>
-        <textarea id="f-quoteKa" placeholder="კლიენტის შეფასება ქართულად...">${escHtml(t.quoteKa||'')}</textarea>
+        <textarea id="f-quoteKa" placeholder="კლიენტის შეფასება ქართულად...">${escHtml(t.quote_ka||t.quoteKa||'')}</textarea>
       </div>
       <div class="form-group">
         <label>Quote in English (EN)</label>
-        <textarea id="f-quoteEn" placeholder="Client quote in English...">${escHtml(t.quoteEn||'')}</textarea>
+        <textarea id="f-quoteEn" placeholder="Client quote in English...">${escHtml(t.quote_en||t.quoteEn||'')}</textarea>
       </div>
       <div class="form-row-2">
         <div class="form-group">
@@ -1786,90 +1783,117 @@
     return data.quoteKa && data.author && data.project;
   }
 
+  async function saveTestimonial(data, id = null) {
+    const row = {
+      quote_ka: data.quoteKa,
+      quote_en: data.quoteEn || null,
+      author:   data.author,
+      project:  data.project,
+      stars:    data.stars,
+    };
+    try {
+      if (id) {
+        const { error } = await db.from('testimonials').update(row).eq('id', id);
+        if (error) throw error;
+      } else {
+        const { error } = await db.from('testimonials').insert([row]);
+        if (error) throw error;
+      }
+      await renderTestimonialsTable();
+    } catch (e) {
+      console.error('saveTestimonial error', e);
+      toast('შეცდომა შენახვისას / Save error', 'error');
+    }
+  }
+
   window.openAddTestimonialModal = function() {
-    openModal('შეფასების დამატება / Add Testimonial', testimonialFormHTML(), () => {
+    openModal('შეფასების დამატება / Add Testimonial', testimonialFormHTML(), async () => {
       const data = getTestimonialFormData();
       if (!validateTestimonial(data)) { toast('შეავსეთ სავალდებულო ველები', 'error'); return; }
-      const list = getTestimonials();
-      list.push({ id: uid(), ...data });
-      saveTestimonials(list);
+      await saveTestimonial(data, null);
       closeModal();
       toast('შეფასება დამატებულია! / Testimonial added!');
     });
   };
 
-  window.editTestimonial = function(id) {
-    const list = getTestimonials();
+  window.editTestimonial = async function(id) {
+    const list = await loadTestimonials();
     const t = list.find(x => x.id === id);
     if (!t) return;
-    openModal('შეფასების რედაქტირება / Edit Testimonial', testimonialFormHTML(t), () => {
+    openModal('შეფასების რედაქტირება / Edit Testimonial', testimonialFormHTML(t), async () => {
       const data = getTestimonialFormData();
       if (!validateTestimonial(data)) { toast('შეავსეთ სავალდებულო ველები', 'error'); return; }
-      const idx = list.findIndex(x => x.id === id);
-      list[idx] = { id, ...data };
-      saveTestimonials(list);
+      await saveTestimonial(data, id);
       closeModal();
       toast('შეფასება განახლებულია! / Testimonial updated!');
     });
   };
 
   window.deleteTestimonial = function(id) {
-    confirm('შეფასება სამუდამოდ წაიშლება. / The testimonial will be permanently deleted.', () => {
-      const list = getTestimonials().filter(x => x.id !== id);
-      saveTestimonials(list);
-      toast('შეფასება წაშლილია / Testimonial deleted');
+    confirm('შეფასება სამუდამოდ წაიშლება. / The testimonial will be permanently deleted.', async () => {
+      try {
+        const { error } = await db.from('testimonials').delete().eq('id', id);
+        if (error) throw error;
+        await renderTestimonialsTable();
+        toast('შეფასება წაშლილია / Testimonial deleted');
+      } catch (e) {
+        console.error('deleteTestimonial error', e);
+        toast('შეცდომა წაშლისას / Delete error', 'error');
+      }
     });
   };
 
   /* ═══════════════════════════════════════════════
      DASHBOARD
   ═══════════════════════════════════════════════ */
-  function refreshDashboard() {
-    const projects  = getProjects();
-    const team      = getTeam();
-    const messages  = getMessages();
-    const visits    = load(KEY_VISITS, 0);
+  async function refreshDashboard() {
+    // Load counts in parallel
+    const [projects, team, messages] = await Promise.all([
+      loadProjects(),
+      loadTeam(),
+      loadMessages(),
+    ]);
 
-    document.getElementById('dash-projects').textContent = projects.length;
-    document.getElementById('dash-team').textContent     = team.length;
-    document.getElementById('dash-messages').textContent = messages.length;
-    document.getElementById('dash-visits').textContent   = visits.toLocaleString();
+    document.getElementById('dash-projects').textContent  = projects.length;
+    document.getElementById('dash-team').textContent      = team.length;
+    document.getElementById('dash-messages').textContent  = messages.length;
+    // Visits stat removed (no DB tracking)
+    document.getElementById('dash-visits').textContent    = '—';
 
-    // Recent messages table
-    const tbody = document.getElementById('dash-messages-table');
-    const recent = messages.slice().reverse().slice(0, 5);
+    // Recent messages table (up to 5, newest first)
+    const tbody  = document.getElementById('dash-messages-table');
+    const recent = messages.slice(0, 5);
     if (!recent.length) {
       tbody.innerHTML = `<tr class="empty-row"><td colspan="3"><i class="fa-solid fa-inbox" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>შეტყობინება არ არის</td></tr>`;
     } else {
       tbody.innerHTML = recent.map(m => `<tr>
-        <td><strong>${escHtml(m.name)}</strong>${!m.read ? ' <span class="badge badge-green" style="font-size:0.6rem">NEW</span>' : ''}</td>
+        <td><strong>${escHtml(m.name)}</strong></td>
         <td style="color:#666">${escHtml(m.email)}</td>
-        <td style="color:#888;font-size:0.82rem">${fmt(m.date)}</td>
+        <td style="color:#888;font-size:0.82rem">${fmt(m.created_at)}</td>
       </tr>`).join('');
     }
-  }
 
-  /* ═══════════════════════════════════════════════
-     BADGES & REFRESH
-  ═══════════════════════════════════════════════ */
-  function refreshBadges() {
-    const unread = getMessages().filter(m => !m.read).length;
-    if (unread > 0) {
-      msgBadge.textContent = unread;
+    // Badge
+    if (messages.length > 0) {
+      msgBadge.textContent = messages.length;
       msgBadge.style.display = '';
     } else {
       msgBadge.style.display = 'none';
     }
   }
 
-  function refreshAll() {
-    renderProjectsTable();
-    renderTeamTable();
-    renderMessages();
-    renderTestimonialsTable();
-    loadStatsForm();
-    refreshDashboard();
-    refreshBadges();
+  /* ═══════════════════════════════════════════════
+     REFRESH ALL
+  ═══════════════════════════════════════════════ */
+  async function refreshAll() {
+    await Promise.all([
+      renderProjectsTable(),
+      renderTeamTable(),
+      renderMessages(),
+      renderTestimonialsTable(),
+      loadStatsForm(),
+      refreshDashboard(),
+    ]);
   }
 
   /* ── INIT ────────────────────────────────────── */
