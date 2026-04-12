@@ -304,20 +304,23 @@
     /* ── Filter helpers ───────────────────── */
     function matchesCity(project, city) {
       if (!city) return true;
+      console.log('Project location:', project.location, '| Search city:', city);
       return project.location === city;
     }
 
     function matchesArea(project, areaP) {
       if (!areaP || areaP === 'any') return true;
-      const sqm = project.area_sqm;
-      if (!sqm) return true;
+      const sqm = parseInt(project.area_sqm);
+      if (!sqm || isNaN(sqm)) return true;
       const areaConst = (typeof NB_CONSTANTS !== 'undefined' ? NB_CONSTANTS.areas : []).find(a => a.value === areaP);
-      if (!areaConst) return true;
+      console.log('Project area_sqm:', project.area_sqm, '| Area filter:', areaConst);
+      if (!areaConst || areaConst.value === 'any') return true;
       return sqm >= areaConst.min && sqm <= areaConst.max;
     }
 
     function matchesPayment(project, paymentP) {
       if (!paymentP || paymentP === 'ყველა') return true;
+      console.log('Project payment:', project.payment_type, '| Payment filter:', paymentP);
       if (!project.payment_type) return true;
       if (project.payment_type === 'ყველა') return true;
       return project.payment_type === paymentP;
@@ -376,11 +379,18 @@
         const { data: projects, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
         if (error) throw error;
 
-        const filtered = (projects || []).filter(p =>
-          matchesCity(p, cityParam) &&
-          matchesArea(p, areaParam) &&
-          matchesPayment(p, paymentParam)
-        );
+        const isDefaultSearch =
+          (!cityParam || cityParam === (NB_CONSTANTS && NB_CONSTANTS.cities[0])) &&
+          (!areaParam || areaParam === 'any') &&
+          (!paymentParam || paymentParam === 'ყველა');
+
+        const filtered = isDefaultSearch
+          ? (projects || [])
+          : (projects || []).filter(p =>
+              matchesCity(p, cityParam) &&
+              matchesArea(p, areaParam) &&
+              matchesPayment(p, paymentParam)
+            );
 
         countEl.textContent = filtered.length;
 

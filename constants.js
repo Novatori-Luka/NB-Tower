@@ -5,10 +5,10 @@
 const NB_CONSTANTS = {
   cities: ['თბილისი', 'ბათუმი', 'ქუთაისი', 'მცხეთა', 'რუსთავი'],
   areas: [
-    { label: 'ნებისმიერი', value: 'any',   min: 0,   max: 99999 },
-    { label: '30 – 60 კვ.მ', value: '30-60',  min: 30,  max: 60    },
-    { label: '60 – 90 კვ.მ', value: '60-90',  min: 60,  max: 90    },
-    { label: '90 – 120 კვ.მ', value: '90-120', min: 90,  max: 120   },
+    { label: 'ნებისმიერი', value: 'any',    min: 0,   max: 99999 },
+    { label: '30 – 60 კვ.მ', value: '30-60',  min: 30,  max: 61    },
+    { label: '60 – 90 კვ.მ', value: '60-90',  min: 60,  max: 91    },
+    { label: '90 – 120 კვ.მ', value: '90-120', min: 90,  max: 121   },
     { label: '120+ კვ.მ',    value: '120+',   min: 120, max: 99999 }
   ],
   paymentTypes: ['ყველა', 'იპოთეკა', 'განვადება', 'სრული გადახდა'],
