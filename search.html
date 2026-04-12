@@ -310,12 +310,13 @@
 
     function matchesArea(project, areaP) {
       if (!areaP || areaP === 'any') return true;
-      const sqm = parseInt(project.area_sqm);
-      if (!sqm || isNaN(sqm)) return true;
       const areaConst = (typeof NB_CONSTANTS !== 'undefined' ? NB_CONSTANTS.areas : []).find(a => a.value === areaP);
       console.log('Project area_sqm:', project.area_sqm, '| Area filter:', areaConst);
       if (!areaConst || areaConst.value === 'any') return true;
-      return sqm >= areaConst.min && sqm <= areaConst.max;
+      let projectAreas;
+      try { projectAreas = JSON.parse(project.area_sqm || '[]'); } catch (e) { return true; }
+      if (!Array.isArray(projectAreas) || projectAreas.length === 0) return true;
+      return projectAreas.some(sqm => sqm >= areaConst.min && sqm <= areaConst.max);
     }
 
     function matchesPayment(project, paymentP) {

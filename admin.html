@@ -16,7 +16,8 @@
     const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  </script>
+    /* ALTER TABLE projects ALTER COLUMN area_sqm TYPE text; */
+</script>
 
   <style>
     /* ── Reset & Base ─────────────────────────────── */
@@ -689,6 +690,18 @@
       margin-bottom: 8px;
     }
     .upload-area-circle { display: flex; flex-direction: column; align-items: center; }
+
+    /* ── CHECKBOX GROUP ───────────────────────────── */
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border: 1.5px solid #E8E8E8;
+      border-radius: 8px; cursor: pointer; font-size: 14px;
+      transition: all 0.15s;
+    }
+    .checkbox-item:hover { border-color: #3DBE6C; }
+    .checkbox-item input[type="checkbox"] { accent-color: #3DBE6C; width: 16px; height: 16px; }
+    .checkbox-item:has(input:checked) { border-color: #3DBE6C; background: rgba(61,190,108,0.06); }
     .upload-preview-circle {
       width: 80px;
       height: 80px;
@@ -1421,13 +1434,12 @@
         </div>
         <div class="form-group">
           <label>ფართი კვ.მ / Area sqm</label>
-          <select id="f-areaSqm">
-            <option value="" ${!p.area_sqm?'selected':''}>აირჩიეთ / Select</option>
-            <option value="45"  ${p.area_sqm==45 ?'selected':''}>30 – 60 კვ.მ (45 საშ.)</option>
-            <option value="75"  ${p.area_sqm==75 ?'selected':''}>60 – 90 კვ.მ (75 საშ.)</option>
-            <option value="105" ${p.area_sqm==105?'selected':''}>90 – 120 კვ.მ (105 საშ.)</option>
-            <option value="150" ${p.area_sqm==150?'selected':''}>120+ კვ.მ (150 საშ.)</option>
-          </select>
+          <div class="checkbox-group" id="area-checkboxes" data-saved='${escHtml(p.area_sqm || "[]")}'>
+            <label class="checkbox-item"><input type="checkbox" value="45"> 30 – 60 კვ.მ</label>
+            <label class="checkbox-item"><input type="checkbox" value="75"> 60 – 90 კვ.მ</label>
+            <label class="checkbox-item"><input type="checkbox" value="105"> 90 – 120 კვ.მ</label>
+            <label class="checkbox-item"><input type="checkbox" value="150"> 120+ კვ.მ</label>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -1458,7 +1470,7 @@
       location:    document.getElementById('f-location').value.trim(),
       status:      document.getElementById('f-status').value,
       totalFloors: parseInt(document.getElementById('f-totalFloors')?.value) || null,
-      areaSqm:     parseInt(document.getElementById('f-areaSqm')?.value) || null,
+      areaSqm:     JSON.stringify([...document.querySelectorAll('#area-checkboxes input:checked')].map(cb => parseInt(cb.value))),
       paymentType: document.getElementById('f-paymentType')?.value || null,
       descKa:      document.getElementById('f-descKa')?.value.trim() || null,
       descEn:      document.getElementById('f-descEn')?.value.trim() || null,
@@ -1509,6 +1521,15 @@
     }
   }
 
+  function initAreaCheckboxes() {
+    const group = document.getElementById('area-checkboxes');
+    if (!group) return;
+    const saved = JSON.parse(group.dataset.saved || '[]');
+    group.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.checked = saved.includes(parseInt(cb.value));
+    });
+  }
+
   window.openAddProjectModal = function() {
     currentProjectFile = null;
     currentProjectExistingUrl = null;
@@ -1524,6 +1545,7 @@
       closeModal();
       toast('პროექტი დამატებულია! / Project added!');
     });
+    initAreaCheckboxes();
     setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
@@ -1545,6 +1567,7 @@
       closeModal();
       toast('პროექტი განახლებულია! / Project updated!');
     });
+    initAreaCheckboxes();
     setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
