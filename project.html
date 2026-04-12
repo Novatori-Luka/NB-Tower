@@ -289,16 +289,16 @@
   <!-- ===== HEADER / NAV ===== -->
   <header class="header" id="header">
     <nav class="nav container">
-      <a href="index.html" class="nav-logo">
+      <a href="/" class="nav-logo">
         <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
       </a>
 
       <ul class="nav-links" id="nav-links">
-        <li><a href="index.html#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
-        <li><a href="index.html#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
-        <li><a href="index.html#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
-        <li><a href="index.html#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
-        <li><a href="index.html#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+        <li><a href="/#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+        <li><a href="/#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+        <li><a href="/#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+        <li><a href="/#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -307,7 +307,7 @@
           <span class="lang-sep">|</span>
           <span class="lang-en">EN</span>
         </button>
-        <a href="index.html#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+        <a href="/#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
       </div>
 
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -371,7 +371,7 @@
         <div class="container">
           <h2 data-ka="დაინტერესდით?" data-en="Interested?">დაინტერესდით?</h2>
           <p data-ka="ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას" data-en="Our team is ready to answer all your questions">ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას</p>
-          <a href="index.html#contact" class="btn-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+          <a href="/#contact" class="btn-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
         </div>
       </section>
 
@@ -383,7 +383,7 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="footer-logo">
+        <a href="/" class="footer-logo">
           <img src="assets/NB Tower logo.png" alt="NB Tower" height="40" />
         </a>
         <p class="footer-desc"
@@ -401,11 +401,11 @@
       <div class="footer-nav">
         <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
         <ul>
-          <li><a href="index.html#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
-          <li><a href="index.html#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
-          <li><a href="index.html#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
-          <li><a href="index.html#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
-          <li><a href="index.html#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+          <li><a href="/#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+          <li><a href="/#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+          <li><a href="/#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+          <li><a href="/#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
         </ul>
       </div>
 
@@ -503,7 +503,7 @@
       wrap.innerHTML = `
         <h2 data-ka="პროექტი ვერ მოიძებნა" data-en="Project Not Found">პროექტი ვერ მოიძებნა</h2>
         <p data-ka="სამწუხაროდ, მოთხოვნილი პროექტი არ არსებობს." data-en="Sorry, the requested project does not exist.">სამწუხაროდ, მოთხოვნილი პროექტი არ არსებობს.</p>
-        <a href="index.html" data-ka="მთავარზე დაბრუნება" data-en="Back to Home">მთავარზე დაბრუნება</a>
+        <a href="/" data-ka="მთავარზე დაბრუნება" data-en="Back to Home">მთავარზე დაბრუნება</a>
       `;
       document.getElementById('project-main').appendChild(wrap);
       applyLang(currentLang);
