@@ -18,7 +18,8 @@
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Supabase -->
+  <!-- Constants + Supabase -->
+  <script src="constants.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
@@ -126,37 +127,21 @@
     <section class="search-page-section">
       <div class="container">
 
-        <!-- Search bar (pre-filled) -->
+        <!-- Search bar (pre-filled from NB_CONSTANTS) -->
         <div class="hero-search search-bar-top" id="search-bar-top">
           <div class="search-field">
             <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
-            <select id="s-city">
-              <option value="თბილისი" data-ka="თბილისი" data-en="Tbilisi">თბილისი</option>
-              <option value="ბათუმი" data-ka="ბათუმი" data-en="Batumi">ბათუმი</option>
-              <option value="ქუთაისი" data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</option>
-              <option value="მცხეთა" data-ka="მცხეთა" data-en="Mtskheta">მცხეთა</option>
-            </select>
+            <select id="s-city"></select>
           </div>
           <div class="search-divider"></div>
           <div class="search-field">
             <label data-ka="ფართი (კვ.მ)" data-en="Area (sqm)">ფართი (კვ.მ)</label>
-            <select id="s-area">
-              <option value="ნებისმიერი" data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
-              <option value="30 – 60 კვ.მ">30 – 60 კვ.მ</option>
-              <option value="60 – 90 კვ.მ">60 – 90 კვ.მ</option>
-              <option value="90 – 120 კვ.მ">90 – 120 კვ.მ</option>
-              <option value="120+ კვ.მ">120+ კვ.მ</option>
-            </select>
+            <select id="s-area"></select>
           </div>
           <div class="search-divider"></div>
           <div class="search-field">
             <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
-            <select id="s-payment">
-              <option value="ნებისმიერი" data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
-              <option value="იპოთეკა" data-ka="იპოთეკა" data-en="Mortgage">იპოთეკა</option>
-              <option value="განვადება" data-ka="განვადება" data-en="Installment">განვადება</option>
-              <option value="სრული გადახდა" data-ka="სრული გადახდა" data-en="Full Payment">სრული გადახდა</option>
-            </select>
+            <select id="s-payment"></select>
           </div>
           <button class="search-btn" id="search-btn-top">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -291,10 +276,20 @@
     const areaParam    = params.get('area')    || '';
     const paymentParam = params.get('payment') || '';
 
-    /* Pre-fill dropdowns */
+    /* Populate & pre-fill dropdowns */
     const citySelect    = document.getElementById('s-city');
     const areaSelect    = document.getElementById('s-area');
     const paymentSelect = document.getElementById('s-payment');
+
+    if (typeof NB_CONSTANTS !== 'undefined') {
+      citySelect.innerHTML =
+        '<option value="">— ყველა ქალაქი —</option>' +
+        NB_CONSTANTS.cities.map(c => `<option value="${c}">${c}</option>`).join('');
+      areaSelect.innerHTML =
+        NB_CONSTANTS.areas.map(a => `<option value="${a.value}">${a.label}</option>`).join('');
+      paymentSelect.innerHTML =
+        NB_CONSTANTS.paymentTypes.map(p => `<option value="${p}">${p}</option>`).join('');
+    }
 
     function setSelectValue(sel, val) {
       if (!sel || !val) return;
@@ -309,22 +304,20 @@
     /* ── Filter helpers ───────────────────── */
     function matchesCity(project, city) {
       if (!city) return true;
-      return (project.location || '').toLowerCase().includes(city.toLowerCase());
+      return project.location === city;
     }
 
     function matchesArea(project, areaP) {
-      if (!areaP || areaP === 'ნებისმიერი' || areaP === 'Any') return true;
+      if (!areaP || areaP === 'any') return true;
       const sqm = project.area_sqm;
       if (!sqm) return true;
-      if (areaP.includes('30') && areaP.includes('60')) return sqm >= 30 && sqm <= 60;
-      if (areaP.includes('60') && areaP.includes('90')) return sqm >= 60 && sqm <= 90;
-      if (areaP.includes('90') && areaP.includes('120')) return sqm >= 90 && sqm <= 120;
-      if (areaP.includes('120+')) return sqm >= 120;
-      return true;
+      const areaConst = (typeof NB_CONSTANTS !== 'undefined' ? NB_CONSTANTS.areas : []).find(a => a.value === areaP);
+      if (!areaConst) return true;
+      return sqm >= areaConst.min && sqm <= areaConst.max;
     }
 
     function matchesPayment(project, paymentP) {
-      if (!paymentP || paymentP === 'ნებისმიერი' || paymentP === 'Any') return true;
+      if (!paymentP || paymentP === 'ყველა') return true;
       if (!project.payment_type) return true;
       if (project.payment_type === 'ყველა') return true;
       return project.payment_type === paymentP;

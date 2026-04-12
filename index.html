@@ -102,33 +102,17 @@
         <div class="hero-search animate-hero" style="--delay:0.45s">
           <div class="search-field">
             <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
-            <select>
-              <option data-ka="თბილისი" data-en="Tbilisi">თბილისი</option>
-              <option data-ka="ბათუმი" data-en="Batumi">ბათუმი</option>
-              <option data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</option>
-              <option data-ka="მცხეთა" data-en="Mtskheta">მცხეთა</option>
-            </select>
+            <select id="h-city"></select>
           </div>
           <div class="search-divider"></div>
           <div class="search-field">
             <label data-ka="ფართი (კვ.მ)" data-en="Area (sqm)">ფართი (კვ.მ)</label>
-            <select>
-              <option data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
-              <option>30 – 60 კვ.მ</option>
-              <option>60 – 90 კვ.მ</option>
-              <option>90 – 120 კვ.მ</option>
-              <option>120+ კვ.მ</option>
-            </select>
+            <select id="h-area"></select>
           </div>
           <div class="search-divider"></div>
           <div class="search-field">
             <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
-            <select>
-              <option data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
-              <option data-ka="იპოთეკა" data-en="Mortgage">იპოთეკა</option>
-              <option data-ka="განვადება" data-en="Installment">განვადება</option>
-              <option data-ka="სრული გადახდა" data-en="Full Payment">სრული გადახდა</option>
-            </select>
+            <select id="h-payment"></select>
           </div>
           <button class="search-btn" onclick="handleHeroSearch()">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -751,6 +735,7 @@
     </div>
   </footer>
 
+  <script src="constants.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

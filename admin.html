@@ -9,7 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Supabase -->
+  <!-- Constants + Supabase -->
+  <script src="constants.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
@@ -1401,7 +1402,9 @@
         </div>
         <div class="form-group">
           <label>მდებარეობა / Location</label>
-          <input type="text" id="f-location" value="${escHtml(p.location||'')}" placeholder="მაგ. თბილისი" required />
+          <select id="f-location">
+            ${(typeof NB_CONSTANTS !== 'undefined' ? NB_CONSTANTS.cities : ['თბილისი','ბათუმი','ქუთაისი','მცხეთა','რუსთავი']).map(c => `<option value="${c}" ${(p.location===c)?'selected':''}>${c}</option>`).join('')}
+          </select>
         </div>
       </div>
       <div class="form-group">
