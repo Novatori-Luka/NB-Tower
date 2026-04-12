@@ -86,8 +86,22 @@
       text-decoration: none;
     }
     .hidden { display: none !important; }
-    /* Re-use search bar styles from index.html via linked style.css */
-    .search-bar-top { margin: 0; }
+    /* Search bar override for search page */
+    .hero-search, .search-bar-container {
+      background: #FFFFFF;
+      border-radius: 60px;
+      padding: 10px 10px 10px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 48px;
+    }
+    @media (max-width: 768px) {
+      .hero-search, .search-bar-container {
+        border-radius: 16px;
+        padding: 16px;
+      }
+    }
     /* Override animate class so items don't stay invisible on this page */
     .animate-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
   </style>
@@ -372,56 +386,82 @@
     }
 
     /* ── Fetch & render ───────────────────── */
-    async function loadResults() {
-      const grid     = document.getElementById('results-grid');
-      const noRes    = document.getElementById('no-results');
-      const countEl  = document.getElementById('result-count');
+    function renderResults(filtered) {
+      const grid    = document.getElementById('results-grid');
+      const noRes   = document.getElementById('no-results');
+      const countEl = document.getElementById('result-count');
+
+      countEl.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noRes.classList.remove('hidden');
+      } else {
+        noRes.classList.add('hidden');
+        grid.innerHTML = filtered.map(renderCard).join('');
+        applyLang(currentLang);
+      }
+    }
+
+    async function loadAndFilter() {
+      const grid  = document.getElementById('results-grid');
+      const noRes = document.getElementById('no-results');
 
       grid.innerHTML = `<div class="loading-state">${currentLang === 'ka' ? 'იტვირთება...' : 'Loading...'}</div>`;
       noRes.classList.add('hidden');
 
       try {
-        const { data: projects, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
-        if (error) throw error;
+        const { data: allProjects } = await db.from('projects').select('*');
+        if (!allProjects) return;
 
-        const isDefaultSearch =
-          (!cityParam || cityParam === (NB_CONSTANTS && NB_CONSTANTS.cities[0])) &&
-          (!priceParam || priceParam === 'any') &&
-          (!paymentParam || paymentParam === 'ყველა');
+        const cityParam    = (params.get('city')    || '').trim();
+        const priceParam   = params.get('price')    || 'any';
+        const paymentParam = params.get('payment')  || 'ყველა';
 
-        const filtered = isDefaultSearch
-          ? (projects || [])
-          : (projects || []).filter(p =>
-              matchesCity(p, cityParam) &&
-              matchesPrice(p, priceParam) &&
-              matchesPayment(p, paymentParam)
-            );
+        const filtered = allProjects.filter(project => {
+          // City filter
+          if (cityParam && cityParam !== 'ნებისმიერი' && cityParam !== '') {
+            const projectCity = (project.location || '').trim();
+            if (projectCity !== cityParam) return false;
+          }
 
-        countEl.textContent = filtered.length;
+          // Price filter
+          if (priceParam && priceParam !== 'any') {
+            const priceRange = NB_CONSTANTS.priceRanges.find(p => p.value === priceParam);
+            if (priceRange) {
+              const prices = [
+                project.price_per_sqm_full,
+                project.price_per_sqm_mortgage,
+                project.price_per_sqm_installment
+              ].filter(p => p && p > 0);
+              if (prices.length && !prices.some(p => p >= priceRange.min && p <= priceRange.max)) return false;
+            }
+          }
 
-        if (filtered.length === 0) {
-          grid.innerHTML = '';
-          noRes.classList.remove('hidden');
-        } else {
-          grid.innerHTML = filtered.map(renderCard).join('');
-          // Re-apply lang to newly rendered cards
-          applyLang(currentLang);
-        }
+          // Payment filter
+          if (paymentParam && paymentParam !== 'ყველა') {
+            if (project.payment_type !== paymentParam && project.payment_type !== 'ყველა') return false;
+          }
+
+          return true;
+        });
+
+        renderResults(filtered);
       } catch (e) {
         console.warn('Search fetch failed', e);
-        grid.innerHTML = '';
+        document.getElementById('results-grid').innerHTML = '';
         noRes.classList.remove('hidden');
       }
     }
 
-    loadResults();
+    loadAndFilter();
 
     /* ── New search on button click ───────── */
     document.getElementById('search-btn-top')?.addEventListener('click', () => {
-      const city    = citySelect?.value || '';
-      const area    = areaSelect?.value || '';
+      const city    = citySelect?.value    || '';
+      const price   = priceSelect?.value   || '';
       const payment = paymentSelect?.value || '';
-      const newParams = new URLSearchParams({ city, area, payment });
+      const newParams = new URLSearchParams({ city, price, payment });
       window.location.href = '/search?' + newParams.toString();
     });
 
