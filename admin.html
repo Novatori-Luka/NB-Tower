@@ -818,6 +818,10 @@
         <i class="fa-solid fa-quote-left"></i>
         შეფასებები / Testimonials
       </button>
+      <button class="nav-item" data-page="apartments">
+        <i class="fa-solid fa-door-open"></i>
+        ბინები / Apartments
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1112,6 +1116,59 @@
         </div>
       </div>
 
+      <!-- ── APARTMENTS ─────────────────────── -->
+      <div class="page" id="page-apartments">
+        <div class="page-header">
+          <div>
+            <h2>ბინები / Apartments</h2>
+            <p>პროექტის ბინების მართვა — სართულის მიხედვით</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddAptModal()">
+            <i class="fa-solid fa-plus"></i>
+            ბინის დამატება / Add
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:flex-end">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;color:#888;font-weight:600">პროექტი / Project</label>
+            <select id="apt-project-select" style="padding:9px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.1);background:#1a1a1a;color:#fff;font-size:14px;min-width:200px">
+              <option value="">— აირჩიეთ / Select —</option>
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label style="font-size:12px;color:#888;font-weight:600">სართული / Floor</label>
+            <select id="apt-floor-select" style="padding:9px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.1);background:#1a1a1a;color:#fff;font-size:14px;min-width:120px">
+              <option value="">ყველა / All</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadApartments()">
+            <i class="fa-solid fa-rotate"></i> ჩატვირთვა / Load
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>სართული</th>
+                <th>ფართი (კვ.მ)</th>
+                <th>ოთახი</th>
+                <th>ფასი ($)</th>
+                <th>სტატუსი</th>
+                <th>შესასვლელი</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="apt-table-body">
+              <tr class="empty-row"><td colspan="8">აირჩიეთ პროექტი და სართული</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div><!-- /page-content -->
   </div><!-- /main-content -->
 </div><!-- /admin-panel -->
@@ -1243,6 +1300,7 @@
     stats:        'სტატისტიკა / Stats',
     messages:     'შეტყობინებები / Messages',
     testimonials: 'შეფასებები / Testimonials',
+    apartments:   'ბინები / Apartments',
   };
 
   window.navigateTo = function(pageId) {
@@ -1252,6 +1310,7 @@
     if (pageId === 'dashboard')    refreshDashboard();
     if (pageId === 'messages')     renderMessages();
     if (pageId === 'testimonials') renderTestimonialsTable();
+    if (pageId === 'apartments')   initApartmentsPage();
   };
 
   navItems.forEach(item => {
@@ -2085,6 +2144,184 @@
       refreshDashboard(),
     ]);
   }
+
+  /* ── APARTMENTS ──────────────────────────────── */
+  let aptProjectList = [];
+  let aptCurrentProject = null;
+
+  async function initApartmentsPage() {
+    const sel = document.getElementById('apt-project-select');
+    if (!sel || aptProjectList.length > 0) return; // already loaded
+    const { data, error } = await db.from('projects').select('id, name_ka, total_floors').order('name_ka');
+    if (error || !data) return;
+    aptProjectList = data;
+    sel.innerHTML = '<option value="">— აირჩიეთ / Select —</option>' +
+      data.map(p => `<option value="${p.id}" data-floors="${p.total_floors || 10}">${escHtml(p.name_ka)}</option>`).join('');
+
+    sel.addEventListener('change', () => {
+      const opt = sel.selectedOptions[0];
+      const floors = parseInt(opt?.dataset.floors) || 10;
+      const floorSel = document.getElementById('apt-floor-select');
+      if (!floorSel) return;
+      floorSel.innerHTML = '<option value="">ყველა / All</option>' +
+        Array.from({ length: floors }, (_, i) => `<option value="${i + 1}">${i + 1} სართული</option>`).join('');
+    });
+  }
+
+  window.loadApartments = async function() {
+    const projectId = document.getElementById('apt-project-select')?.value;
+    const floor     = document.getElementById('apt-floor-select')?.value;
+    const tbody     = document.getElementById('apt-table-body');
+    if (!tbody) return;
+    if (!projectId) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">პროექტი ასარჩევია</td></tr>'; return; }
+
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="8">იტვირთება...</td></tr>';
+
+    let query = db.from('apartments').select('*').eq('project_id', projectId).order('floor').order('apt_number');
+    if (floor) query = query.eq('floor', floor);
+
+    const { data, error } = await query;
+    if (error) { tbody.innerHTML = `<tr class="empty-row"><td colspan="8">შეცდომა: ${escHtml(error.message)}</td></tr>`; return; }
+    if (!data || data.length === 0) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">ბინა არ არის. დაამატეთ პირველი!</td></tr>'; return; }
+
+    const STATUS_KA = { free: 'თავისუფალი', reserved: 'დაჯავშნილი', sold: 'გაყიდული' };
+    const STATUS_COLOR = { free: 'var(--green)', reserved: '#f59e0b', sold: '#888' };
+
+    tbody.innerHTML = data.map(a => `
+      <tr>
+        <td style="font-weight:700">${escHtml(a.apt_number || '—')}</td>
+        <td>${a.floor || '—'}</td>
+        <td>${a.area ? a.area + ' კვ.მ' : '—'}</td>
+        <td>${a.rooms || '—'}</td>
+        <td>${a.price ? '$' + Number(a.price).toLocaleString() : '—'}</td>
+        <td><span style="color:${STATUS_COLOR[a.status] || '#fff'};font-weight:600">${STATUS_KA[a.status] || a.status || '—'}</span></td>
+        <td>${escHtml(a.entry || '—')}</td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-secondary btn-sm" onclick="openEditAptModal('${a.id}')"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-sm" style="background:rgba(61,190,108,0.12);color:var(--green);border:1px solid rgba(61,190,108,0.3)" onclick="quickStatusApt('${a.id}','free')">T</button>
+            <button class="btn btn-sm" style="background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.3)" onclick="quickStatusApt('${a.id}','reserved')">R</button>
+            <button class="btn btn-sm" style="background:rgba(136,136,136,0.12);color:#888;border:1px solid rgba(136,136,136,0.3)" onclick="quickStatusApt('${a.id}','sold')">S</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteApt('${a.id}')"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  };
+
+  function aptFormHTML(apt) {
+    return `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label>ბინის № / Apt Number</label>
+          <input id="af-num" value="${escHtml(apt?.apt_number || '')}" placeholder="A-101" />
+        </div>
+        <div class="form-group">
+          <label>სართული / Floor</label>
+          <input id="af-floor" type="number" value="${apt?.floor || ''}" placeholder="1" />
+        </div>
+        <div class="form-group">
+          <label>ფართი კვ.მ / Area</label>
+          <input id="af-area" type="number" value="${apt?.area || ''}" placeholder="65" />
+        </div>
+        <div class="form-group">
+          <label>ოთახი / Rooms</label>
+          <input id="af-rooms" type="number" value="${apt?.rooms || ''}" placeholder="2" />
+        </div>
+        <div class="form-group">
+          <label>ფასი $ / Price</label>
+          <input id="af-price" type="number" value="${apt?.price || ''}" placeholder="85000" />
+        </div>
+        <div class="form-group">
+          <label>სტატუსი / Status</label>
+          <select id="af-status">
+            <option value="free"     ${apt?.status === 'free'     ? 'selected' : ''}>თავისუფალი / Free</option>
+            <option value="reserved" ${apt?.status === 'reserved' ? 'selected' : ''}>დაჯავშნილი / Reserved</option>
+            <option value="sold"     ${apt?.status === 'sold'     ? 'selected' : ''}>გაყიდული / Sold</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>შესასვლელი / Entry</label>
+          <input id="af-entry" value="${escHtml(apt?.entry || '')}" placeholder="A" />
+        </div>
+        <div class="form-group">
+          <label>SVG X</label>
+          <input id="af-x" type="number" value="${apt?.x || 0}" />
+        </div>
+        <div class="form-group">
+          <label>SVG Y</label>
+          <input id="af-y" type="number" value="${apt?.y || 0}" />
+        </div>
+        <div class="form-group">
+          <label>SVG W</label>
+          <input id="af-w" type="number" value="${apt?.w || 80}" />
+        </div>
+        <div class="form-group">
+          <label>SVG H</label>
+          <input id="af-h" type="number" value="${apt?.h || 60}" />
+        </div>
+      </div>
+    `;
+  }
+
+  function getAptFormData() {
+    return {
+      apt_number: document.getElementById('af-num')?.value.trim() || null,
+      floor:      parseInt(document.getElementById('af-floor')?.value) || null,
+      area:       parseFloat(document.getElementById('af-area')?.value) || null,
+      rooms:      parseInt(document.getElementById('af-rooms')?.value) || null,
+      price:      parseFloat(document.getElementById('af-price')?.value) || null,
+      status:     document.getElementById('af-status')?.value || 'free',
+      entry:      document.getElementById('af-entry')?.value.trim() || null,
+      x:          parseFloat(document.getElementById('af-x')?.value) || 0,
+      y:          parseFloat(document.getElementById('af-y')?.value) || 0,
+      w:          parseFloat(document.getElementById('af-w')?.value) || 80,
+      h:          parseFloat(document.getElementById('af-h')?.value) || 60,
+    };
+  }
+
+  window.openAddAptModal = function() {
+    const projectId = document.getElementById('apt-project-select')?.value;
+    openModal('ბინის დამატება / Add Apartment', aptFormHTML(null), async () => {
+      const data = getAptFormData();
+      if (!projectId) { toast('პირველ პროექტი ასარჩევია', 'error'); return; }
+      data.project_id = projectId;
+      const { error } = await db.from('apartments').insert([data]);
+      if (error) { toast('შეცდომა: ' + error.message, 'error'); return; }
+      toast('ბინა დაემატა!');
+      closeModal();
+      loadApartments();
+    });
+  };
+
+  window.openEditAptModal = async function(aptId) {
+    const { data: apt, error } = await db.from('apartments').select('*').eq('id', aptId).single();
+    if (error || !apt) { toast('ჩატვირთვის შეცდომა', 'error'); return; }
+    openModal('ბინის რედაქტირება / Edit Apartment', aptFormHTML(apt), async () => {
+      const updates = getAptFormData();
+      const { error: err } = await db.from('apartments').update(updates).eq('id', aptId);
+      if (err) { toast('შეცდომა: ' + err.message, 'error'); return; }
+      toast('ბინა განახლდა!');
+      closeModal();
+      loadApartments();
+    });
+  };
+
+  window.quickStatusApt = async function(aptId, status) {
+    const { error } = await db.from('apartments').update({ status }).eq('id', aptId);
+    if (error) { toast('შეცდომა', 'error'); return; }
+    toast('სტატუსი შეიცვალა!');
+    loadApartments();
+  };
+
+  window.deleteApt = function(aptId) {
+    confirm('ბინის წაშლა — ეს მოქმედება შეუქცევადია. გსურთ წაშლა?', async () => {
+      const { error } = await db.from('apartments').delete().eq('id', aptId);
+      if (error) { toast('წაშლის შეცდომა', 'error'); return; }
+      toast('ბინა წაიშალა!');
+      loadApartments();
+    });
+  };
 
   /* ── INIT ────────────────────────────────────── */
   checkSession();

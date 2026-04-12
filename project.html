@@ -225,6 +225,147 @@
       margin-bottom: 4px;
     }
 
+    /* ── Building Floors Section ─────────── */
+    .building-floors-section {
+      background: #0F0F0F;
+      padding: 80px 0;
+    }
+    .building-floors-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 40px;
+    }
+    .building-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(61,190,108,0.15);
+    }
+    .floor-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: #141414;
+      cursor: pointer;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .floor-strip:hover  { background: #1a1a1a; border-left-color: #3DBE6C; }
+    .floor-strip.active { background: rgba(61,190,108,0.1); border-left-color: #3DBE6C; }
+    .floor-strip-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #555;
+      min-width: 28px;
+      text-align: right;
+    }
+    .floor-strip-bar {
+      flex: 1;
+      height: 12px;
+      border-radius: 3px;
+      background: #222;
+      overflow: hidden;
+    }
+    .floor-strip-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+    .floor-strip-fill.sf-free     { background: #3DBE6C; }
+    .floor-strip-fill.sf-reserved { background: #f59e0b; }
+    .floor-strip-fill.sf-sold     { background: #555; }
+    .floor-strip-status {
+      font-size: 10px;
+      min-width: 58px;
+      text-align: right;
+      color: #666;
+    }
+    .building-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .building-legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #777;
+    }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+    .legend-dot.free     { background: #3DBE6C; }
+    .legend-dot.reserved { background: #f59e0b; }
+    .legend-dot.sold     { background: #555; }
+    .bfloor-cta-wrap {
+      background: #141414;
+      border: 1px solid rgba(61,190,108,0.15);
+      border-radius: 16px;
+      padding: 32px;
+      position: sticky;
+      top: 100px;
+    }
+    .bfloor-cta-wrap h3 { color: #fff; font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .bfloor-cta-wrap > p { color: #777; font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+    .bstat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .bstat-card {
+      background: #0a0a0a;
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .bstat-num { font-size: 1.4rem; font-weight: 800; margin-bottom: 3px; }
+    .bstat-label { font-size: 10px; color: #666; }
+    .bstat-card.free .bstat-num     { color: #3DBE6C; }
+    .bstat-card.reserved .bstat-num { color: #f59e0b; }
+    .bstat-card.sold .bstat-num     { color: #777; }
+    .bfloor-selected-info {
+      background: rgba(61,190,108,0.07);
+      border: 1px solid rgba(61,190,108,0.2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .sel-floor-num   { font-size: 0.95rem; font-weight: 700; color: #3DBE6C; margin-bottom: 3px; }
+    .sel-floor-detail{ font-size: 12px; color: #888; }
+    .view-floorplan-btn {
+      display: none;
+      width: 100%;
+      padding: 13px;
+      background: #3DBE6C;
+      color: #000;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    .view-floorplan-btn:hover {
+      background: #4FD47E;
+      box-shadow: 0 0 24px rgba(61,190,108,0.3);
+      transform: translateY(-1px);
+    }
+    .bfloor-hint {
+      font-size: 12px;
+      color: #555;
+      text-align: center;
+      margin-top: 12px;
+    }
+    @media (max-width: 900px) {
+      .building-floors-grid { grid-template-columns: 1fr; }
+      .bfloor-cta-wrap { position: static; }
+    }
+
     /* ── CTA Section ─────────────────────── */
     .project-cta-section {
       background: #3DBE6C;
@@ -436,6 +577,56 @@
                   <p style="color:#aaa;font-size:13px" data-ka="სართული ასარჩევად დააჭირეთ" data-en="Click a floor to see availability">სართული ასარჩევად დააჭირეთ</p>
                 </div>
               </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- BUILDING FLOORS -->
+      <section class="building-floors-section">
+        <div class="container">
+          <div class="section-label" data-ka="სართულის გეგმა" data-en="Floor Plan">სართულის გეგმა</div>
+          <h2 class="section-title" data-ka="ბინების ხელმისაწვდომობა" data-en="Apartment Availability">ბინების ხელმისაწვდომობა</h2>
+          <div class="building-floors-grid">
+
+            <!-- Left: Floor strips -->
+            <div>
+              <div class="building-visual" id="bfloor-visual"></div>
+              <div class="building-legend">
+                <span><span class="legend-dot free"></span><span data-ka="თავისუფალი" data-en="Free">თავისუფალი</span></span>
+                <span><span class="legend-dot reserved"></span><span data-ka="დაჯავშნილი" data-en="Reserved">დაჯავშნილი</span></span>
+                <span><span class="legend-dot sold"></span><span data-ka="გაყიდული" data-en="Sold">გაყიდული</span></span>
+              </div>
+            </div>
+
+            <!-- Right: Stats + CTA -->
+            <div class="bfloor-cta-wrap">
+              <h3 data-ka="ბინის სართული" data-en="Select a Floor">ბინის სართული</h3>
+              <p data-ka="მარცხნიდან სართული ასარჩევად დააჭირეთ — ნახავთ ხელმისაწვდომ ბინებს" data-en="Click any floor on the left to explore available apartments">მარცხნიდან სართული ასარჩევად დააჭირეთ — ნახავთ ხელმისაწვდომ ბინებს</p>
+              <div class="bstat-grid">
+                <div class="bstat-card free">
+                  <div class="bstat-num" id="bstat-free">—</div>
+                  <div class="bstat-label" data-ka="თავისუფალი" data-en="Free">თავისუფალი</div>
+                </div>
+                <div class="bstat-card reserved">
+                  <div class="bstat-num" id="bstat-reserved">—</div>
+                  <div class="bstat-label" data-ka="დაჯავშნილი" data-en="Reserved">დაჯავშნილი</div>
+                </div>
+                <div class="bstat-card sold">
+                  <div class="bstat-num" id="bstat-sold">—</div>
+                  <div class="bstat-label" data-ka="გაყიდული" data-en="Sold">გაყიდული</div>
+                </div>
+              </div>
+              <div class="bfloor-selected-info" id="bfloor-selected-info">
+                <div class="sel-floor-num"  id="sel-floor-num"></div>
+                <div class="sel-floor-detail" id="sel-floor-detail"></div>
+              </div>
+              <a class="view-floorplan-btn" id="view-floorplan-btn" href="#">
+                <i class="fa-solid fa-map-location-dot"></i>&nbsp;
+                <span data-ka="სართულის გეგმა — ბინები" data-en="View Floor Plan">სართულის გეგმა — ბინები</span>
+              </a>
+              <p class="bfloor-hint" id="bfloor-hint" data-ka="სართულის ასარჩევად, მარცხნიდან დააჭირეთ" data-en="Click a floor on the left to get started">სართულის ასარჩევად, მარცხნიდან დააჭირეთ</p>
             </div>
 
           </div>
@@ -727,11 +918,17 @@
           list.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
 
-          const unitsText = currentLang === 'ka' ? btn.dataset.unitsKa : btn.dataset.unitsEn;
+          const unitsText  = currentLang === 'ka' ? btn.dataset.unitsKa : btn.dataset.unitsEn;
           const floorLabel = currentLang === 'ka' ? btn.dataset.ka : btn.dataset.en;
+          const projectId  = new URLSearchParams(window.location.search).get('id') || '';
+          const linkLabel  = currentLang === 'ka' ? 'სართულის გეგმა' : 'Floor Plan';
           info.innerHTML = `
             <div class="floor-info-units">${unitsText}</div>
-            <div style="font-size:13px;color:#888">${floorLabel}</div>
+            <div style="font-size:13px;color:#888;margin-bottom:12px">${floorLabel}</div>
+            <a href="/floor-plan?project_id=${projectId}&floor=${i}"
+               style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#3DBE6C;color:#000;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none">
+              <i class="fa-solid fa-map-location-dot"></i>${linkLabel}
+            </a>
           `;
         });
 
@@ -828,6 +1025,87 @@
       if (pctEl) pctEl.textContent = pct + '% დასრულებული';
       if (updEl) updEl.textContent = 'განახლდა: ' + (p.progress_updated || '—');
       if (pct >= 100) document.getElementById('crane')?.classList.add('hidden');
+    }
+
+    /* ── Building Visual ─────────────────── */
+    function buildBuildingVisual(totalFloors, projectId) {
+      const wrap = document.getElementById('bfloor-visual');
+      if (!wrap) return;
+      const floors = totalFloors || 10;
+
+      // Demo availability pattern (upper floors freer, lower more sold)
+      let totalFree = 0, totalReserved = 0, totalSold = 0;
+      const avail = [];
+      for (let f = 1; f <= floors; f++) {
+        const r = f / floors;
+        const free     = r > 0.75 ? 3 : r > 0.5 ? 2 : r > 0.25 ? 1 : 0;
+        const reserved = r > 0.75 ? 1 : r > 0.5 ? 2 : r > 0.25 ? 2 : 1;
+        const sold     = r > 0.5  ? 0 : r > 0.25 ? 1 : 3;
+        totalFree += free; totalReserved += reserved; totalSold += sold;
+        avail.push({ floor: f, free, reserved, sold });
+      }
+
+      const elFree = document.getElementById('bstat-free');
+      const elRes  = document.getElementById('bstat-reserved');
+      const elSold = document.getElementById('bstat-sold');
+      if (elFree) elFree.textContent = totalFree;
+      if (elRes)  elRes.textContent  = totalReserved;
+      if (elSold) elSold.textContent = totalSold;
+
+      wrap.innerHTML = '';
+      for (let f = floors; f >= 1; f--) {
+        const info  = avail.find(a => a.floor === f) || { free: 0, reserved: 0, sold: 0 };
+        const total = (info.free + info.reserved + info.sold) || 1;
+        const freePct = Math.round((info.free / total) * 100);
+        const fillClass = info.free > 0 ? 'sf-free' : info.reserved > 0 ? 'sf-reserved' : 'sf-sold';
+        const isPH  = f === floors;
+        const numLbl = isPH ? 'PH' : String(f);
+        const statusText = info.free > 0
+          ? (currentLang === 'ka' ? `${info.free} თავ.` : `${info.free} free`)
+          : info.reserved > 0
+            ? (currentLang === 'ka' ? 'დაჯავშნ.' : 'reserved')
+            : (currentLang === 'ka' ? 'გაყიდ.' : 'sold');
+
+        const strip = document.createElement('div');
+        strip.className = 'floor-strip';
+        strip.dataset.floor = f;
+        strip.innerHTML = `
+          <span class="floor-strip-num">${numLbl}</span>
+          <div class="floor-strip-bar">
+            <div class="floor-strip-fill ${fillClass}" style="width:${freePct || 15}%"></div>
+          </div>
+          <span class="floor-strip-status">${statusText}</span>
+        `;
+
+        strip.addEventListener('click', () => {
+          wrap.querySelectorAll('.floor-strip').forEach(s => s.classList.remove('active'));
+          strip.classList.add('active');
+
+          const selInfo = document.getElementById('bfloor-selected-info');
+          const selNum  = document.getElementById('sel-floor-num');
+          const selDet  = document.getElementById('sel-floor-detail');
+          const btn     = document.getElementById('view-floorplan-btn');
+          const hint    = document.getElementById('bfloor-hint');
+
+          const floorLabel = isPH
+            ? (currentLang === 'ka' ? `სართული ${f} — პენტჰაუსი` : `Floor ${f} — Penthouse`)
+            : (currentLang === 'ka' ? `სართული ${f}` : `Floor ${f}`);
+          const detail = currentLang === 'ka'
+            ? `${info.free} თავისუფალი · ${info.reserved} დაჯავშნილი · ${info.sold} გაყიდული`
+            : `${info.free} free · ${info.reserved} reserved · ${info.sold} sold`;
+
+          if (selNum)  selNum.textContent  = floorLabel;
+          if (selDet)  selDet.textContent  = detail;
+          if (selInfo) selInfo.style.display = '';
+          if (hint)    hint.style.display    = 'none';
+          if (btn) {
+            btn.href = `/floor-plan?project_id=${projectId}&floor=${f}`;
+            btn.style.display = 'block';
+          }
+        });
+
+        wrap.appendChild(strip);
+      }
     }
 
     /* ── Calculator ───────────────────────── */
@@ -946,6 +1224,7 @@
         buildFloorSelector(p.total_floors);
         populateProgress(p);
         initCalculator(p);
+        buildBuildingVisual(p.total_floors, p.id);
 
         // Show content, hide loading
         document.getElementById('project-loading').style.display = 'none';
