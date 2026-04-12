@@ -232,10 +232,21 @@
     }
     .building-floors-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
+      grid-template-columns: 380px 1fr 340px;
+      gap: 36px;
       align-items: start;
       margin-top: 40px;
+    }
+    .building-render-col {
+      position: sticky;
+      top: 100px;
+    }
+    .building-render-img {
+      width: 100%;
+      border-radius: 16px;
+      display: block;
+      object-fit: cover;
+      border: 1px solid rgba(61,190,108,0.15);
     }
     .building-visual {
       display: flex;
@@ -361,9 +372,14 @@
       text-align: center;
       margin-top: 12px;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
+      .building-floors-grid { grid-template-columns: 1fr 1fr; }
+      .building-render-col { position: static; }
+    }
+    @media (max-width: 768px) {
       .building-floors-grid { grid-template-columns: 1fr; }
       .bfloor-cta-wrap { position: static; }
+      .building-render-col { position: static; }
     }
 
     /* ── CTA Section ─────────────────────── */
@@ -590,7 +606,12 @@
           <h2 class="section-title" data-ka="ბინების ხელმისაწვდომობა" data-en="Apartment Availability">ბინების ხელმისაწვდომობა</h2>
           <div class="building-floors-grid">
 
-            <!-- Left: Floor strips -->
+            <!-- Col 1: Building render -->
+            <div class="building-render-col">
+              <img src="assets/building-render.jpg" alt="Building Render" class="building-render-img" />
+            </div>
+
+            <!-- Col 2: Floor strips -->
             <div>
               <div class="building-visual" id="bfloor-visual"></div>
               <div class="building-legend">
