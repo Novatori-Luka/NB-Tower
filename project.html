@@ -256,60 +256,6 @@
     }
     .btn-cta:hover { transform: scale(1.03); }
 
-    /* ── Progress Tracker ───────────────── */
-    .project-progress { padding: 80px 0; background: #F8F8F6; }
-    .progress-construction {
-      display: grid; grid-template-columns: 280px 1fr;
-      gap: 60px; align-items: center; margin-top: 48px;
-    }
-    .building-progress-wrap {
-      position: relative; display: flex; flex-direction: column; align-items: center;
-    }
-    .building-shell {
-      width: 120px; height: 200px; border: 3px solid #CCCCCC;
-      border-bottom: none; border-radius: 4px 4px 0 0;
-      position: relative; overflow: hidden; background: #F0F0F0;
-    }
-    .building-fill {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 0%;
-      background: linear-gradient(180deg, #4FD47E 0%, #3DBE6C 100%);
-      transition: height 1.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .building-floors {
-      position: absolute; bottom: 0; left: 0; right: 0; top: 0;
-      background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.4) 28px, rgba(255,255,255,0.4) 30px);
-    }
-    .building-base { width: 140px; height: 12px; background: #CCCCCC; border-radius: 0 0 4px 4px; }
-    .crane { position: absolute; top: -60px; right: -20px; opacity: 1; transition: opacity 0.5s; }
-    .crane.hidden { opacity: 0; }
-    .crane-mast { width: 4px; height: 60px; background: #E0A800; margin-left: 20px; }
-    .crane-arm { width: 70px; height: 4px; background: #E0A800; position: absolute; top: 0; right: 0; }
-    .crane-cable { width: 2px; height: 20px; background: #999; position: absolute; top: 4px; right: 8px; }
-    .progress-pct-badge {
-      margin-top: 12px; background: #3DBE6C; color: #fff;
-      font-size: 22px; font-weight: 800; padding: 8px 20px;
-      border-radius: 50px; font-family: 'Fraunces', serif;
-    }
-    .stage-timeline { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
-    .timeline-item { display: flex; align-items: center; gap: 16px; }
-    .timeline-icon {
-      width: 40px; height: 40px; border-radius: 50%; background: #E8E8E8;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; flex-shrink: 0; transition: all 0.3s;
-    }
-    .timeline-item.completed .timeline-icon { background: #3DBE6C; }
-    .timeline-item.active .timeline-icon { background: #3DBE6C; box-shadow: 0 0 0 6px rgba(61,190,108,0.2); }
-    .timeline-text { font-size: 15px; color: #888; }
-    .timeline-item.completed .timeline-text, .timeline-item.active .timeline-text { color: #111; font-weight: 600; }
-    .progress-bar-track { height: 8px; background: #E0E0E0; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
-    .progress-bar-fill { height: 100%; background: #3DBE6C; border-radius: 4px; width: 0%; transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1); }
-    .progress-meta { display: flex; justify-content: space-between; font-size: 13px; color: #AAA; }
-    #progress-percent-label { color: #3DBE6C; font-weight: 700; font-size: 15px; }
-    @media (max-width: 768px) {
-      .progress-construction { grid-template-columns: 1fr; }
-      .building-progress-wrap { margin: 0 auto 32px; }
-    }
-
     /* ── Calculator ──────────────────────── */
     .project-calculator { padding: 80px 0; background: #fff; }
     .calc-wrap { max-width: 600px; margin: 40px auto 0; }
@@ -351,18 +297,6 @@
     .calc-cta-btn:hover { background: #3DBE6C; color: #fff; }
     @media (max-width: 768px) { .result-row-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .result-item-value { font-size: 18px; } }
 
-    /* ── Partner Banks ───────────────────── */
-    .partner-banks { padding: 80px 0; background: #F8F8F6; }
-    .section-sub { color: #888; font-size: 16px; max-width: 560px; margin: 12px auto 48px; text-align: center; }
-    .banks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .bank-card { background: #fff; border-radius: 16px; padding: 32px; border: 1.5px solid #EEEEEE; transition: all 0.2s; }
-    .bank-card:hover { border-color: #3DBE6C; box-shadow: 0 8px 30px rgba(61,190,108,0.1); transform: translateY(-4px); }
-    .bank-logo { font-size: 28px; font-weight: 900; color: #3DBE6C; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-bottom: 8px; }
-    .bank-name { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #F0F0F0; }
-    .bank-detail { font-size: 14px; color: #666; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
-    .bank-detail::before { content: '✓'; color: #3DBE6C; font-weight: 700; flex-shrink: 0; }
-    .banks-note { text-align: center; font-size: 12px; color: #AAAAAA; margin-top: 32px; }
-    @media (max-width: 768px) { .banks-grid { grid-template-columns: 1fr; } }
 
     /* ── Not found ───────────────────────── */
     .not-found-wrap {
@@ -476,41 +410,6 @@
         </div>
       </section>
 
-      <!-- PROGRESS TRACKER -->
-      <section class="project-progress">
-        <div class="container">
-          <div class="section-label" data-ka="მშენებლობის სტატუსი" data-en="Construction Status">მშენებლობის სტატუსი</div>
-          <h2 class="section-title" data-ka="პროგრესი" data-en="Progress">პროგრესი</h2>
-          <div class="progress-construction">
-            <div class="construction-visual">
-              <div class="building-progress-wrap">
-                <div class="building-shell">
-                  <div class="building-fill" id="building-fill"></div>
-                  <div class="building-floors"></div>
-                </div>
-                <div class="building-base"></div>
-                <div class="crane" id="crane">
-                  <div class="crane-mast"></div>
-                  <div class="crane-arm"></div>
-                  <div class="crane-cable"></div>
-                </div>
-              </div>
-              <div class="progress-pct-badge" id="progress-badge">0%</div>
-            </div>
-            <div class="construction-info">
-              <div class="stage-timeline" id="stage-timeline"></div>
-              <div class="progress-bar-track">
-                <div class="progress-bar-fill" id="progress-fill"></div>
-              </div>
-              <div class="progress-meta">
-                <span id="progress-percent-label"></span>
-                <span id="progress-updated-label"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- CALCULATOR -->
       <section class="project-calculator">
         <div class="container">
@@ -590,39 +489,6 @@
             </div>
 
           </div>
-        </div>
-      </section>
-
-      <!-- PARTNER BANKS -->
-      <section class="partner-banks">
-        <div class="container">
-          <div class="section-label" data-ka="დაფინანსება" data-en="Financing">დაფინანსება</div>
-          <h2 class="section-title" data-ka="პარტნიორი ბანკები" data-en="Partner Banks">პარტნიორი ბანკები</h2>
-          <p class="section-sub" data-ka="NB Tower-ის პროექტებზე შეგიძლიათ ისარგებლოთ შემდეგი ბანკების იპოთეკური პირობებით" data-en="You can finance NB Tower projects through our partner banks">NB Tower-ის პროექტებზე შეგიძლიათ ისარგებლოთ შემდეგი ბანკების იპოთეკური პირობებით</p>
-          <div class="banks-grid">
-            <div class="bank-card">
-              <div class="bank-logo">BOG</div>
-              <div class="bank-name" data-ka="საქართველოს ბანკი" data-en="Bank of Georgia">საქართველოს ბანკი</div>
-              <div class="bank-detail" data-ka="განაკვეთი: წლიური 9%-დან" data-en="Rate: from 9% annually">განაკვეთი: წლიური 9%-დან</div>
-              <div class="bank-detail" data-ka="ვადა: 5-25 წელი" data-en="Term: 5-25 years">ვადა: 5-25 წელი</div>
-              <div class="bank-detail" data-ka="პირველი შენატანი: 20%-დან" data-en="Down payment: from 20%">პირველი შენატანი: 20%-დან</div>
-            </div>
-            <div class="bank-card">
-              <div class="bank-logo">TBC</div>
-              <div class="bank-name">TBC ბანკი</div>
-              <div class="bank-detail" data-ka="განაკვეთი: წლიური 10%-დან" data-en="Rate: from 10% annually">განაკვეთი: წლიური 10%-დან</div>
-              <div class="bank-detail" data-ka="ვადა: 5-20 წელი" data-en="Term: 5-20 years">ვადა: 5-20 წელი</div>
-              <div class="bank-detail" data-ka="პირველი შენატანი: 20%-დან" data-en="Down payment: from 20%">პირველი შენატანი: 20%-დან</div>
-            </div>
-            <div class="bank-card">
-              <div class="bank-logo">LIB</div>
-              <div class="bank-name" data-ka="ლიბერთი ბანკი" data-en="Liberty Bank">ლიბერთი ბანკი</div>
-              <div class="bank-detail" data-ka="განაკვეთი: წლიური 11%-დან" data-en="Rate: from 11% annually">განაკვეთი: წლიური 11%-დან</div>
-              <div class="bank-detail" data-ka="ვადა: 5-20 წელი" data-en="Term: 5-20 years">ვადა: 5-20 წელი</div>
-              <div class="bank-detail" data-ka="პირველი შენატანი: 25%-დან" data-en="Down payment: from 25%">პირველი შენატანი: 25%-დან</div>
-            </div>
-          </div>
-          <p class="banks-note" data-ka="* საბანკო პირობები ინდივიდუალურია. დეტალებისთვის დაგვიკავშირდით." data-en="* Bank terms are individual. Contact us for details.">* საბანკო პირობები ინდივიდუალურია. დეტალებისთვის დაგვიკავშირდით.</p>
         </div>
       </section>
 
