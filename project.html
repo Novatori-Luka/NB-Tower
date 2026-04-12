@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>პროექტი — NB Tower</title>
+  <meta name="description" content="NB Tower — პროექტის დეტალები / Project Details" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <style>
+    /* ── Project Hero ─────────────────────── */
+    .project-hero {
+      position: relative;
+      height: 500px;
+      background: #1a1a1a center/cover no-repeat;
+      display: flex;
+      align-items: flex-end;
+      padding-top: var(--header-h);
+    }
+    .project-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+    }
+    .project-hero-text {
+      position: relative;
+      z-index: 2;
+      padding: 40px;
+      width: 100%;
+    }
+    .project-hero-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .project-hero-badge.completed { background: #3DBE6C; color: #000; }
+    .project-hero-badge.ongoing   { background: transparent; border: 1.5px solid #3DBE6C; color: #3DBE6C; }
+    .project-hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .project-hero-location {
+      color: rgba(255,255,255,0.75);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── Details Section ─────────────────── */
+    .project-details-section {
+      padding: 72px 0;
+      background: var(--bg-base);
+    }
+    .project-details-grid {
+      display: grid;
+      grid-template-columns: 60fr 40fr;
+      gap: 48px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .project-details-grid { grid-template-columns: 1fr; }
+      .floor-selector { position: static !important; }
+    }
+
+    /* ── Info Cards ──────────────────────── */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 480px) {
+      .info-cards { grid-template-columns: 1fr; }
+    }
+    .info-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid #EFEFEF;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .info-card-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 6px;
+    }
+    .info-card-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    /* ── Description ─────────────────────── */
+    .project-description {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #EFEFEF;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #444;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .project-description-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    /* ── Section title override for light bg ─ */
+    .project-info-col .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin-bottom: 28px;
+    }
+
+    /* ── Floor Selector ──────────────────── */
+    .floor-selector {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 100px;
+    }
+    .floor-selector h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 4px;
+    }
+    .floor-selector-sub {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+    .floor-list {
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 6px;
+      max-height: 360px;
+      overflow-y: auto;
+      margin: 16px 0;
+      padding-right: 4px;
+    }
+    .floor-list::-webkit-scrollbar { width: 4px; }
+    .floor-list::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 4px; }
+    .floor-list::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+    .floor-btn {
+      padding: 10px 16px;
+      border: 1.5px solid #E8E8E8;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: left;
+      transition: all 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: inherit;
+      width: 100%;
+      color: #333;
+    }
+    .floor-btn:hover { border-color: #3DBE6C; color: #3DBE6C; }
+    .floor-btn.active { background: #3DBE6C; color: #fff; border-color: #3DBE6C; }
+    .floor-btn .floor-units {
+      font-size: 11px;
+      opacity: 0.7;
+      font-weight: 500;
+    }
+    .floor-info {
+      background: #F8F8F8;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 14px;
+      color: #444;
+      min-height: 60px;
+      line-height: 1.6;
+    }
+    .floor-info-units {
+      font-weight: 700;
+      color: #3DBE6C;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    /* ── CTA Section ─────────────────────── */
+    .project-cta-section {
+      background: #3DBE6C;
+      padding: 72px 0;
+      text-align: center;
+    }
+    .project-cta-section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 0.05em;
+      color: #000;
+      margin-bottom: 12px;
+    }
+    .project-cta-section p {
+      color: rgba(0,0,0,0.65);
+      font-size: 16px;
+      margin-bottom: 28px;
+    }
+    .btn-cta {
+      display: inline-block;
+      padding: 16px 36px;
+      background: #000;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform 0.15s;
+    }
+    .btn-cta:hover { transform: scale(1.03); }
+
+    /* ── Not found ───────────────────────── */
+    .not-found-wrap {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(var(--header-h) + 40px) 20px 80px;
+      color: var(--text-secondary);
+    }
+    .not-found-wrap h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .not-found-wrap p { margin-bottom: 28px; }
+    .not-found-wrap a {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--green);
+      color: #000;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="index.html#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+        <li><a href="index.html#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+        <li><a href="index.html#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+        <li><a href="index.html#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="index.html#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="project-main">
+
+    <!-- Loading state -->
+    <div id="project-loading" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding-top:var(--header-h)">
+      <p style="color:#888;font-size:16px">იტვირთება...</p>
+    </div>
+
+    <!-- Project content (hidden until loaded) -->
+    <div id="project-content" style="display:none">
+
+      <!-- HERO PHOTO -->
+      <div class="project-hero" id="project-hero">
+        <div class="project-hero-overlay"></div>
+        <div class="project-hero-text">
+          <span class="project-hero-badge" id="ph-badge"></span>
+          <h1 class="project-hero-title" id="ph-title"></h1>
+          <p class="project-hero-location" id="ph-location"></p>
+        </div>
+      </div>
+
+      <!-- DETAILS + FLOOR SELECTOR -->
+      <section class="project-details-section">
+        <div class="container">
+          <div class="project-details-grid">
+
+            <!-- LEFT: Info -->
+            <div class="project-info-col">
+              <h2 class="section-title accent-line" data-ka="პროექტის დეტალები" data-en="Project Details">პროექტის დეტალები</h2>
+              <div class="info-cards" id="info-cards"></div>
+              <div class="project-description" id="project-description"></div>
+            </div>
+
+            <!-- RIGHT: Floor Selector -->
+            <div class="project-floor-col">
+              <div class="floor-selector">
+                <h3 data-ka="სართული აირჩიეთ" data-en="Select Floor">სართული აირჩიეთ</h3>
+                <p class="floor-selector-sub" data-ka="ხელმისაწვდომობის სანახავად დააჭირეთ" data-en="Click to see availability">ხელმისაწვდომობის სანახავად დააჭირეთ</p>
+                <div class="floor-list" id="floor-list"></div>
+                <div class="floor-info" id="floor-info">
+                  <p style="color:#aaa;font-size:13px" data-ka="სართული ასარჩევად დააჭირეთ" data-en="Click a floor to see availability">სართული ასარჩევად დააჭირეთ</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="project-cta-section">
+        <div class="container">
+          <h2 data-ka="დაინტერესდით?" data-en="Interested?">დაინტერესდით?</h2>
+          <p data-ka="ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას" data-en="Our team is ready to answer all your questions">ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას</p>
+          <a href="index.html#contact" class="btn-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+        </div>
+      </section>
+
+    </div><!-- /project-content -->
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/NB Tower logo.png" alt="NB Tower" height="40" />
+        </a>
+        <p class="footer-desc"
+           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს."
+           data-en="Georgia's premier construction company. Building tomorrow, today.">
+          საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.
+        </p>
+        <div class="footer-social">
+          <a href="#" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="index.html#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="index.html#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+          <li><a href="index.html#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+          <li><a href="index.html#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+          <li><a href="index.html#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>
+          <span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── Language ─────────────────────────── */
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl && langEnEl) {
+        langKaEl.classList.toggle('active', lang === 'ka');
+        langEnEl.classList.toggle('active', lang === 'en');
+      }
+      localStorage.setItem('lang', lang);
+    }
+
+    if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        applyLang(currentLang === 'ka' ? 'en' : 'ka');
+        // Re-render description in new language
+        if (window._currentProject) populateDescription(window._currentProject);
+        // Re-render project name in hero
+        if (window._currentProject) {
+          const p = window._currentProject;
+          document.getElementById('ph-title').textContent =
+            currentLang === 'ka' ? (p.name_ka || '') : (p.name_en || p.name_ka || '');
+        }
+      });
+    }
+    applyLang(currentLang);
+
+    /* ── Header scroll ────────────────────── */
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Mobile menu ──────────────────────── */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+      navLinks.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('open');
+          hamburger.classList.remove('open');
+          hamburger.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    /* ── Show not found ───────────────────── */
+    function showNotFound() {
+      document.getElementById('project-loading').style.display = 'none';
+      document.getElementById('project-content').style.display = 'none';
+
+      const wrap = document.createElement('div');
+      wrap.className = 'not-found-wrap';
+      wrap.innerHTML = `
+        <h2 data-ka="პროექტი ვერ მოიძებნა" data-en="Project Not Found">პროექტი ვერ მოიძებნა</h2>
+        <p data-ka="სამწუხაროდ, მოთხოვნილი პროექტი არ არსებობს." data-en="Sorry, the requested project does not exist.">სამწუხაროდ, მოთხოვნილი პროექტი არ არსებობს.</p>
+        <a href="index.html" data-ka="მთავარზე დაბრუნება" data-en="Back to Home">მთავარზე დაბრუნება</a>
+      `;
+      document.getElementById('project-main').appendChild(wrap);
+      applyLang(currentLang);
+    }
+
+    /* ── Populate description ─────────────── */
+    function populateDescription(p) {
+      const el = document.getElementById('project-description');
+      if (!el) return;
+      const desc = currentLang === 'ka' ? p.description_ka : (p.description_en || p.description_ka);
+      if (desc) {
+        el.innerHTML = `<p class="project-description-label" data-ka="პროექტის შესახებ" data-en="About the Project">${currentLang === 'ka' ? 'პროექტის შესახებ' : 'About the Project'}</p>${desc}`;
+      } else {
+        el.innerHTML = `<p style="color:#aaa;font-size:14px" data-ka="აღწერა მალე დაემატება" data-en="Description coming soon">აღწერა მალე დაემატება</p>`;
+        applyLang(currentLang);
+      }
+    }
+
+    /* ── Build floor selector ─────────────── */
+    function buildFloorSelector(totalFloors) {
+      const floors = totalFloors || 10;
+      const list   = document.getElementById('floor-list');
+      const info   = document.getElementById('floor-info');
+      if (!list) return;
+
+      list.innerHTML = '';
+
+      for (let i = 1; i <= floors; i++) {
+        const isPenthouse = i === floors;
+        const isOdd       = i % 2 !== 0;
+        const units       = isPenthouse ? 1 : (isOdd ? 2 : 1);
+        const labelKa     = isPenthouse ? 'პენტჰაუსი / Penthouse' : `სართული ${i}`;
+        const labelEn     = isPenthouse ? 'Penthouse' : `Floor ${i}`;
+        const unitsKa     = isPenthouse
+          ? 'პენტჰაუსი — 1 ერთეული'
+          : `ხელმისაწვდომია ${units} ბინა`;
+        const unitsEn     = isPenthouse
+          ? 'Penthouse — 1 unit'
+          : `${units} unit${units > 1 ? 's' : ''} available`;
+
+        const btn = document.createElement('button');
+        btn.className = 'floor-btn';
+        btn.dataset.floor = i;
+        btn.dataset.ka    = labelKa;
+        btn.dataset.en    = labelEn;
+        btn.dataset.unitsKa = unitsKa;
+        btn.dataset.unitsEn = unitsEn;
+        btn.innerHTML = `
+          <span class="floor-label">${currentLang === 'ka' ? labelKa : labelEn}</span>
+          <span class="floor-units">${currentLang === 'ka' ? unitsKa : unitsEn}</span>
+        `;
+
+        btn.addEventListener('click', () => {
+          list.querySelectorAll('.floor-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const unitsText = currentLang === 'ka' ? btn.dataset.unitsKa : btn.dataset.unitsEn;
+          const floorLabel = currentLang === 'ka' ? btn.dataset.ka : btn.dataset.en;
+          info.innerHTML = `
+            <div class="floor-info-units">${unitsText}</div>
+            <div style="font-size:13px;color:#888">${floorLabel}</div>
+          `;
+        });
+
+        list.appendChild(btn);
+      }
+
+      // Reset info placeholder
+      info.innerHTML = `<p style="color:#aaa;font-size:13px">${currentLang === 'ka' ? 'სართული ასარჩევად დააჭირეთ' : 'Click a floor to see availability'}</p>`;
+    }
+
+    /* ── Populate hero ────────────────────── */
+    function populateHero(p) {
+      const heroEl = document.getElementById('project-hero');
+      if (p.image_url) {
+        heroEl.style.backgroundImage = `url('${p.image_url}')`;
+        heroEl.style.backgroundSize  = 'cover';
+        heroEl.style.backgroundPosition = 'center';
+      }
+
+      const badge = document.getElementById('ph-badge');
+      badge.textContent = p.status === 'completed'
+        ? (currentLang === 'ka' ? 'დასრულებული' : 'Completed')
+        : (currentLang === 'ka' ? 'მიმდინარე' : 'Ongoing');
+      badge.className = `project-hero-badge ${p.status === 'completed' ? 'completed' : 'ongoing'}`;
+
+      document.getElementById('ph-title').textContent =
+        currentLang === 'ka' ? (p.name_ka || '') : (p.name_en || p.name_ka || '');
+
+      const loc = document.getElementById('ph-location');
+      loc.innerHTML = `<i class="fa-solid fa-location-dot" style="color:#3DBE6C"></i> ${p.location || ''}`;
+    }
+
+    /* ── Populate info cards ──────────────── */
+    function populateInfoCards(p) {
+      const container = document.getElementById('info-cards');
+      if (!container) return;
+
+      const catKa  = p.category === 'residential' ? 'საცხოვრებელი' : 'კომერციული';
+      const catEn  = p.category === 'residential' ? 'Residential' : 'Commercial';
+      const statKa = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
+      const statEn = p.status === 'completed' ? 'Completed' : 'Ongoing';
+
+      const cards = [
+        { labelKa: 'მდებარეობა',   labelEn: 'Location',     value: p.location || '—' },
+        { labelKa: 'კატეგორია',    labelEn: 'Category',     value: currentLang === 'ka' ? catKa : catEn },
+        { labelKa: 'სტატუსი',     labelEn: 'Status',       value: currentLang === 'ka' ? statKa : statEn },
+        { labelKa: 'სართულები',   labelEn: 'Total Floors',  value: p.total_floors ? `${p.total_floors} სართული` : '—' },
+        { labelKa: 'ფართი',       labelEn: 'Area',          value: p.area_sqm ? `${p.area_sqm} კვ.მ` : '—' },
+        { labelKa: 'გადახდა',     labelEn: 'Payment',       value: p.payment_type || '—' },
+      ];
+
+      container.innerHTML = cards.map(c => `
+        <div class="info-card">
+          <div class="info-card-label">${currentLang === 'ka' ? c.labelKa : c.labelEn}</div>
+          <div class="info-card-value">${c.value}</div>
+        </div>
+      `).join('');
+    }
+
+    /* ── Main load ────────────────────────── */
+    async function loadProject() {
+      const params = new URLSearchParams(window.location.search);
+      const id     = params.get('id');
+
+      if (!id) { showNotFound(); return; }
+
+      try {
+        const { data: p, error } = await db.from('projects').select('*').eq('id', id).single();
+        if (error || !p) { showNotFound(); return; }
+
+        // Store reference for lang toggle
+        window._currentProject = p;
+
+        // Update page title
+        document.title = `${p.name_ka || 'პროექტი'} — NB Tower`;
+
+        populateHero(p);
+        populateInfoCards(p);
+        populateDescription(p);
+        buildFloorSelector(p.total_floors);
+
+        // Show content, hide loading
+        document.getElementById('project-loading').style.display = 'none';
+        document.getElementById('project-content').style.display = '';
+
+        // Apply lang to all static data-ka elements
+        applyLang(currentLang);
+
+      } catch (e) {
+        console.warn('Project fetch failed', e);
+        showNotFound();
+      }
+    }
+
+    loadProject();
+
+  })();
+  </script>
+</body>
+</html>

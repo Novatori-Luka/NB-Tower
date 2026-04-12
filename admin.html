@@ -1410,16 +1410,49 @@
           <option value="completed" ${(p.status==='completed')?'selected':''}>დასრულებული / Completed</option>
           <option value="ongoing"   ${(p.status==='ongoing')  ?'selected':''}>მიმდინარე / Ongoing</option>
         </select>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>სართულები / Total Floors</label>
+          <input type="number" id="f-totalFloors" value="${escHtml(String(p.total_floors||''))}" placeholder="მაგ. 12" min="1" />
+        </div>
+        <div class="form-group">
+          <label>ფართი კვ.მ / Area sqm</label>
+          <input type="number" id="f-areaSqm" value="${escHtml(String(p.area_sqm||''))}" placeholder="მაგ. 75" min="1" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>გადახდის ტიპი / Payment Type</label>
+        <select id="f-paymentType">
+          <option value="" ${!p.payment_type?'selected':''}>— აირჩიეთ —</option>
+          <option value="იპოთეკა" ${p.payment_type==='იპოთეკა'?'selected':''}>იპოთეკა / Mortgage</option>
+          <option value="განვადება" ${p.payment_type==='განვადება'?'selected':''}>განვადება / Installment</option>
+          <option value="სრული გადახდა" ${p.payment_type==='სრული გადახდა'?'selected':''}>სრული გადახდა / Full Payment</option>
+          <option value="ყველა" ${p.payment_type==='ყველა'?'selected':''}>ყველა / All</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>აღწერა ქართულად / Description (KA)</label>
+        <textarea id="f-descKa" placeholder="პროექტის აღწერა ქართულად...">${escHtml(p.description_ka||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Description in English (EN)</label>
+        <textarea id="f-descEn" placeholder="Project description in English...">${escHtml(p.description_en||'')}</textarea>
       </div>`;
   }
 
   function getProjectFormData() {
     return {
-      nameKa:   document.getElementById('f-nameKa').value.trim(),
-      nameEn:   document.getElementById('f-nameEn').value.trim(),
-      category: document.getElementById('f-category').value,
-      location: document.getElementById('f-location').value.trim(),
-      status:   document.getElementById('f-status').value,
+      nameKa:      document.getElementById('f-nameKa').value.trim(),
+      nameEn:      document.getElementById('f-nameEn').value.trim(),
+      category:    document.getElementById('f-category').value,
+      location:    document.getElementById('f-location').value.trim(),
+      status:      document.getElementById('f-status').value,
+      totalFloors: parseInt(document.getElementById('f-totalFloors')?.value) || null,
+      areaSqm:     parseInt(document.getElementById('f-areaSqm')?.value) || null,
+      paymentType: document.getElementById('f-paymentType')?.value || null,
+      descKa:      document.getElementById('f-descKa')?.value.trim() || null,
+      descEn:      document.getElementById('f-descEn')?.value.trim() || null,
     };
   }
 
@@ -1429,12 +1462,17 @@
 
   async function saveProject(data, id = null) {
     const row = {
-      name_ka:   data.nameKa,
-      name_en:   data.nameEn,
-      category:  data.category,
-      location:  data.location,
-      status:    data.status,
-      image_url: data.imageUrl || null,
+      name_ka:        data.nameKa,
+      name_en:        data.nameEn,
+      category:       data.category,
+      location:       data.location,
+      status:         data.status,
+      image_url:      data.imageUrl || null,
+      total_floors:   data.totalFloors || null,
+      area_sqm:       data.areaSqm || null,
+      payment_type:   data.paymentType || null,
+      description_ka: data.descKa || null,
+      description_en: data.descEn || null,
     };
     try {
       if (id) {

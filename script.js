@@ -66,6 +66,14 @@ CREATE POLICY "admin all" ON messages FOR ALL USING (true);
 CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
 */
 
+/*
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS total_floors int;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS area_sqm int;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS payment_type text;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_ka text;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
+*/
+
 /* =============================================
    NB TOWER — script.js
    ============================================= */
@@ -95,7 +103,7 @@ CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
         ? `style="background-image:url('${p.imageUrl}');background-size:cover;background-position:center"`
         : '';
       return `
-        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s">
+        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s;cursor:pointer" onclick="window.location.href='project.html?id=${p.id}'">
           <div class="project-thumb" ${thumbStyle}>
             ${!p.imageUrl ? `<div class="project-visual">
               <div class="pv-building ${pvClass}">
@@ -109,7 +117,7 @@ CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
               </div>
             </div>` : ''}
             <div class="project-overlay">
-              <a href="#contact" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+              <a href="project.html?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
             </div>
           </div>
           <div class="project-info">
@@ -518,14 +526,8 @@ CREATE POLICY "admin all" ON site_settings FOR ALL USING (true);
     const city    = document.querySelector('.search-field:nth-child(1) select')?.value || '';
     const area    = document.querySelector('.search-field:nth-child(3) select')?.value || '';
     const payment = document.querySelector('.search-field:nth-child(5) select')?.value || '';
-
-    document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
-
-    // Reset filter to all
-    const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
-    if (allBtn) allBtn.click();
-
-    showSearchToast(city, area, payment);
+    const params  = new URLSearchParams({ city, area, payment });
+    window.location.href = 'search.html?' + params.toString();
   };
 
   function showSearchToast(city, area, payment) {

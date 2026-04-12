@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ძიება / Search — NB Tower</title>
+  <meta name="description" content="NB Tower — პროექტების ძიება / Search Projects" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+
+  <style>
+    .search-page-section {
+      padding-top: calc(var(--header-h) + 40px);
+      padding-bottom: 80px;
+      min-height: 100vh;
+      background: var(--bg-base);
+    }
+    .results-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 48px 0 32px;
+    }
+    .results-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+    }
+    .result-count {
+      background: var(--green);
+      color: #000;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    @media (max-width: 1024px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px)  { .projects-grid { grid-template-columns: 1fr; } }
+    .loading-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-secondary);
+    }
+    .no-results {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-secondary);
+    }
+    .no-results p { font-size: 1.2rem; margin-bottom: 20px; }
+    .no-results a {
+      display: inline-block;
+      padding: 12px 28px;
+      background: var(--green);
+      color: #000;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .hidden { display: none !important; }
+    /* Re-use search bar styles from index.html via linked style.css */
+    .search-bar-top { margin: 0; }
+    /* Override animate class so items don't stay invisible on this page */
+    .animate-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="index.html#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+        <li><a href="index.html#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+        <li><a href="index.html#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+        <li><a href="index.html#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="index.html#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="search-page-section">
+      <div class="container">
+
+        <!-- Search bar (pre-filled) -->
+        <div class="hero-search search-bar-top" id="search-bar-top">
+          <div class="search-field">
+            <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
+            <select id="s-city">
+              <option value="თბილისი" data-ka="თბილისი" data-en="Tbilisi">თბილისი</option>
+              <option value="ბათუმი" data-ka="ბათუმი" data-en="Batumi">ბათუმი</option>
+              <option value="ქუთაისი" data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</option>
+              <option value="მცხეთა" data-ka="მცხეთა" data-en="Mtskheta">მცხეთა</option>
+            </select>
+          </div>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label data-ka="ფართი (კვ.მ)" data-en="Area (sqm)">ფართი (კვ.მ)</label>
+            <select id="s-area">
+              <option value="ნებისმიერი" data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
+              <option value="30 – 60 კვ.მ">30 – 60 კვ.მ</option>
+              <option value="60 – 90 კვ.მ">60 – 90 კვ.მ</option>
+              <option value="90 – 120 კვ.მ">90 – 120 კვ.მ</option>
+              <option value="120+ კვ.მ">120+ კვ.მ</option>
+            </select>
+          </div>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
+            <select id="s-payment">
+              <option value="ნებისმიერი" data-ka="ნებისმიერი" data-en="Any">ნებისმიერი</option>
+              <option value="იპოთეკა" data-ka="იპოთეკა" data-en="Mortgage">იპოთეკა</option>
+              <option value="განვადება" data-ka="განვადება" data-en="Installment">განვადება</option>
+              <option value="სრული გადახდა" data-ka="სრული გადახდა" data-en="Full Payment">სრული გადახდა</option>
+            </select>
+          </div>
+          <button class="search-btn" id="search-btn-top">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <span data-ka="ძებნა" data-en="Search">ძებნა</span>
+          </button>
+        </div>
+
+        <!-- Results header -->
+        <div class="results-header">
+          <h2 data-ka="ძიების შედეგები" data-en="Search Results">ძიების შედეგები</h2>
+          <span class="result-count" id="result-count">0</span>
+        </div>
+
+        <!-- Results grid -->
+        <div class="projects-grid" id="results-grid">
+          <div class="loading-state" data-ka="იტვირთება..." data-en="Loading...">იტვირთება...</div>
+        </div>
+
+        <!-- No results -->
+        <div class="no-results hidden" id="no-results">
+          <p data-ka="პროექტი ვერ მოიძებნა" data-en="No projects found">პროექტი ვერ მოიძებნა</p>
+          <a href="index.html" data-ka="მთავარზე დაბრუნება" data-en="Back to Home">მთავარზე დაბრუნება</a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <img src="assets/NB Tower logo.png" alt="NB Tower" height="40" />
+        </a>
+        <p class="footer-desc"
+           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს."
+           data-en="Georgia's premier construction company. Building tomorrow, today.">
+          საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.
+        </p>
+        <div class="footer-social">
+          <a href="#" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="index.html#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="index.html#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
+          <li><a href="index.html#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
+          <li><a href="index.html#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
+          <li><a href="index.html#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>
+          <span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── Language ─────────────────────────── */
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl && langEnEl) {
+        langKaEl.classList.toggle('active', lang === 'ka');
+        langEnEl.classList.toggle('active', lang === 'en');
+      }
+      localStorage.setItem('lang', lang);
+    }
+
+    if (langToggle) {
+      langToggle.addEventListener('click', () => {
+        applyLang(currentLang === 'ka' ? 'en' : 'ka');
+      });
+    }
+    applyLang(currentLang);
+
+    /* ── Header scroll ────────────────────── */
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Mobile menu ──────────────────────── */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('nav-links');
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('open');
+        hamburger.classList.toggle('open', isOpen);
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+    }
+
+    /* ── Read URL params ──────────────────── */
+    const params  = new URLSearchParams(window.location.search);
+    const cityParam    = params.get('city')    || '';
+    const areaParam    = params.get('area')    || '';
+    const paymentParam = params.get('payment') || '';
+
+    /* Pre-fill dropdowns */
+    const citySelect    = document.getElementById('s-city');
+    const areaSelect    = document.getElementById('s-area');
+    const paymentSelect = document.getElementById('s-payment');
+
+    function setSelectValue(sel, val) {
+      if (!sel || !val) return;
+      for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === val) { sel.selectedIndex = i; break; }
+      }
+    }
+    setSelectValue(citySelect, cityParam);
+    setSelectValue(areaSelect, areaParam);
+    setSelectValue(paymentSelect, paymentParam);
+
+    /* ── Filter helpers ───────────────────── */
+    function matchesCity(project, city) {
+      if (!city) return true;
+      return (project.location || '').toLowerCase().includes(city.toLowerCase());
+    }
+
+    function matchesArea(project, areaP) {
+      if (!areaP || areaP === 'ნებისმიერი' || areaP === 'Any') return true;
+      const sqm = project.area_sqm;
+      if (!sqm) return true;
+      if (areaP.includes('30') && areaP.includes('60')) return sqm >= 30 && sqm <= 60;
+      if (areaP.includes('60') && areaP.includes('90')) return sqm >= 60 && sqm <= 90;
+      if (areaP.includes('90') && areaP.includes('120')) return sqm >= 90 && sqm <= 120;
+      if (areaP.includes('120+')) return sqm >= 120;
+      return true;
+    }
+
+    function matchesPayment(project, paymentP) {
+      if (!paymentP || paymentP === 'ნებისმიერი' || paymentP === 'Any') return true;
+      if (!project.payment_type) return true;
+      if (project.payment_type === 'ყველა') return true;
+      return project.payment_type === paymentP;
+    }
+
+    /* ── Card renderer ────────────────────── */
+    function renderCard(p) {
+      const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
+      const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
+      const typeKa   = p.category === 'residential' ? 'საცხოვრებელი კომპლექსი' : 'კომერციული ცენტრი';
+      const thumbStyle = p.image_url
+        ? `style="background-image:url('${p.image_url}');background-size:cover;background-position:center"`
+        : '';
+      const isWide = p.category === 'commercial';
+      const pvClass = isWide ? 'pv-wide' : '';
+
+      return `
+        <div class="project-card" onclick="window.location.href='project.html?id=${p.id}'" style="cursor:pointer">
+          <div class="project-thumb" ${thumbStyle}>
+            ${!p.image_url ? `<div class="project-visual">
+              <div class="pv-building ${pvClass}">
+                <div class="pv-b-body"></div>
+                ${!isWide ? '<div class="pv-b-top"></div>' : ''}
+                <div class="pv-b-windows">
+                  <div class="pv-row"><span></span><span></span><span></span></div>
+                  <div class="pv-row"><span></span><span></span><span></span></div>
+                  <div class="pv-row"><span></span><span></span><span></span></div>
+                </div>
+              </div>
+            </div>` : ''}
+            <div class="project-overlay">
+              <a href="project.html?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <div class="project-meta">
+              <span class="project-location"><i class="fa-solid fa-location-dot"></i> ${p.location || ''}</span>
+              <span class="project-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${p.status === 'completed' ? 'Completed' : 'Ongoing'}">${badgeKa}</span>
+            </div>
+            <h3 class="project-name">${currentLang === 'ka' ? (p.name_ka || '') : (p.name_en || p.name_ka || '')}</h3>
+            <p class="project-type">${typeKa}</p>
+          </div>
+        </div>`;
+    }
+
+    /* ── Fetch & render ───────────────────── */
+    async function loadResults() {
+      const grid     = document.getElementById('results-grid');
+      const noRes    = document.getElementById('no-results');
+      const countEl  = document.getElementById('result-count');
+
+      grid.innerHTML = `<div class="loading-state">${currentLang === 'ka' ? 'იტვირთება...' : 'Loading...'}</div>`;
+      noRes.classList.add('hidden');
+
+      try {
+        const { data: projects, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+
+        const filtered = (projects || []).filter(p =>
+          matchesCity(p, cityParam) &&
+          matchesArea(p, areaParam) &&
+          matchesPayment(p, paymentParam)
+        );
+
+        countEl.textContent = filtered.length;
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          noRes.classList.remove('hidden');
+        } else {
+          grid.innerHTML = filtered.map(renderCard).join('');
+          // Re-apply lang to newly rendered cards
+          applyLang(currentLang);
+        }
+      } catch (e) {
+        console.warn('Search fetch failed', e);
+        grid.innerHTML = '';
+        noRes.classList.remove('hidden');
+      }
+    }
+
+    loadResults();
+
+    /* ── New search on button click ───────── */
+    document.getElementById('search-btn-top')?.addEventListener('click', () => {
+      const city    = citySelect?.value || '';
+      const area    = areaSelect?.value || '';
+      const payment = paymentSelect?.value || '';
+      const newParams = new URLSearchParams({ city, area, payment });
+      window.location.href = 'search.html?' + newParams.toString();
+    });
+
+  })();
+  </script>
+</body>
+</html>
