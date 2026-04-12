@@ -258,7 +258,15 @@
 
     /* ── Calculator ──────────────────────── */
     .project-calculator { padding: 80px 0; background: #fff; }
-    .calc-wrap { max-width: 600px; margin: 40px auto 0; }
+    .calc-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start; margin-top: 40px;
+    }
+    .calc-left-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: #3DBE6C; margin-bottom: 16px;
+    }
+    .calc-right { position: sticky; top: 100px; }
     .payment-option, .suboption {
       display: flex; align-items: center; gap: 16px;
       padding: 18px 20px; border: 1.5px solid #E0E0E0; border-radius: 12px;
@@ -276,26 +284,50 @@
     .payment-option.active .radio-dot, .suboption.active .radio-dot { background: #90EE90; }
     .installment-suboptions { margin-bottom: 10px; padding-left: 8px; }
     .suboption { font-size: 15px; padding: 14px 20px; }
-    .calc-results { margin-top: 24px; }
-    .result-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px; }
-    .result-item-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 4px; }
-    .result-item-value { font-size: 22px; font-weight: 800; color: #E85D04; }
-    .result-item-value.green { color: #1B4332; }
-    .discount-bar {
+    /* Results */
+    .price-base-row { display: flex; gap: 24px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #F0F0F0; }
+    .price-base-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #AAAAAA; margin-bottom: 4px; }
+    .price-base-value { font-size: 16px; font-weight: 600; color: #AAAAAA; text-decoration: line-through; }
+    .discount-badge {
       display: flex; justify-content: space-between; align-items: center;
-      background: rgba(232,93,4,0.08); border: 1px solid rgba(232,93,4,0.2);
-      border-radius: 10px; padding: 14px 20px; margin-bottom: 12px;
-      font-size: 15px; font-weight: 600; color: #E85D04;
+      background: linear-gradient(135deg, #3DBE6C 0%, #2EA055 100%);
+      border-radius: 14px; padding: 16px 20px; margin-bottom: 16px; transition: all 0.3s;
     }
-    .final-prices { margin-top: 4px; }
+    .discount-badge.zero { background: #F5F5F5; }
+    .discount-badge.zero .discount-badge-title,
+    .discount-badge.zero .discount-badge-pct,
+    .discount-badge.zero .discount-badge-amount { color: #AAAAAA; }
+    .discount-badge-left { display: flex; align-items: center; gap: 12px; }
+    .discount-icon { font-size: 24px; }
+    .discount-badge-title { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+    .discount-badge-pct { font-size: 22px; font-weight: 800; color: #fff; }
+    .discount-badge-amount { font-size: 20px; font-weight: 800; color: #fff; }
+    .final-price-card {
+      background: #1B4332; border-radius: 16px; padding: 28px;
+      margin-bottom: 16px; transition: all 0.4s ease;
+    }
+    .final-price-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .final-price-main {
+      font-size: 48px; font-weight: 900; color: #90EE90;
+      font-family: 'Fraunces', serif; line-height: 1; margin-bottom: 12px; transition: all 0.3s ease;
+    }
+    .final-sqm-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 14px; color: rgba(255,255,255,0.6);
+    }
+    .final-sqm-value { font-weight: 700; color: #90EE90; font-size: 16px; }
+    .final-price-main.updating { transform: scale(1.05); color: #FFFFFF; }
     .calc-cta-btn {
       width: 100%; background: #90EE90; color: #1B4332; border: none;
-      border-radius: 50px; padding: 18px; font-size: 18px; font-weight: 800;
-      cursor: pointer; margin-top: 20px; font-family: inherit; transition: all 0.2s;
-      letter-spacing: 0.02em;
+      border-radius: 50px; padding: 18px; font-size: 17px; font-weight: 800;
+      cursor: pointer; font-family: inherit; transition: all 0.2s; letter-spacing: 0.02em;
     }
-    .calc-cta-btn:hover { background: #3DBE6C; color: #fff; }
-    @media (max-width: 768px) { .result-row-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .result-item-value { font-size: 18px; } }
+    .calc-cta-btn:hover { background: #3DBE6C; color: #fff; transform: translateY(-2px); }
+    @media (max-width: 768px) {
+      .calc-wrap { grid-template-columns: 1fr; gap: 32px; }
+      .calc-right { position: static; }
+    }
 
 
     /* ── Not found ───────────────────────── */
@@ -418,74 +450,83 @@
 
           <div class="calc-wrap">
 
-            <!-- PAYMENT TYPE SELECTION -->
-            <div class="payment-options" id="payment-options">
-              <div class="payment-option active" data-type="full">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="ერთიანი გადახდა" data-en="Full Payment">ერთიანი გადახდა</span>
+            <!-- LEFT: PAYMENT OPTIONS -->
+            <div class="calc-left">
+              <div class="calc-left-label" data-ka="გადახდის მეთოდი" data-en="Payment Method">გადახდის მეთოდი</div>
+              <div class="payment-options" id="payment-options">
+                <div class="payment-option active" data-type="full">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="ერთიანი გადახდა" data-en="Full Payment">ერთიანი გადახდა</span>
+                </div>
+                <div class="payment-option" data-type="mortgage">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="ბანკის იპოთეკური სესხი" data-en="Bank Mortgage">ბანკის იპოთეკური სესხი</span>
+                </div>
+                <div class="payment-option" data-type="installment">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="შიდა უპროცენტო განვადება" data-en="Interest-free Installment">შიდა უპროცენტო განვადება</span>
+                </div>
               </div>
-              <div class="payment-option" data-type="mortgage">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="ბანკის იპოთეკური სესხი" data-en="Bank Mortgage">ბანკის იპოთეკური სესხი</span>
-              </div>
-              <div class="payment-option" data-type="installment">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="შიდა უპროცენტო განვადება" data-en="Interest-free Installment">შიდა უპროცენტო განვადება</span>
+              <div class="installment-suboptions" id="installment-suboptions" style="display:none;">
+                <div class="suboption active" data-contribution="10">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="10%-იანი თანამონაწილეობა" data-en="10% contribution">10%-იანი თანამონაწილეობა</span>
+                </div>
+                <div class="suboption" data-contribution="20">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="20%-იანი თანამონაწილეობა" data-en="20% contribution">20%-იანი თანამონაწილეობა</span>
+                </div>
+                <div class="suboption" data-contribution="40">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="40%-იანი თანამონაწილეობა" data-en="40% contribution">40%-იანი თანამონაწილეობა</span>
+                </div>
+                <div class="suboption" data-contribution="60">
+                  <div class="option-radio"><div class="radio-dot"></div></div>
+                  <span data-ka="60%-იანი თანამონაწილეობა" data-en="60% contribution">60%-იანი თანამონაწილეობა</span>
+                </div>
               </div>
             </div>
 
-            <!-- INSTALLMENT SUB-OPTIONS -->
-            <div class="installment-suboptions" id="installment-suboptions" style="display:none;">
-              <div class="suboption active" data-contribution="10">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="10%-იანი თანამონაწილეობა" data-en="10% contribution">10%-იანი თანამონაწილეობა</span>
-              </div>
-              <div class="suboption" data-contribution="20">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="20%-იანი თანამონაწილეობა" data-en="20% contribution">20%-იანი თანამონაწილეობა</span>
-              </div>
-              <div class="suboption" data-contribution="40">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="40%-იანი თანამონაწილეობა" data-en="40% contribution">40%-იანი თანამონაწილეობა</span>
-              </div>
-              <div class="suboption" data-contribution="60">
-                <div class="option-radio"><div class="radio-dot"></div></div>
-                <span data-ka="60%-იანი თანამონაწილეობა" data-en="60% contribution">60%-იანი თანამონაწილეობა</span>
-              </div>
-            </div>
+            <!-- RIGHT: RESULTS -->
+            <div class="calc-right">
+              <div class="calc-results">
 
-            <!-- RESULT DISPLAY -->
-            <div class="calc-results">
-              <div class="result-row-grid">
-                <div class="result-item">
-                  <div class="result-item-label" data-ka="საწყისი ფასი" data-en="Base Price">საწყისი ფასი</div>
-                  <div class="result-item-value" id="base-price">—</div>
+                <div class="price-base-row">
+                  <div class="price-base-item">
+                    <div class="price-base-label" data-ka="საწყისი ფასი" data-en="Base Price">საწყისი ფასი</div>
+                    <div class="price-base-value" id="base-price">—</div>
+                  </div>
+                  <div class="price-base-item">
+                    <div class="price-base-label" data-ka="კვ.მ ფასი" data-en="sqm Price">კვ.მ ფასი</div>
+                    <div class="price-base-value" id="base-sqm-price">—</div>
+                  </div>
                 </div>
-                <div class="result-item">
-                  <div class="result-item-label" data-ka="საწყისი კვ.მ ფასი" data-en="Base sqm Price">საწყისი კვ.მ ფასი</div>
-                  <div class="result-item-value" id="base-sqm-price">—</div>
-                </div>
-              </div>
 
-              <div class="discount-bar" id="discount-bar">
-                <span><span data-ka="ფასდაკლება" data-en="Discount">ფასდაკლება</span> — <strong id="discount-pct">0%</strong></span>
-                <span id="discount-amount">$0</span>
-              </div>
-
-              <div class="result-row-grid final-prices">
-                <div class="result-item">
-                  <div class="result-item-label" data-ka="ფასი" data-en="Price">ფასი</div>
-                  <div class="result-item-value green" id="final-price">—</div>
+                <div class="discount-badge" id="discount-badge">
+                  <div class="discount-badge-left">
+                    <span class="discount-icon">🏷️</span>
+                    <div>
+                      <div class="discount-badge-title" data-ka="თქვენი დანაზოგი" data-en="Your Savings">თქვენი დანაზოგი</div>
+                      <div class="discount-badge-pct" id="discount-pct-text">0%</div>
+                    </div>
+                  </div>
+                  <div class="discount-badge-amount" id="discount-amount">$0</div>
                 </div>
-                <div class="result-item">
-                  <div class="result-item-label" data-ka="კვ.მ ფასი" data-en="sqm Price">კვ.მ ფასი</div>
-                  <div class="result-item-value green" id="final-sqm-price">—</div>
-                </div>
-              </div>
 
-              <button class="calc-cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-                <span data-ka="მოითხოვე ზარი" data-en="Request a Call">მოითხოვე ზარი</span>
-              </button>
+                <div class="final-price-card">
+                  <div class="final-price-label" data-ka="საბოლოო ფასი" data-en="Final Price">საბოლოო ფასი</div>
+                  <div class="final-price-main" id="final-price">—</div>
+                  <div class="final-sqm-row">
+                    <span data-ka="კვ.მ ღირებულება:" data-en="Price per sqm:">კვ.მ ღირებულება:</span>
+                    <span class="final-sqm-value" id="final-sqm-price">—</span>
+                  </div>
+                </div>
+
+                <button class="calc-cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                  <span data-ka="მოითხოვე ზარი" data-en="Request a Call">მოითხოვე ზარი</span>
+                </button>
+
+              </div>
             </div>
 
           </div>
@@ -836,12 +877,25 @@
         const finalTotalPrice     = finalPricePerSqm * calcAvgSqm;
         const discountAmount      = baseTotalPrice - finalTotalPrice;
 
-        document.getElementById('base-price').textContent      = formatUSD(baseTotalPrice);
-        document.getElementById('base-sqm-price').textContent  = formatUSD(mortgagePricePerSqm);
-        document.getElementById('discount-pct').textContent    = discountPct + '%';
-        document.getElementById('discount-amount').textContent = discountAmount > 0 ? '-' + formatUSD(discountAmount) : formatUSD(0);
-        document.getElementById('final-price').textContent     = formatUSD(finalTotalPrice);
-        document.getElementById('final-sqm-price').textContent = formatUSD(finalPricePerSqm);
+        document.getElementById('base-price').textContent       = formatUSD(baseTotalPrice);
+        document.getElementById('base-sqm-price').textContent   = formatUSD(mortgagePricePerSqm);
+        document.getElementById('discount-pct-text').textContent = discountPct + '%';
+        document.getElementById('discount-amount').textContent  = discountAmount > 0 ? '-' + formatUSD(discountAmount) : formatUSD(0);
+        document.getElementById('final-price').textContent      = formatUSD(finalTotalPrice);
+        document.getElementById('final-sqm-price').textContent  = formatUSD(finalPricePerSqm);
+
+        // Pulse animation on final price
+        const finalPriceEl = document.getElementById('final-price');
+        finalPriceEl.classList.add('updating');
+        setTimeout(() => finalPriceEl.classList.remove('updating'), 300);
+
+        // Toggle discount badge zero state
+        const badge = document.getElementById('discount-badge');
+        if (discountPct === 0) {
+          badge.classList.add('zero');
+        } else {
+          badge.classList.remove('zero');
+        }
       }
 
       updateCalc();
