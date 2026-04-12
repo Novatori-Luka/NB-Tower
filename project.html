@@ -312,32 +312,44 @@
 
     /* ── Calculator ──────────────────────── */
     .project-calculator { padding: 80px 0; background: #fff; }
-    .calculator-wrap {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 48px; margin-top: 48px; align-items: start;
+    .calc-wrap { max-width: 600px; margin: 40px auto 0; }
+    .payment-option, .suboption {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 20px; border: 1.5px solid #E0E0E0; border-radius: 12px;
+      margin-bottom: 10px; cursor: pointer; font-size: 16px; font-weight: 600;
+      color: #111; transition: all 0.2s; background: #fff; font-family: inherit;
     }
-    .calc-field { margin-bottom: 28px; }
-    .calc-field label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #111; display: block; margin-bottom: 10px; }
-    .calc-value { font-size: 24px; font-weight: 700; color: #3DBE6C; }
-    .calc-amount { font-size: 14px; color: #999; margin-top: 4px; }
-    .calc-slider-wrap { display: flex; align-items: center; gap: 16px; }
-    .calc-slider-wrap input[type=range] { flex: 1; accent-color: #3DBE6C; height: 4px; }
-    .calc-slider-wrap span { font-weight: 700; color: #3DBE6C; min-width: 40px; }
-    .term-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-    .term-btn { padding: 8px 16px; border: 1.5px solid #E0E0E0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
-    .term-btn.active { background: #3DBE6C; color: #fff; border-color: #3DBE6C; }
-    .payment-type-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-    .ptype-btn { padding: 10px 18px; border: 1.5px solid #E0E0E0; border-radius: 10px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; font-family: inherit; color: #444; }
-    .ptype-btn.active { background: #3DBE6C; color: #fff; border-color: #3DBE6C; }
-    .result-card { background: #3DBE6C; border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 20px; }
-    .result-label { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-    .result-amount { font-size: 48px; font-weight: 800; color: #fff; font-family: 'Fraunces', serif; }
-    .result-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 8px; }
-    .result-details { background: #F8F8F6; border-radius: 12px; padding: 20px; }
-    .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EEEEEE; font-size: 14px; }
-    .result-row:last-child { border-bottom: none; }
-    .result-row span:last-child { font-weight: 700; color: #111; }
-    @media (max-width: 768px) { .calculator-wrap { grid-template-columns: 1fr; gap: 32px; } }
+    .payment-option.active, .suboption.active { background: #1B4332; border-color: #1B4332; color: #fff; }
+    .option-radio {
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid #ccc;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+    }
+    .payment-option.active .option-radio, .suboption.active .option-radio { border-color: #90EE90; background: transparent; }
+    .radio-dot { width: 10px; height: 10px; border-radius: 50%; background: transparent; transition: all 0.2s; }
+    .payment-option.active .radio-dot, .suboption.active .radio-dot { background: #90EE90; }
+    .installment-suboptions { margin-bottom: 10px; padding-left: 8px; }
+    .suboption { font-size: 15px; padding: 14px 20px; }
+    .calc-results { margin-top: 24px; }
+    .result-row-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px; }
+    .result-item-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 4px; }
+    .result-item-value { font-size: 22px; font-weight: 800; color: #E85D04; }
+    .result-item-value.green { color: #1B4332; }
+    .discount-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(232,93,4,0.08); border: 1px solid rgba(232,93,4,0.2);
+      border-radius: 10px; padding: 14px 20px; margin-bottom: 12px;
+      font-size: 15px; font-weight: 600; color: #E85D04;
+    }
+    .final-prices { margin-top: 4px; }
+    .calc-cta-btn {
+      width: 100%; background: #90EE90; color: #1B4332; border: none;
+      border-radius: 50px; padding: 18px; font-size: 18px; font-weight: 800;
+      cursor: pointer; margin-top: 20px; font-family: inherit; transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .calc-cta-btn:hover { background: #3DBE6C; color: #fff; }
+    @media (max-width: 768px) { .result-row-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .result-item-value { font-size: 18px; } }
 
     /* ── Partner Banks ───────────────────── */
     .partner-banks { padding: 80px 0; background: #F8F8F6; }
@@ -502,70 +514,81 @@
       <!-- CALCULATOR -->
       <section class="project-calculator">
         <div class="container">
-          <div class="section-label" data-ka="დაგეგმე შენი ყიდვა" data-en="Plan Your Purchase">დაგეგმე შენი ყიდვა</div>
-          <h2 class="section-title" data-ka="ბინის კალკულატორი" data-en="Payment Calculator">ბინის კალკულატორი</h2>
-          <div class="calculator-wrap">
-            <div class="calc-inputs">
-              <div class="calc-field">
-                <label data-ka="გადახდის ტიპი" data-en="Payment Type">გადახდის ტიპი</label>
-                <div class="payment-type-btns">
-                  <button class="ptype-btn active" data-type="mortgage" data-ka="იპოთეკა" data-en="Mortgage">იპოთეკა</button>
-                  <button class="ptype-btn" data-type="installment" data-ka="განვადება" data-en="Installment">განვადება</button>
-                  <button class="ptype-btn" data-type="full" data-ka="სრული" data-en="Full Payment">სრული</button>
-                </div>
+          <div class="section-label" data-ka="გადახდის პირობები" data-en="Payment Terms">გადახდის პირობები</div>
+          <h2 class="section-title" data-ka="ბინის კალკულატორი" data-en="Apartment Calculator">ბინის კალკულატორი</h2>
+
+          <div class="calc-wrap">
+
+            <!-- PAYMENT TYPE SELECTION -->
+            <div class="payment-options" id="payment-options">
+              <div class="payment-option active" data-type="full">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="ერთიანი გადახდა" data-en="Full Payment">ერთიანი გადახდა</span>
               </div>
-              <div class="calc-field">
-                <label data-ka="ბინის ფართი" data-en="Apartment Area">ბინის ფართი</label>
-                <div class="calc-value" id="calc-price-display">—</div>
-                <div class="calc-amount" id="calc-area-display"></div>
+              <div class="payment-option" data-type="mortgage">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="ბანკის იპოთეკური სესხი" data-en="Bank Mortgage">ბანკის იპოთეკური სესხი</span>
               </div>
-              <div class="calc-field down-payment-field">
-                <label data-ka="პირველი შენატანი" data-en="Down Payment">პირველი შენატანი</label>
-                <div class="calc-slider-wrap">
-                  <input type="range" id="down-payment-slider" min="10" max="50" value="20" step="5">
-                  <span id="down-payment-pct">20%</span>
-                </div>
-                <div class="calc-amount" id="down-payment-amount"></div>
-              </div>
-              <div class="calc-field term-field">
-                <label data-ka="სესხის ვადა" data-en="Loan Term">სესხის ვადა</label>
-                <div class="term-buttons">
-                  <button class="term-btn active" data-years="10">10 წ.</button>
-                  <button class="term-btn" data-years="15">15 წ.</button>
-                  <button class="term-btn" data-years="20">20 წ.</button>
-                  <button class="term-btn" data-years="25">25 წ.</button>
-                </div>
-              </div>
-              <div class="calc-field interest-field">
-                <label data-ka="წლიური % განაკვეთი" data-en="Annual Interest Rate">წლიური % განაკვეთი</label>
-                <div class="calc-slider-wrap">
-                  <input type="range" id="interest-slider" min="8" max="18" value="12" step="0.5">
-                  <span id="interest-pct">12%</span>
-                </div>
+              <div class="payment-option" data-type="installment">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="შიდა უპროცენტო განვადება" data-en="Interest-free Installment">შიდა უპროცენტო განვადება</span>
               </div>
             </div>
-            <div class="calc-result">
-              <div class="result-card">
-                <div class="result-label" data-ka="ყოველთვიური გადასახადი" data-en="Monthly Payment">ყოველთვიური გადასახადი</div>
-                <div class="result-amount" id="monthly-payment">—</div>
-                <div class="result-sub" data-ka="გეგმური გადახდა" data-en="Estimated payment">გეგმური გადახდა</div>
+
+            <!-- INSTALLMENT SUB-OPTIONS -->
+            <div class="installment-suboptions" id="installment-suboptions" style="display:none;">
+              <div class="suboption active" data-contribution="10">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="10%-იანი თანამონაწილეობა" data-en="10% contribution">10%-იანი თანამონაწილეობა</span>
               </div>
-              <div class="result-details">
-                <div class="result-row">
-                  <span data-ka="სესხის თანხა" data-en="Loan Amount">სესხის თანხა</span>
-                  <span id="loan-amount">—</span>
-                </div>
-                <div class="result-row">
-                  <span data-ka="საერთო გადახდა" data-en="Total Payment">საერთო გადახდა</span>
-                  <span id="total-payment">—</span>
-                </div>
-                <div class="result-row">
-                  <span data-ka="სულ პროცენტი" data-en="Total Interest">სულ პროცენტი</span>
-                  <span id="total-interest">—</span>
-                </div>
+              <div class="suboption" data-contribution="20">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="20%-იანი თანამონაწილეობა" data-en="20% contribution">20%-იანი თანამონაწილეობა</span>
               </div>
-              <button class="btn-primary calc-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" style="width:100%;margin-top:20px" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</button>
+              <div class="suboption" data-contribution="40">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="40%-იანი თანამონაწილეობა" data-en="40% contribution">40%-იანი თანამონაწილეობა</span>
+              </div>
+              <div class="suboption" data-contribution="60">
+                <div class="option-radio"><div class="radio-dot"></div></div>
+                <span data-ka="60%-იანი თანამონაწილეობა" data-en="60% contribution">60%-იანი თანამონაწილეობა</span>
+              </div>
             </div>
+
+            <!-- RESULT DISPLAY -->
+            <div class="calc-results">
+              <div class="result-row-grid">
+                <div class="result-item">
+                  <div class="result-item-label" data-ka="საწყისი ფასი" data-en="Base Price">საწყისი ფასი</div>
+                  <div class="result-item-value" id="base-price">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label" data-ka="საწყისი კვ.მ ფასი" data-en="Base sqm Price">საწყისი კვ.მ ფასი</div>
+                  <div class="result-item-value" id="base-sqm-price">—</div>
+                </div>
+              </div>
+
+              <div class="discount-bar" id="discount-bar">
+                <span><span data-ka="ფასდაკლება" data-en="Discount">ფასდაკლება</span> — <strong id="discount-pct">0%</strong></span>
+                <span id="discount-amount">$0</span>
+              </div>
+
+              <div class="result-row-grid final-prices">
+                <div class="result-item">
+                  <div class="result-item-label" data-ka="ფასი" data-en="Price">ფასი</div>
+                  <div class="result-item-value green" id="final-price">—</div>
+                </div>
+                <div class="result-item">
+                  <div class="result-item-label" data-ka="კვ.მ ფასი" data-en="sqm Price">კვ.მ ფასი</div>
+                  <div class="result-item-value green" id="final-sqm-price">—</div>
+                </div>
+              </div>
+
+              <button class="calc-cta-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+                <span data-ka="მოითხოვე ზარი" data-en="Request a Call">მოითხოვე ზარი</span>
+              </button>
+            </div>
+
           </div>
         </div>
       </section>
@@ -912,119 +935,78 @@
 
     /* ── Calculator ───────────────────────── */
     function initCalculator(p) {
-      const prices = {
+      let calcPrices = {
+        full:        p.price_per_sqm_full        || 0,
         mortgage:    p.price_per_sqm_mortgage    || 0,
         installment: p.price_per_sqm_installment || 0,
-        full:        p.price_per_sqm_full        || 0,
       };
+      let calcAvgSqm = 75;
+      let selectedPayType = 'full';
+      let installmentContribution = 10;
 
-      let selectedPaymentType = 'mortgage';
-      let downPct      = 20;
-      let termYears    = 10;
-      let interestRate = 12;
-
-      // Parse area_sqm and pick a default area
-      let selectedSqm = 70;
       try {
-        const arr = JSON.parse(p.area_sqm || '[]');
-        if (arr.length) selectedSqm = arr[Math.floor(arr.length / 2)];
-      } catch {}
+        const areas = JSON.parse(p.area_sqm || '[75]');
+        calcAvgSqm = areas.length ? Math.round(areas.reduce((a, b) => a + b, 0) / areas.length) : 75;
+      } catch { calcAvgSqm = 75; }
+
+      const installmentDiscounts = { 10: 0, 20: 3, 40: 5, 60: 7 };
 
       function formatUSD(n) {
-        return '$' + Math.round(n).toLocaleString('en');
+        return '$' + Math.round(n * 100) / 100;
       }
 
-      function getPrice() {
-        return (prices[selectedPaymentType] || 0) * selectedSqm;
-      }
+      function updateCalc() {
+        let pricePerSqm = calcPrices.mortgage || 0;
+        let discountPct = 0;
 
-      function updateLoanFieldVisibility() {
-        const dpField  = document.querySelector('.down-payment-field');
-        const termField = document.querySelector('.term-field');
-        const intField  = document.querySelector('.interest-field');
-        if (selectedPaymentType === 'full') {
-          if (dpField)   dpField.style.display   = 'none';
-          if (termField) termField.style.display  = 'none';
-          if (intField)  intField.style.display   = 'none';
-        } else if (selectedPaymentType === 'installment') {
-          if (dpField)   dpField.style.display   = '';
-          if (termField) termField.style.display  = '';
-          if (intField)  intField.style.display   = 'none';
-        } else {
-          if (dpField)   dpField.style.display   = '';
-          if (termField) termField.style.display  = '';
-          if (intField)  intField.style.display   = '';
-        }
-      }
-
-      function calcAndRender() {
-        const totalPrice = getPrice();
-        const priceEl = document.getElementById('calc-price-display');
-        const areaEl  = document.getElementById('calc-area-display');
-        if (priceEl) priceEl.textContent = totalPrice ? formatUSD(totalPrice) : '—';
-        if (areaEl)  areaEl.textContent  = selectedSqm + ' კვ.მ · ' + formatUSD(prices[selectedPaymentType] || 0) + '/კვ.მ';
-
-        if (!totalPrice) return;
-        const down = totalPrice * (downPct / 100);
-        const loan = totalPrice - down;
-        document.getElementById('down-payment-amount').textContent = formatUSD(down);
-
-        let monthly, totalPayment, totalInterest;
-        const n = termYears * 12;
-
-        if (selectedPaymentType === 'full') {
-          monthly      = null;
-          totalPayment = totalPrice;
-          totalInterest = 0;
-          document.getElementById('monthly-payment').textContent = '—';
-        } else if (selectedPaymentType === 'installment') {
-          monthly      = loan / n;
-          totalPayment = loan;
-          totalInterest = 0;
-          document.getElementById('monthly-payment').textContent = formatUSD(monthly) + ' / თვე';
-        } else {
-          const r = (interestRate / 100) / 12;
-          monthly      = loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-          totalPayment = monthly * n + down;
-          totalInterest = totalPayment - totalPrice;
-          document.getElementById('monthly-payment').textContent = formatUSD(monthly) + ' / თვე';
+        if (selectedPayType === 'full') {
+          pricePerSqm = calcPrices.full || 0;
+          const mortgagePrice = calcPrices.mortgage || 0;
+          if (mortgagePrice && pricePerSqm) {
+            discountPct = Math.round((1 - pricePerSqm / mortgagePrice) * 100);
+          }
+        } else if (selectedPayType === 'mortgage') {
+          pricePerSqm = calcPrices.mortgage || 0;
+          discountPct = 0;
+        } else if (selectedPayType === 'installment') {
+          pricePerSqm = calcPrices.installment || 0;
+          discountPct = installmentDiscounts[installmentContribution] || 0;
+          pricePerSqm = pricePerSqm * (1 - discountPct / 100);
         }
 
-        document.getElementById('loan-amount').textContent    = formatUSD(loan);
-        document.getElementById('total-payment').textContent  = formatUSD(totalPayment);
-        document.getElementById('total-interest').textContent = formatUSD(totalInterest);
+        const mortgagePricePerSqm = calcPrices.mortgage || 0;
+        const baseTotalPrice      = mortgagePricePerSqm * calcAvgSqm;
+        const finalPricePerSqm    = pricePerSqm;
+        const finalTotalPrice     = finalPricePerSqm * calcAvgSqm;
+        const discountAmount      = baseTotalPrice - finalTotalPrice;
+
+        document.getElementById('base-price').textContent      = formatUSD(baseTotalPrice);
+        document.getElementById('base-sqm-price').textContent  = formatUSD(mortgagePricePerSqm);
+        document.getElementById('discount-pct').textContent    = discountPct + '%';
+        document.getElementById('discount-amount').textContent = discountAmount > 0 ? '-' + formatUSD(discountAmount) : formatUSD(0);
+        document.getElementById('final-price').textContent     = formatUSD(finalTotalPrice);
+        document.getElementById('final-sqm-price').textContent = formatUSD(finalPricePerSqm);
       }
 
-      updateLoanFieldVisibility();
-      calcAndRender();
+      updateCalc();
 
-      // Payment type buttons
-      document.querySelectorAll('.ptype-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.ptype-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          selectedPaymentType = btn.dataset.type;
-          updateLoanFieldVisibility();
-          calcAndRender();
+      document.querySelectorAll('.payment-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          selectedPayType = opt.dataset.type;
+          const subOpts = document.getElementById('installment-suboptions');
+          subOpts.style.display = selectedPayType === 'installment' ? 'block' : 'none';
+          updateCalc();
         });
       });
 
-      document.getElementById('down-payment-slider')?.addEventListener('input', e => {
-        downPct = parseInt(e.target.value);
-        document.getElementById('down-payment-pct').textContent = downPct + '%';
-        calcAndRender();
-      });
-      document.getElementById('interest-slider')?.addEventListener('input', e => {
-        interestRate = parseFloat(e.target.value);
-        document.getElementById('interest-pct').textContent = interestRate + '%';
-        calcAndRender();
-      });
-      document.querySelectorAll('.term-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          termYears = parseInt(btn.dataset.years);
-          calcAndRender();
+      document.querySelectorAll('.suboption').forEach(opt => {
+        opt.addEventListener('click', () => {
+          document.querySelectorAll('.suboption').forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          installmentContribution = parseInt(opt.dataset.contribution);
+          updateCalc();
         });
       });
     }
