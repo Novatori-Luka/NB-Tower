@@ -930,8 +930,8 @@
         if (arr.length) selectedSqm = arr[Math.floor(arr.length / 2)];
       } catch {}
 
-      function formatGEL(n) {
-        return '₾' + Math.round(n).toLocaleString('en');
+      function formatUSD(n) {
+        return '$' + Math.round(n).toLocaleString('en');
       }
 
       function getPrice() {
@@ -961,13 +961,13 @@
         const totalPrice = getPrice();
         const priceEl = document.getElementById('calc-price-display');
         const areaEl  = document.getElementById('calc-area-display');
-        if (priceEl) priceEl.textContent = totalPrice ? formatGEL(totalPrice) : '—';
-        if (areaEl)  areaEl.textContent  = selectedSqm + ' კვ.მ · ' + formatGEL(prices[selectedPaymentType] || 0) + '/კვ.მ';
+        if (priceEl) priceEl.textContent = totalPrice ? formatUSD(totalPrice) : '—';
+        if (areaEl)  areaEl.textContent  = selectedSqm + ' კვ.მ · ' + formatUSD(prices[selectedPaymentType] || 0) + '/კვ.მ';
 
         if (!totalPrice) return;
         const down = totalPrice * (downPct / 100);
         const loan = totalPrice - down;
-        document.getElementById('down-payment-amount').textContent = formatGEL(down);
+        document.getElementById('down-payment-amount').textContent = formatUSD(down);
 
         let monthly, totalPayment, totalInterest;
         const n = termYears * 12;
@@ -981,18 +981,18 @@
           monthly      = loan / n;
           totalPayment = loan;
           totalInterest = 0;
-          document.getElementById('monthly-payment').textContent = formatGEL(monthly) + ' / თვე';
+          document.getElementById('monthly-payment').textContent = formatUSD(monthly) + ' / თვე';
         } else {
           const r = (interestRate / 100) / 12;
           monthly      = loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
           totalPayment = monthly * n + down;
           totalInterest = totalPayment - totalPrice;
-          document.getElementById('monthly-payment').textContent = formatGEL(monthly) + ' / თვე';
+          document.getElementById('monthly-payment').textContent = formatUSD(monthly) + ' / თვე';
         }
 
-        document.getElementById('loan-amount').textContent    = formatGEL(loan);
-        document.getElementById('total-payment').textContent  = formatGEL(totalPayment);
-        document.getElementById('total-interest').textContent = formatGEL(totalInterest);
+        document.getElementById('loan-amount').textContent    = formatUSD(loan);
+        document.getElementById('total-payment').textContent  = formatUSD(totalPayment);
+        document.getElementById('total-interest').textContent = formatUSD(totalInterest);
       }
 
       updateLoanFieldVisibility();

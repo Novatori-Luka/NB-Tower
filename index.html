@@ -659,33 +659,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <form class="contact-form" id="contact-form" novalidate>
               <div class="form-row">
                 <div class="form-group">
-                  <label for="name" data-ka="სახელი" data-en="Name">სახელი</label>
-                  <input type="text" id="name" name="name" required
+                  <label for="contact-name" data-ka="სახელი *" data-en="Full Name *">სახელი *</label>
+                  <input type="text" id="contact-name" required placeholder=""
                          data-ka-placeholder="თქვენი სახელი"
-                         data-en-placeholder="Your name"
-                         placeholder="თქვენი სახელი" />
+                         data-en-placeholder="Your name" />
+                  <div class="field-error" id="err-name" data-ka="სახელი სავალდებულოა" data-en="Name is required">სახელი სავალდებულოა</div>
                 </div>
                 <div class="form-group">
-                  <label for="email" data-ka="ელ-ფოსტა" data-en="Email">ელ-ფოსტა</label>
-                  <input type="email" id="email" name="email" required
-                         data-ka-placeholder="email@example.com"
-                         data-en-placeholder="email@example.com"
-                         placeholder="email@example.com" />
+                  <label for="contact-phone" data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
+                  <input type="tel" id="contact-phone" required placeholder="+995 XXX XXX XXX" />
+                  <div class="field-error" id="err-phone" data-ka="ტელეფონი სავალდებულოა" data-en="Phone is required">ტელეფონი სავალდებულოა</div>
                 </div>
               </div>
               <div class="form-group">
-                <label for="phone" data-ka="ტელეფონი (არასავალდებულო)" data-en="Phone (optional)">ტელეფონი (არასავალდებულო)</label>
-                <input type="tel" id="phone" name="phone"
-                       data-ka-placeholder="+995 XXX XXX XXX"
-                       data-en-placeholder="+995 XXX XXX XXX"
-                       placeholder="+995 XXX XXX XXX" />
+                <label for="contact-project" data-ka="პროექტი" data-en="Project">პროექტი</label>
+                <select id="contact-project">
+                  <option value="" data-ka="არ მაქვს შერჩეული პროექტი" data-en="No project selected yet">არ მაქვს შერჩეული პროექტი</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="message" data-ka="შეტყობინება" data-en="Message">შეტყობინება</label>
-                <textarea id="message" name="message" rows="5" required
-                          data-ka-placeholder="მოგვიყევით თქვენს პროექტზე..."
-                          data-en-placeholder="Tell us about your project..."
-                          placeholder="მოგვიყევით თქვენს პროექტზე..."></textarea>
+                <label for="contact-message" data-ka="შეტყობინება (არასავალდებულო)" data-en="Message (optional)">შეტყობინება (არასავალდებულო)</label>
+                <textarea id="contact-message" rows="4" placeholder=""
+                          data-ka-placeholder="მოგვიყევით თქვენს საჭიროებებზე..."
+                          data-en-placeholder="Tell us about your needs..."></textarea>
               </div>
               <button type="submit" class="btn-primary btn-submit" data-ka="გაგზავნა" data-en="Send Message">
                 <span class="btn-text" data-ka="გაგზავნა" data-en="Send Message">გაგზავნა</span>

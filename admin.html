@@ -892,7 +892,7 @@
                 <thead>
                   <tr>
                     <th>სახელი / Name</th>
-                    <th>ელ-ფოსტა</th>
+                    <th>ტელეფონი / Phone</th>
                     <th>თარიღი / Date</th>
                   </tr>
                 </thead>
@@ -1068,8 +1068,8 @@
             <thead>
               <tr>
                 <th>სახელი / Name</th>
-                <th>ელ-ფოსტა / Email</th>
                 <th>ტელეფონი / Phone</th>
+                <th>პროექტი / Project</th>
                 <th>შეტყობინება / Message</th>
                 <th>თარიღი / Date</th>
                 <th>მოქმედება</th>
@@ -1473,16 +1473,16 @@
       </div>
       <div class="form-row-2">
         <div class="form-group">
-          <label>სრული გადახდა ₾/კვ.მ / Full Payment ₾/sqm</label>
+          <label>სრული გადახდა $/კვ.მ / Full Payment ₾/sqm</label>
           <input type="number" id="f-priceFull" value="${escHtml(String(p.price_per_sqm_full||''))}" placeholder="მაგ. 2500" min="0" />
         </div>
         <div class="form-group">
-          <label>იპოთეკა ₾/კვ.მ / Mortgage ₾/sqm</label>
+          <label>იპოთეკა $/კვ.მ / Mortgage ₾/sqm</label>
           <input type="number" id="f-priceMortgage" value="${escHtml(String(p.price_per_sqm_mortgage||''))}" placeholder="მაგ. 2800" min="0" />
         </div>
       </div>
       <div class="form-group" style="max-width:50%">
-        <label>განვადება ₾/კვ.მ / Installment ₾/sqm</label>
+        <label>განვადება $/კვ.მ / Installment ₾/sqm</label>
         <input type="number" id="f-priceInstallment" value="${escHtml(String(p.price_per_sqm_installment||''))}" placeholder="მაგ. 2650" min="0" />
       </div>
       <div class="form-row-2">
@@ -1874,9 +1874,9 @@
     }
     tbody.innerHTML = list.map(m => `<tr>
       <td>${escHtml(m.name)}</td>
-      <td>${escHtml(m.email)}</td>
       <td>${escHtml(m.phone || '—')}</td>
-      <td><div class="message-preview">${escHtml(m.message)}</div></td>
+      <td>${escHtml(m.project_name || '—')}</td>
+      <td><div class="message-preview">${escHtml(m.message || '—')}</div></td>
       <td style="white-space:nowrap;color:#888;font-size:0.82rem">${fmt(m.created_at)}</td>
       <td class="td-actions">
         <button class="btn btn-secondary btn-sm" onclick="viewMessage('${m.id}')" title="ნახვა"><i class="fa-solid fa-eye"></i></button>
@@ -1894,11 +1894,11 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">სახელი</div><div style="font-weight:600">${escHtml(m.name)}</div></div>
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">თარიღი</div><div>${fmt(m.created_at)}</div></div>
-        <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">ელ-ფოსტა</div><a href="mailto:${escHtml(m.email)}" style="color:var(--green)">${escHtml(m.email)}</a></div>
         <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">ტელეფონი</div><div>${escHtml(m.phone || '—')}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">პროექტი</div><div>${escHtml(m.project_name || '—')}</div></div>
       </div>
       <div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:8px">შეტყობინება</div>
-      <div style="background:#F5F4F0;border-radius:8px;padding:16px;font-size:0.92rem;line-height:1.7;color:#333;white-space:pre-wrap">${escHtml(m.message)}</div>
+      <div style="background:#F5F4F0;border-radius:8px;padding:16px;font-size:0.92rem;line-height:1.7;color:#333;white-space:pre-wrap">${escHtml(m.message || '—')}</div>
     `, null);
     document.getElementById('modal-save').style.display = 'none';
   };
@@ -2082,7 +2082,7 @@
     } else {
       tbody.innerHTML = recent.map(m => `<tr>
         <td><strong>${escHtml(m.name)}</strong></td>
-        <td style="color:#666">${escHtml(m.email)}</td>
+        <td style="color:#666">${escHtml(m.phone || '—')}</td>
         <td style="color:#888;font-size:0.82rem">${fmt(m.created_at)}</td>
       </tr>`).join('');
     }

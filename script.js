@@ -74,6 +74,12 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_ka text;
 ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
 */
 
+/*
+ALTER TABLE messages ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE messages ADD COLUMN IF NOT EXISTS project_name text;
+ALTER TABLE messages DROP COLUMN IF EXISTS email;
+*/
+
 /* =============================================
    NB TOWER — script.js
    ============================================= */
@@ -480,12 +486,57 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
 
 
   /* ── 9. CONTACT FORM ────────────────────────── */
+  // Populate project dropdown
+  (async () => {
+    try {
+      const { data: projectsForForm } = await db.from('projects').select('id, name_ka, name_en').order('created_at', { ascending: false });
+      const select = document.getElementById('contact-project');
+      if (select && projectsForForm) {
+        projectsForForm.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.setAttribute('data-ka', p.name_ka);
+          opt.setAttribute('data-en', p.name_en);
+          opt.textContent = currentLang === 'ka' ? p.name_ka : p.name_en;
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) { console.warn('project dropdown load error', e); }
+  })();
+
   const contactForm = document.getElementById('contact-form');
   const formSuccess = document.getElementById('form-success');
 
   if (contactForm && formSuccess) {
     contactForm.addEventListener('submit', async e => {
       e.preventDefault();
+
+      const nameInput  = document.getElementById('contact-name');
+      const phoneInput = document.getElementById('contact-phone');
+      const errName    = document.getElementById('err-name');
+      const errPhone   = document.getElementById('err-phone');
+
+      const name  = nameInput?.value.trim() || '';
+      const phone = phoneInput?.value.trim() || '';
+
+      let valid = true;
+      if (!name) {
+        nameInput?.classList.add('error');
+        errName?.classList.add('visible');
+        valid = false;
+      } else {
+        nameInput?.classList.remove('error');
+        errName?.classList.remove('visible');
+      }
+      if (!phone) {
+        phoneInput?.classList.add('error');
+        errPhone?.classList.add('visible');
+        valid = false;
+      } else {
+        phoneInput?.classList.remove('error');
+        errPhone?.classList.remove('visible');
+      }
+      if (!valid) return;
 
       const btn     = contactForm.querySelector('.btn-submit');
       const btnText = btn?.querySelector('.btn-text');
@@ -495,13 +546,12 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en text;
       if (btnText) btnText.textContent = currentLang === 'ka' ? 'იგზავნება...' : 'Sending...';
       if (btnIcon) btnIcon.className = 'fa-solid fa-spinner fa-spin btn-icon';
 
-      const name    = contactForm.querySelector('#name').value.trim();
-      const email   = contactForm.querySelector('#email').value.trim();
-      const phone   = contactForm.querySelector('#phone').value.trim();
-      const message = contactForm.querySelector('#message').value.trim();
+      const projectSelect = document.getElementById('contact-project');
+      const projectName   = projectSelect?.options[projectSelect.selectedIndex]?.textContent || 'არ მაქვს შერჩეული';
+      const message       = document.getElementById('contact-message')?.value.trim() || '';
 
       try {
-        const { error } = await db.from('messages').insert([{ name, email, phone, message }]);
+        const { error } = await db.from('messages').insert([{ name, phone, project_name: projectName, message }]);
         if (error) console.warn('Message save failed', error);
       } catch (err) {
         console.warn('Message insert error', err);
