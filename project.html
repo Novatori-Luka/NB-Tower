@@ -256,6 +256,77 @@
     }
     .btn-cta:hover { transform: scale(1.03); }
 
+    /* ── Progress Tracker ───────────────── */
+    .project-progress { padding: 80px 0; background: #F8F8F6; }
+    .stages-line {
+      display: flex; justify-content: space-between;
+      position: relative; margin: 40px 0 20px;
+    }
+    .stages-line::before {
+      content: ''; position: absolute; top: 16px; left: 0; right: 0;
+      height: 2px; background: #E0E0E0; z-index: 0;
+    }
+    .stage {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 10px; position: relative; z-index: 1; flex: 1;
+    }
+    .stage-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: #E0E0E0; border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.4s ease;
+    }
+    .stage.active .stage-dot { background: #3DBE6C; transform: scale(1.2); }
+    .stage.completed .stage-dot { background: #3DBE6C; }
+    .stage span { font-size: 11px; color: #999; text-align: center; font-weight: 500; }
+    .stage.active span, .stage.completed span { color: #3DBE6C; font-weight: 700; }
+    .progress-bar-wrap { margin-top: 32px; }
+    .progress-bar-track { height: 8px; background: #E8E8E8; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill {
+      height: 100%; background: #3DBE6C; border-radius: 4px;
+      width: 0%; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-meta { display: flex; justify-content: space-between; margin-top: 12px; font-size: 13px; color: #999; }
+    #progress-percent-label { color: #3DBE6C; font-weight: 700; font-size: 15px; }
+
+    /* ── Calculator ──────────────────────── */
+    .project-calculator { padding: 80px 0; background: #fff; }
+    .calculator-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; margin-top: 48px; align-items: start;
+    }
+    .calc-field { margin-bottom: 28px; }
+    .calc-field label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #111; display: block; margin-bottom: 10px; }
+    .calc-value { font-size: 24px; font-weight: 700; color: #3DBE6C; }
+    .calc-amount { font-size: 14px; color: #999; margin-top: 4px; }
+    .calc-slider-wrap { display: flex; align-items: center; gap: 16px; }
+    .calc-slider-wrap input[type=range] { flex: 1; accent-color: #3DBE6C; height: 4px; }
+    .calc-slider-wrap span { font-weight: 700; color: #3DBE6C; min-width: 40px; }
+    .term-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .term-btn { padding: 8px 16px; border: 1.5px solid #E0E0E0; border-radius: 8px; background: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; font-family: inherit; }
+    .term-btn.active { background: #3DBE6C; color: #fff; border-color: #3DBE6C; }
+    .result-card { background: #3DBE6C; border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 20px; }
+    .result-label { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+    .result-amount { font-size: 48px; font-weight: 800; color: #fff; font-family: 'Fraunces', serif; }
+    .result-sub { color: rgba(255,255,255,0.7); font-size: 13px; margin-top: 8px; }
+    .result-details { background: #F8F8F6; border-radius: 12px; padding: 20px; }
+    .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EEEEEE; font-size: 14px; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row span:last-child { font-weight: 700; color: #111; }
+    @media (max-width: 768px) { .calculator-wrap { grid-template-columns: 1fr; gap: 32px; } }
+
+    /* ── Partner Banks ───────────────────── */
+    .partner-banks { padding: 80px 0; background: #F8F8F6; }
+    .section-sub { color: #888; font-size: 16px; max-width: 560px; margin: 12px auto 48px; text-align: center; }
+    .banks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .bank-card { background: #fff; border-radius: 16px; padding: 32px; border: 1.5px solid #EEEEEE; transition: all 0.2s; }
+    .bank-card:hover { border-color: #3DBE6C; box-shadow: 0 8px 30px rgba(61,190,108,0.1); transform: translateY(-4px); }
+    .bank-logo { font-size: 28px; font-weight: 900; color: #3DBE6C; font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em; margin-bottom: 8px; }
+    .bank-name { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #F0F0F0; }
+    .bank-detail { font-size: 14px; color: #666; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+    .bank-detail::before { content: '✓'; color: #3DBE6C; font-weight: 700; flex-shrink: 0; }
+    .banks-note { text-align: center; font-size: 12px; color: #AAAAAA; margin-top: 32px; }
+    @media (max-width: 768px) { .banks-grid { grid-template-columns: 1fr; } }
+
     /* ── Not found ───────────────────────── */
     .not-found-wrap {
       min-height: 80vh;
@@ -365,6 +436,140 @@
             </div>
 
           </div>
+        </div>
+      </section>
+
+      <!-- PROGRESS TRACKER -->
+      <section class="project-progress">
+        <div class="container">
+          <div class="section-label" data-ka="მშენებლობის სტატუსი" data-en="Construction Status">მშენებლობის სტატუსი</div>
+          <h2 class="section-title" data-ka="პროგრესი" data-en="Progress">პროგრესი</h2>
+          <div class="stages-line">
+            <div class="stage" data-stage="საძირკველი">
+              <div class="stage-dot"></div>
+              <span data-ka="საძირკველი" data-en="Foundation">საძირკველი</span>
+            </div>
+            <div class="stage" data-stage="კარკასი">
+              <div class="stage-dot"></div>
+              <span data-ka="კარკასი" data-en="Framework">კარკასი</span>
+            </div>
+            <div class="stage" data-stage="გარე სამუშაოები">
+              <div class="stage-dot"></div>
+              <span data-ka="გარე სამუშაოები" data-en="Exterior">გარე სამუშაოები</span>
+            </div>
+            <div class="stage" data-stage="შიდა სამუშაოები">
+              <div class="stage-dot"></div>
+              <span data-ka="შიდა სამუშაოები" data-en="Interior">შიდა სამუშაოები</span>
+            </div>
+            <div class="stage" data-stage="ჩაბარებულია">
+              <div class="stage-dot"></div>
+              <span data-ka="ჩაბარებულია" data-en="Completed">ჩაბარებულია</span>
+            </div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-meta">
+              <span id="progress-percent-label"></span>
+              <span id="progress-updated-label"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALCULATOR -->
+      <section class="project-calculator">
+        <div class="container">
+          <div class="section-label" data-ka="დაგეგმე შენი ყიდვა" data-en="Plan Your Purchase">დაგეგმე შენი ყიდვა</div>
+          <h2 class="section-title" data-ka="ბინის კალკულატორი" data-en="Payment Calculator">ბინის კალკულატორი</h2>
+          <div class="calculator-wrap">
+            <div class="calc-inputs">
+              <div class="calc-field">
+                <label data-ka="საერთო ფასი (₾)" data-en="Total Price (₾)">საერთო ფასი (₾)</label>
+                <div class="calc-value" id="calc-price-display">—</div>
+              </div>
+              <div class="calc-field">
+                <label data-ka="პირველი შენატანი" data-en="Down Payment">პირველი შენატანი</label>
+                <div class="calc-slider-wrap">
+                  <input type="range" id="down-payment-slider" min="10" max="50" value="20" step="5">
+                  <span id="down-payment-pct">20%</span>
+                </div>
+                <div class="calc-amount" id="down-payment-amount"></div>
+              </div>
+              <div class="calc-field">
+                <label data-ka="სესხის ვადა" data-en="Loan Term">სესხის ვადა</label>
+                <div class="term-buttons">
+                  <button class="term-btn active" data-years="10">10 წ.</button>
+                  <button class="term-btn" data-years="15">15 წ.</button>
+                  <button class="term-btn" data-years="20">20 წ.</button>
+                  <button class="term-btn" data-years="25">25 წ.</button>
+                </div>
+              </div>
+              <div class="calc-field">
+                <label data-ka="წლიური % განაკვეთი" data-en="Annual Interest Rate">წლიური % განაკვეთი</label>
+                <div class="calc-slider-wrap">
+                  <input type="range" id="interest-slider" min="8" max="18" value="12" step="0.5">
+                  <span id="interest-pct">12%</span>
+                </div>
+              </div>
+            </div>
+            <div class="calc-result">
+              <div class="result-card">
+                <div class="result-label" data-ka="ყოველთვიური გადასახადი" data-en="Monthly Payment">ყოველთვიური გადასახადი</div>
+                <div class="result-amount" id="monthly-payment">—</div>
+                <div class="result-sub" data-ka="გეგმური გადახდა" data-en="Estimated payment">გეგმური გადახდა</div>
+              </div>
+              <div class="result-details">
+                <div class="result-row">
+                  <span data-ka="სესხის თანხა" data-en="Loan Amount">სესხის თანხა</span>
+                  <span id="loan-amount">—</span>
+                </div>
+                <div class="result-row">
+                  <span data-ka="საერთო გადახდა" data-en="Total Payment">საერთო გადახდა</span>
+                  <span id="total-payment">—</span>
+                </div>
+                <div class="result-row">
+                  <span data-ka="სულ პროცენტი" data-en="Total Interest">სულ პროცენტი</span>
+                  <span id="total-interest">—</span>
+                </div>
+              </div>
+              <button class="btn-primary calc-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" style="width:100%;margin-top:20px" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARTNER BANKS -->
+      <section class="partner-banks">
+        <div class="container">
+          <div class="section-label" data-ka="დაფინანსება" data-en="Financing">დაფინანსება</div>
+          <h2 class="section-title" data-ka="პარტნიორი ბანკები" data-en="Partner Banks">პარტნიორი ბანკები</h2>
+          <p class="section-sub" data-ka="NB Tower-ის პროექტებზე შეგიძლიათ ისარგებლოთ შემდეგი ბანკების იპოთეკური პირობებით" data-en="You can finance NB Tower projects through our partner banks">NB Tower-ის პროექტებზე შეგიძლიათ ისარგებლოთ შემდეგი ბანკების იპოთეკური პირობებით</p>
+          <div class="banks-grid">
+            <div class="bank-card">
+              <div class="bank-logo">BOG</div>
+              <div class="bank-name" data-ka="საქართველოს ბანკი" data-en="Bank of Georgia">საქართველოს ბანკი</div>
+              <div class="bank-detail" data-ka="განაკვეთი: წლიური 9%-დან" data-en="Rate: from 9% annually">განაკვეთი: წლიური 9%-დან</div>
+              <div class="bank-detail" data-ka="ვადა: 5-25 წელი" data-en="Term: 5-25 years">ვადა: 5-25 წელი</div>
+              <div class="bank-detail" data-ka="პირველი შენატანი: 20%-დან" data-en="Down payment: from 20%">პირველი შენატანი: 20%-დან</div>
+            </div>
+            <div class="bank-card">
+              <div class="bank-logo">TBC</div>
+              <div class="bank-name">TBC ბანკი</div>
+              <div class="bank-detail" data-ka="განაკვეთი: წლიური 10%-დან" data-en="Rate: from 10% annually">განაკვეთი: წლიური 10%-დან</div>
+              <div class="bank-detail" data-ka="ვადა: 5-20 წელი" data-en="Term: 5-20 years">ვადა: 5-20 წელი</div>
+              <div class="bank-detail" data-ka="პირველი შენატანი: 20%-დან" data-en="Down payment: from 20%">პირველი შენატანი: 20%-დან</div>
+            </div>
+            <div class="bank-card">
+              <div class="bank-logo">LIB</div>
+              <div class="bank-name" data-ka="ლიბერთი ბანკი" data-en="Liberty Bank">ლიბერთი ბანკი</div>
+              <div class="bank-detail" data-ka="განაკვეთი: წლიური 11%-დან" data-en="Rate: from 11% annually">განაკვეთი: წლიური 11%-დან</div>
+              <div class="bank-detail" data-ka="ვადა: 5-20 წელი" data-en="Term: 5-20 years">ვადა: 5-20 წელი</div>
+              <div class="bank-detail" data-ka="პირველი შენატანი: 25%-დან" data-en="Down payment: from 25%">პირველი შენატანი: 25%-დან</div>
+            </div>
+          </div>
+          <p class="banks-note" data-ka="* საბანკო პირობები ინდივიდუალურია. დეტალებისთვის დაგვიკავშირდით." data-en="* Bank terms are individual. Contact us for details.">* საბანკო პირობები ინდივიდუალურია. დეტალებისთვის დაგვიკავშირდით.</p>
         </div>
       </section>
 
@@ -626,6 +831,75 @@
       `).join('');
     }
 
+    /* ── Progress Tracker ────────────────── */
+    function populateProgress(p) {
+      const fill = document.getElementById('progress-fill');
+      const pct  = p.progress_percent || 0;
+      const stage = p.progress_stage || '';
+      setTimeout(() => { if (fill) fill.style.width = pct + '%'; }, 300);
+      const pctEl = document.getElementById('progress-percent-label');
+      const updEl = document.getElementById('progress-updated-label');
+      if (pctEl) pctEl.textContent = pct + '% დასრულებული / Complete';
+      if (updEl) updEl.textContent = 'განახლდა: ' + (p.progress_updated || '—');
+      const stages = ['საძირკველი','კარკასი','გარე სამუშაოები','შიდა სამუშაოები','ჩაბარებულია'];
+      const currentIdx = stages.indexOf(stage);
+      document.querySelectorAll('.stage').forEach((el, i) => {
+        if (i < currentIdx) el.classList.add('completed');
+        if (i === currentIdx) el.classList.add('active');
+      });
+    }
+
+    /* ── Calculator ───────────────────────── */
+    function initCalculator(p) {
+      let calcPrice = p.price_total || 0;
+      let downPct   = 20;
+      let termYears = 10;
+      let interestRate = 12;
+
+      function formatGEL(n) {
+        return '₾' + Math.round(n).toLocaleString('en');
+      }
+
+      function calcMonthly() {
+        if (!calcPrice) return;
+        const down = calcPrice * (downPct / 100);
+        const loan = calcPrice - down;
+        const monthlyRate = (interestRate / 100) / 12;
+        const n = termYears * 12;
+        const monthly = loan * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+        const totalPayment = monthly * n;
+        const totalInterest = totalPayment - loan;
+        document.getElementById('monthly-payment').textContent  = formatGEL(monthly) + ' / თვე';
+        document.getElementById('loan-amount').textContent      = formatGEL(loan);
+        document.getElementById('total-payment').textContent    = formatGEL(totalPayment);
+        document.getElementById('total-interest').textContent   = formatGEL(totalInterest);
+        document.getElementById('down-payment-amount').textContent = formatGEL(down);
+      }
+
+      const priceEl = document.getElementById('calc-price-display');
+      if (priceEl) priceEl.textContent = calcPrice ? formatGEL(calcPrice) : '—';
+      calcMonthly();
+
+      document.getElementById('down-payment-slider')?.addEventListener('input', e => {
+        downPct = parseInt(e.target.value);
+        document.getElementById('down-payment-pct').textContent = downPct + '%';
+        calcMonthly();
+      });
+      document.getElementById('interest-slider')?.addEventListener('input', e => {
+        interestRate = parseFloat(e.target.value);
+        document.getElementById('interest-pct').textContent = interestRate + '%';
+        calcMonthly();
+      });
+      document.querySelectorAll('.term-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.term-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          termYears = parseInt(btn.dataset.years);
+          calcMonthly();
+        });
+      });
+    }
+
     /* ── Main load ────────────────────────── */
     async function loadProject() {
       const params = new URLSearchParams(window.location.search);
@@ -649,6 +923,8 @@
         populateInfoCards(p);
         populateDescription(p);
         buildFloorSelector(p.total_floors);
+        populateProgress(p);
+        initCalculator(p);
 
         // Show content, hide loading
         document.getElementById('project-loading').style.display = 'none';

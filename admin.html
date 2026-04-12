@@ -20,6 +20,12 @@
     const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     /* ALTER TABLE projects ALTER COLUMN area_sqm TYPE text; */
+    /*
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_percent int DEFAULT 0;
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_stage text DEFAULT 'საძირკველი';
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS progress_updated text;
+    ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_total int DEFAULT 0;
+    */
 </script>
 
   <style>
@@ -1462,6 +1468,31 @@
       <div class="form-group">
         <label>Description in English (EN)</label>
         <textarea id="f-descEn" placeholder="Project description in English...">${escHtml(p.description_en||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>ფასი (₾) / Price (GEL)</label>
+        <input type="number" id="f-priceTotal" value="${escHtml(String(p.price_total||''))}" placeholder="მაგ. 250000" min="0" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>მშენებლობის პროგრესი % / Progress %</label>
+          <input type="number" id="f-progressPercent" value="${escHtml(String(p.progress_percent||''))}" placeholder="0-100" min="0" max="100" />
+        </div>
+        <div class="form-group">
+          <label>ბოლო განახლება / Last Updated</label>
+          <input type="text" id="f-progressUpdated" value="${escHtml(p.progress_updated||'')}" placeholder="მაგ. მარტი 2025" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>მშენებლობის სტადია / Progress Stage</label>
+        <select id="f-progressStage">
+          <option value="საძირკველი"      ${(p.progress_stage==='საძირკველი')     ?'selected':''}>საძირკველი / Foundation</option>
+          <option value="კარკასი"          ${(p.progress_stage==='კარკასი')         ?'selected':''}>კარკასი / Framework</option>
+          <option value="გარე სამუშაოები" ${(p.progress_stage==='გარე სამუშაოები')?'selected':''}>გარე სამუშაოები / Exterior Works</option>
+          <option value="შიდა სამუშაოები" ${(p.progress_stage==='შიდა სამუშაოები')?'selected':''}>შიდა სამუშაოები / Interior Works</option>
+          <option value="დასრულება"        ${(p.progress_stage==='დასრულება')       ?'selected':''}>დასრულება / Finishing</option>
+          <option value="ჩაბარებულია"      ${(p.progress_stage==='ჩაბარებულია')    ?'selected':''}>ჩაბარებულია / Completed</option>
+        </select>
       </div>`;
   }
 
@@ -1474,9 +1505,13 @@
       status:      document.getElementById('f-status').value,
       totalFloors: parseInt(document.getElementById('f-totalFloors')?.value) || null,
       areaSqm:     JSON.stringify([...document.querySelectorAll('#area-checkboxes input:checked')].map(cb => parseInt(cb.value))),
-      paymentType: document.getElementById('f-paymentType')?.value || null,
-      descKa:      document.getElementById('f-descKa')?.value.trim() || null,
-      descEn:      document.getElementById('f-descEn')?.value.trim() || null,
+      paymentType:      document.getElementById('f-paymentType')?.value || null,
+      descKa:           document.getElementById('f-descKa')?.value.trim() || null,
+      descEn:           document.getElementById('f-descEn')?.value.trim() || null,
+      priceTotal:       parseInt(document.getElementById('f-priceTotal')?.value) || null,
+      progressPercent:  parseInt(document.getElementById('f-progressPercent')?.value) || 0,
+      progressStage:    document.getElementById('f-progressStage')?.value || null,
+      progressUpdated:  document.getElementById('f-progressUpdated')?.value.trim() || null,
     };
   }
 
@@ -1495,8 +1530,12 @@
       total_floors:   data.totalFloors || null,
       area_sqm:       data.areaSqm || null,
       payment_type:   data.paymentType || null,
-      description_ka: data.descKa || null,
-      description_en: data.descEn || null,
+      description_ka:  data.descKa || null,
+      description_en:  data.descEn || null,
+      price_total:     data.priceTotal || null,
+      progress_percent: data.progressPercent ?? 0,
+      progress_stage:  data.progressStage || null,
+      progress_updated: data.progressUpdated || null,
     };
     try {
       if (id) {
