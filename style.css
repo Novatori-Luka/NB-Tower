@@ -1419,7 +1419,7 @@ main { counter-reset: section-num; }
   /* ── Hero ───────────────────────────────── */
   .hero-badge {
     max-width: 90%;
-    margin: 80px auto 0;
+    margin: 24px auto 0;
     white-space: normal;
     text-align: center;
     font-size: 13px;
