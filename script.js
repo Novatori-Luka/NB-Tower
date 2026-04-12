@@ -576,19 +576,19 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   // Populate selects from NB_CONSTANTS
   (function populateHeroSearch() {
     const cityEl    = document.getElementById('h-city');
-    const areaEl    = document.getElementById('h-area');
+    const priceEl   = document.getElementById('h-price');
     const paymentEl = document.getElementById('h-payment');
     if (!cityEl || typeof NB_CONSTANTS === 'undefined') return;
     cityEl.innerHTML    = NB_CONSTANTS.cities.map(c => `<option value="${c}">${c}</option>`).join('');
-    areaEl.innerHTML    = NB_CONSTANTS.areas.map(a => `<option value="${a.value}">${a.label}</option>`).join('');
+    priceEl.innerHTML   = NB_CONSTANTS.priceRanges.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
     paymentEl.innerHTML = NB_CONSTANTS.paymentTypes.map(p => `<option value="${p}">${p}</option>`).join('');
   })();
 
   window.handleHeroSearch = function() {
     const city    = document.getElementById('h-city')?.value    || '';
-    const area    = document.getElementById('h-area')?.value    || '';
+    const price   = document.getElementById('h-price')?.value   || '';
     const payment = document.getElementById('h-payment')?.value || '';
-    const params  = new URLSearchParams({ city, area, payment });
+    const params  = new URLSearchParams({ city, price, payment });
     window.location.href = '/search?' + params.toString();
   };
 

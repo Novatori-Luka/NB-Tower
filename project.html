@@ -858,15 +858,6 @@
     }
 
     /* ── Populate info cards ──────────────── */
-    function formatAreaRanges(areaSqmRaw) {
-      const map = { 45: '30–60', 75: '60–90', 105: '90–120', 150: '120+' };
-      try {
-        const arr = JSON.parse(areaSqmRaw || '[]');
-        if (!arr.length) return '—';
-        return arr.map(v => map[v] ? map[v] + ' კვ.მ' : v + ' კვ.მ').join(', ');
-      } catch { return areaSqmRaw || '—'; }
-    }
-
     function populateInfoCards(p) {
       const container = document.getElementById('info-cards');
       if (!container) return;
@@ -881,7 +872,6 @@
         { labelKa: 'კატეგორია',    labelEn: 'Category',     value: currentLang === 'ka' ? catKa : catEn },
         { labelKa: 'სტატუსი',     labelEn: 'Status',       value: currentLang === 'ka' ? statKa : statEn },
         { labelKa: 'სართულები',   labelEn: 'Total Floors',  value: p.total_floors ? `${p.total_floors} სართული` : '—' },
-        { labelKa: 'ფართი',       labelEn: 'Area',          value: formatAreaRanges(p.area_sqm) },
         { labelKa: 'გადახდა',     labelEn: 'Payment',       value: p.payment_type || '—' },
       ];
 

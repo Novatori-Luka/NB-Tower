@@ -4,12 +4,12 @@
 
 const NB_CONSTANTS = {
   cities: ['თბილისი', 'ბათუმი', 'ქუთაისი', 'მცხეთა', 'რუსთავი'],
-  areas: [
-    { label: 'ნებისმიერი', value: 'any',    min: 0,   max: 99999 },
-    { label: '30 – 60 კვ.მ', value: '30-60',  min: 30,  max: 61    },
-    { label: '60 – 90 კვ.მ', value: '60-90',  min: 60,  max: 91    },
-    { label: '90 – 120 კვ.მ', value: '90-120', min: 90,  max: 121   },
-    { label: '120+ კვ.მ',    value: '120+',   min: 120, max: 99999 }
+  priceRanges: [
+    { label: 'ნებისმიერი / Any',     value: 'any',      min: 0,    max: 99999 },
+    { label: '$800 – $900 / კვ.მ',   value: '800-900',  min: 800,  max: 900   },
+    { label: '$900 – $1000 / კვ.მ',  value: '900-1000', min: 900,  max: 1000  },
+    { label: '$1000 – $1200 / კვ.მ', value: '1000-1200',min: 1000, max: 1200  },
+    { label: '$1200+ / კვ.მ',        value: '1200+',    min: 1200, max: 99999 }
   ],
   paymentTypes: ['ყველა', 'იპოთეკა', 'განვადება', 'სრული გადახდა'],
   categories:   ['საცხოვრებელი', 'კომერციული']

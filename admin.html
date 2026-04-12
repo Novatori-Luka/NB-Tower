@@ -1438,20 +1438,9 @@
           <option value="ongoing"   ${(p.status==='ongoing')  ?'selected':''}>მიმდინარე / Ongoing</option>
         </select>
       </div>
-      <div class="form-row-2">
-        <div class="form-group">
-          <label>სართულები / Total Floors</label>
-          <input type="number" id="f-totalFloors" value="${escHtml(String(p.total_floors||''))}" placeholder="მაგ. 12" min="1" />
-        </div>
-        <div class="form-group">
-          <label>ფართი კვ.მ / Area sqm</label>
-          <div class="checkbox-group" id="area-checkboxes" data-saved='${escHtml(p.area_sqm || "[]")}'>
-            <label class="checkbox-item"><input type="checkbox" value="45"> 30 – 60 კვ.მ</label>
-            <label class="checkbox-item"><input type="checkbox" value="75"> 60 – 90 კვ.მ</label>
-            <label class="checkbox-item"><input type="checkbox" value="105"> 90 – 120 კვ.მ</label>
-            <label class="checkbox-item"><input type="checkbox" value="150"> 120+ კვ.მ</label>
-          </div>
-        </div>
+      <div class="form-group">
+        <label>სართულები / Total Floors</label>
+        <input type="number" id="f-totalFloors" value="${escHtml(String(p.total_floors||''))}" placeholder="მაგ. 12" min="1" />
       </div>
       <div class="form-group">
         <label>გადახდის ტიპი / Payment Type</label>
@@ -1516,7 +1505,6 @@
       location:    document.getElementById('f-location').value.trim(),
       status:      document.getElementById('f-status').value,
       totalFloors: parseInt(document.getElementById('f-totalFloors')?.value) || null,
-      areaSqm:     JSON.stringify([...document.querySelectorAll('#area-checkboxes input:checked')].map(cb => parseInt(cb.value))),
       paymentType:      document.getElementById('f-paymentType')?.value || null,
       descKa:           document.getElementById('f-descKa')?.value.trim() || null,
       descEn:           document.getElementById('f-descEn')?.value.trim() || null,
@@ -1542,7 +1530,6 @@
       status:         data.status,
       image_url:      data.imageUrl || null,
       total_floors:   data.totalFloors || null,
-      area_sqm:       data.areaSqm || null,
       payment_type:   data.paymentType || null,
       description_ka:  data.descKa || null,
       description_en:  data.descEn || null,
@@ -1579,15 +1566,6 @@
     }
   }
 
-  function initAreaCheckboxes() {
-    const group = document.getElementById('area-checkboxes');
-    if (!group) return;
-    const saved = JSON.parse(group.dataset.saved || '[]');
-    group.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      cb.checked = saved.includes(parseInt(cb.value));
-    });
-  }
-
   window.openAddProjectModal = function() {
     currentProjectFile = null;
     currentProjectExistingUrl = null;
@@ -1603,7 +1581,6 @@
       closeModal();
       toast('პროექტი დამატებულია! / Project added!');
     });
-    initAreaCheckboxes();
     setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
@@ -1625,7 +1602,6 @@
       closeModal();
       toast('პროექტი განახლებულია! / Project updated!');
     });
-    initAreaCheckboxes();
     setupUpload('photo-upload', 'photo-preview', currentProjectFile, f => { currentProjectFile = f; });
   };
 
