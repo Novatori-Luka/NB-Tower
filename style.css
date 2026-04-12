@@ -1479,12 +1479,20 @@ main { counter-reset: section-num; }
     white-space: nowrap;
   }
 
+  /* ── Contact title ──────────────────────── */
+  #contact .section-title, #contact h2 {
+    font-size: clamp(28px, 8vw, 42px);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+  }
+
   /* ── Stats ──────────────────────────────── */
-  .stats { overflow: hidden; }
+  .stats { overflow: hidden; padding: 40px 0; }
   .stats-grid { grid-template-columns: 1fr 1fr; width: 100%; overflow: hidden; }
-  .stat-card { padding: 20px 12px; }
-  .stat-number { font-size: 1.75rem; }
-  .stat-label { font-size: 12px; text-align: center; }
+  .stat-card { padding: 32px 16px; }
+  .stat-number { font-size: 42px; }
+  .stat-label { font-size: 13px; text-align: center; margin-top: 8px; }
   .stat-card + .stat-card::before { display: none; }
   .stat-card:nth-child(even) { border-left: 1px solid rgba(255,255,255,0.2); }
   .stat-card:nth-child(3),
