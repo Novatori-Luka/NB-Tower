@@ -97,42 +97,39 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     if (!grid) return;
     grid.innerHTML = projects.map((p, i) => {
       const delay    = (i % 3) * 0.08;
-      const isWide   = p.category === 'commercial';
-      const isTall   = p.category === 'residential' && i % 2 === 0;
       const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
       const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
       const badgeEn  = p.status === 'completed' ? 'Completed' : 'Ongoing';
+      const catKa    = p.category === 'residential' ? 'საცხოვრებელი' : 'კომერციული';
+      const catEn    = p.category === 'residential' ? 'Residential' : 'Commercial';
       const typeKa   = p.category === 'residential' ? 'საცხოვრებელი კომპლექსი' : 'კომერციული ცენტრი';
       const typeEn   = p.category === 'residential' ? 'Residential Complex' : 'Commercial Center';
-      const pvClass  = isWide ? 'pv-wide' : isTall ? 'pv-tall' : '';
-      const thumbStyle = p.imageUrl
-        ? `style="background-image:url('${p.imageUrl}');background-size:cover;background-position:center"`
-        : '';
+      const priceVal = p.pricePerSqmFull || p.price_per_sqm_full || null;
+      const priceStr = priceVal ? `$${Number(priceVal).toLocaleString()}/კვ.მ` : null;
+
+      const thumbInner = p.imageUrl
+        ? `<img class="project-thumb-img" src="${p.imageUrl}" alt="${p.nameKa}" loading="lazy">`
+        : `<div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>`;
+
       return `
-        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s;cursor:pointer" onclick="window.location.href='/project?id=${p.id}'">
-          <div class="project-thumb" ${thumbStyle}>
-            ${!p.imageUrl ? `<div class="project-visual">
-              <div class="pv-building ${pvClass}">
-                <div class="pv-b-body"></div>
-                ${!isWide ? '<div class="pv-b-top"></div>' : ''}
-                <div class="pv-b-windows">
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                </div>
-              </div>
-            </div>` : ''}
-            <div class="project-overlay">
-              <a href="/project?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
-            </div>
+        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s" onclick="window.location.href='/project?id=${p.id}'">
+          <div class="project-thumb">
+            ${thumbInner}
+            <span class="project-thumb-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
           </div>
           <div class="project-info">
-            <div class="project-meta">
-              <span class="project-location"><i class="fa-solid fa-location-dot"></i> ${p.location}</span>
-              <span class="project-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
-            </div>
+            <span class="project-cat-tag" data-ka="${catKa}" data-en="${catEn}">${catKa}</span>
             <h3 class="project-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</h3>
-            <p class="project-type" data-ka="${typeKa}" data-en="${typeEn}">${typeKa}</p>
+            <div class="project-location">
+              <i class="fa-solid fa-location-dot"></i>${p.location}
+            </div>
+            <div class="project-card-footer">
+              <div>
+                <div class="project-price-label" data-ka="${priceStr ? 'კვ.მ ფასი' : typeKa}" data-en="${priceStr ? 'Price/sqm' : typeEn}">${priceStr ? (currentLang === 'ka' ? 'კვ.მ ფასი' : 'Price/sqm') : typeKa}</div>
+                <div class="project-price-value">${priceStr || `<span style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">${currentLang === 'ka' ? 'დეტალების ნახვა' : 'View details'}</span>`}</div>
+              </div>
+              <div class="project-view-btn" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></div>
+            </div>
           </div>
         </div>`;
     }).join('');
