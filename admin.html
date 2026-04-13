@@ -742,6 +742,111 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: #bbb; }
+
+    /* ── FLOOR PLAN DESIGNER ──────────────────────── */
+    .designer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9000;
+      display: none;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+    .designer-box {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .designer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: #111;
+      border-bottom: 1px solid #222;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .designer-head-left { display: flex; align-items: center; gap: 20px; }
+    .designer-title { color: #fff; font-size: 0.95rem; font-weight: 700; }
+    .designer-tools { display: flex; gap: 6px; }
+    .designer-tool {
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .designer-tool:hover { background: rgba(255,255,255,0.07); }
+    .designer-tool.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 700; }
+    .designer-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .designer-canvas-area {
+      flex: 1;
+      overflow: auto;
+      background: #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .designer-svg-container {
+      background: #F8F7F4;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 900px;
+    }
+    .designer-props-panel {
+      width: 260px;
+      flex-shrink: 0;
+      background: #fafafa;
+      border-left: 1px solid #e8e8e8;
+      padding: 20px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .designer-props-panel h4 { font-size: 0.9rem; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .designer-props-panel .form-group { margin-bottom: 10px; }
+    .designer-props-panel label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+    .designer-props-panel input,
+    .designer-props-panel select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      background: #fff;
+      color: #111;
+      box-sizing: border-box;
+    }
+    .designer-props-panel input:focus,
+    .designer-props-panel select:focus { outline: none; border-color: var(--green); }
+    .designer-empty-hint {
+      text-align: center;
+      color: #bbb;
+      font-size: 13px;
+      padding: 24px 0;
+      line-height: 1.8;
+    }
+    .designer-empty-hint i { font-size: 2rem; display: block; margin-bottom: 10px; color: #ddd; }
   </style>
 </head>
 <body>
@@ -1123,10 +1228,16 @@
             <h2>ბინები / Apartments</h2>
             <p>პროექტის ბინების მართვა — სართულის მიხედვით</p>
           </div>
-          <button class="btn btn-primary" onclick="openAddAptModal()">
-            <i class="fa-solid fa-plus"></i>
-            ბინის დამატება / Add
-          </button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary" id="btn-open-designer" onclick="openFloorDesigner()" style="display:none">
+              <i class="fa-solid fa-drafting-compass"></i>
+              გეგმის რედაქტირება / Design
+            </button>
+            <button class="btn btn-primary" onclick="openAddAptModal()">
+              <i class="fa-solid fa-plus"></i>
+              ბინის დამატება / Add
+            </button>
+          </div>
         </div>
 
         <!-- Filters -->
@@ -1172,6 +1283,119 @@
     </div><!-- /page-content -->
   </div><!-- /main-content -->
 </div><!-- /admin-panel -->
+
+<!-- ═══════════════════════════════════════════
+     FLOOR PLAN DESIGNER
+═══════════════════════════════════════════ -->
+<div class="designer-overlay" id="designer-overlay">
+  <div class="designer-box">
+
+    <!-- Toolbar -->
+    <div class="designer-head">
+      <div class="designer-head-left">
+        <span class="designer-title" id="designer-title">სართულის გეგმა</span>
+        <div class="designer-tools">
+          <button class="designer-tool active" id="tool-draw" onclick="setDesignerTool('draw')">
+            <i class="fa-solid fa-pen-to-square"></i> დახაზვა
+          </button>
+          <button class="designer-tool" id="tool-select" onclick="setDesignerTool('select')">
+            <i class="fa-solid fa-arrow-pointer"></i> არჩევა
+          </button>
+        </div>
+        <span style="color:#666;font-size:12px" id="designer-hint">დახაზვის რეჟიმი: გამოსახეთ ბინა SVG-ზე</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="saveDesignerApts()" style="background:#3DBE6C;color:#000;border-color:#3DBE6C;font-weight:700">
+          <i class="fa-solid fa-floppy-disk"></i> შენახვა / Save
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="closeDesigner()">
+          <i class="fa-solid fa-xmark"></i> დახურვა
+        </button>
+      </div>
+    </div>
+
+    <!-- Body: canvas + props -->
+    <div class="designer-body">
+
+      <!-- SVG Canvas -->
+      <div class="designer-canvas-area">
+        <div class="designer-svg-container">
+          <svg id="apt-svg" viewBox="0 0 800 440" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;cursor:crosshair">
+            <defs>
+              <pattern id="dgrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" stroke-width="0.4"/>
+              </pattern>
+            </defs>
+            <!-- Background -->
+            <rect width="800" height="440" fill="#F8F7F4"/>
+            <rect width="800" height="440" fill="url(#dgrid)"/>
+            <!-- Outer wall -->
+            <rect x="20" y="20" width="760" height="400" fill="none" stroke="#2c2c2a" stroke-width="2" rx="4"/>
+            <!-- Corridor -->
+            <rect x="20" y="160" width="760" height="110" fill="#e8e4dc" stroke="#c8c4bc" stroke-width="0.5"/>
+            <text x="400" y="220" text-anchor="middle" font-size="12" fill="#aaa" font-family="system-ui,sans-serif">დერეფანი / Corridor</text>
+            <!-- Stairwells -->
+            <rect x="350" y="160" width="80" height="110" fill="#d4cfc6" stroke="#b0aca4" stroke-width="0.5"/>
+            <text x="390" y="219" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,sans-serif">სად. I</text>
+            <rect x="645" y="160" width="80" height="110" fill="#d4cfc6" stroke="#b0aca4" stroke-width="0.5"/>
+            <text x="685" y="219" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,sans-serif">სად. II</text>
+            <!-- Apartments group -->
+            <g id="designer-apts-group"></g>
+            <!-- Rubber-band rect (drawn during drag) -->
+            <rect id="rubber-band" fill="rgba(61,190,108,0.15)" stroke="#3DBE6C" stroke-width="1.5" stroke-dasharray="5 3" display="none" rx="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Properties panel -->
+      <div class="designer-props-panel">
+        <div id="designer-empty-hint" class="designer-empty-hint">
+          <i class="fa-solid fa-pen-ruler"></i>
+          SVG-ზე გამოსახეთ ბინა<br>
+          <small style="color:#ccc">მარცხენა ღილაკს დაჭერით გადაათრიეთ</small>
+        </div>
+        <div id="designer-form" style="display:none">
+          <h4>ბინის პარამეტრები</h4>
+          <div class="form-group">
+            <label>ბინის №</label>
+            <input id="dp-num" type="text" placeholder="A-101" oninput="syncSelectedApt()"/>
+          </div>
+          <div class="form-group">
+            <label>ფართი კვ.მ</label>
+            <input id="dp-area" type="number" placeholder="65" oninput="syncSelectedApt()"/>
+          </div>
+          <div class="form-group">
+            <label>ოთახი</label>
+            <input id="dp-rooms" type="number" placeholder="2" oninput="syncSelectedApt()"/>
+          </div>
+          <div class="form-group">
+            <label>ფასი ($)</label>
+            <input id="dp-price" type="number" placeholder="85000" oninput="syncSelectedApt()"/>
+          </div>
+          <div class="form-group">
+            <label>სტატუსი</label>
+            <select id="dp-status" onchange="syncSelectedApt()">
+              <option value="free">თავისუფალი / Free</option>
+              <option value="reserved">დაჯავშნილი / Reserved</option>
+              <option value="sold">გაყიდული / Sold</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>შესასვლელი (top / bottom)</label>
+            <select id="dp-entry" onchange="syncSelectedApt()">
+              <option value="bottom">ქვედა / Bottom</option>
+              <option value="top">ზედა / Top</option>
+            </select>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="deleteSelectedApt()" style="width:100%;margin-top:4px">
+            <i class="fa-solid fa-trash"></i> წაშლა / Delete
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      MODAL
@@ -2158,14 +2382,24 @@
     sel.innerHTML = '<option value="">— აირჩიეთ / Select —</option>' +
       data.map(p => `<option value="${p.id}" data-floors="${p.total_floors || 10}">${escHtml(p.name_ka)}</option>`).join('');
 
+    const floorSel     = document.getElementById('apt-floor-select');
+    const designerBtn  = document.getElementById('btn-open-designer');
+
+    function updateDesignerBtn() {
+      const hasBoth = sel.value && floorSel.value;
+      if (designerBtn) designerBtn.style.display = hasBoth ? '' : 'none';
+    }
+
     sel.addEventListener('change', () => {
       const opt = sel.selectedOptions[0];
       const floors = parseInt(opt?.dataset.floors) || 10;
-      const floorSel = document.getElementById('apt-floor-select');
       if (!floorSel) return;
       floorSel.innerHTML = '<option value="">ყველა / All</option>' +
         Array.from({ length: floors }, (_, i) => `<option value="${i + 1}">${i + 1} სართული</option>`).join('');
+      updateDesignerBtn();
     });
+
+    floorSel.addEventListener('change', updateDesignerBtn);
   }
 
   window.loadApartments = async function() {
@@ -2322,6 +2556,246 @@
       loadApartments();
     });
   };
+
+  /* ── FLOOR PLAN DESIGNER ─────────────────────── */
+  let dProjId   = null;
+  let dFloor    = null;
+  let dApts     = [];      // all apts on this floor (in-memory)
+  let dDeleted  = [];      // IDs to delete on save
+  let dSelId    = null;    // tempId of selected apt
+  let dTool     = 'draw';  // 'draw' | 'select'
+  let dDrawing  = false;
+  let dStart    = null;
+  let dTempCtr  = 0;
+
+  const STATUS_FILL   = { free:'rgba(61,190,108,0.25)', reserved:'rgba(245,158,11,0.2)', sold:'rgba(180,180,180,0.2)' };
+  const STATUS_STROKE = { free:'#3DBE6C', reserved:'#f59e0b', sold:'#aaa' };
+  const STATUS_TEXT   = { free:'#1a4731', reserved:'#92400e', sold:'#555' };
+
+  function svgCoords(svg, e) {
+    const r = svg.getBoundingClientRect();
+    return {
+      x: ((e.clientX - r.left) / r.width)  * 800,
+      y: ((e.clientY - r.top)  / r.height) * 440,
+    };
+  }
+
+  window.openFloorDesigner = function() {
+    const projId = document.getElementById('apt-project-select')?.value;
+    const floor  = parseInt(document.getElementById('apt-floor-select')?.value);
+    if (!projId || !floor) { toast('პროექტი და სართული ასარჩევია', 'error'); return; }
+
+    dProjId  = projId;
+    dFloor   = floor;
+    dApts    = [];
+    dDeleted = [];
+    dSelId   = null;
+    dTempCtr = 0;
+
+    const projName = document.getElementById('apt-project-select').selectedOptions[0]?.text || '';
+    document.getElementById('designer-title').textContent = `${projName} — სართული ${floor}`;
+    document.getElementById('designer-overlay').style.display = 'flex';
+    document.getElementById('designer-empty-hint').style.display = '';
+    document.getElementById('designer-form').style.display = 'none';
+
+    setDesignerTool('draw');
+    initDesignerSVG();
+    loadDesignerApts();
+  };
+
+  async function loadDesignerApts() {
+    const { data } = await db.from('apartments').select('*')
+      .eq('project_id', dProjId).eq('floor', dFloor);
+    dApts = (data || []).map(a => ({ ...a, tempId: 'db_' + a.id }));
+    renderDesigner();
+  }
+
+  function renderDesigner() {
+    const g = document.getElementById('designer-apts-group');
+    if (!g) return;
+    g.innerHTML = '';
+
+    dApts.forEach(apt => {
+      const sel    = apt.tempId === dSelId;
+      const fill   = STATUS_FILL[apt.status]   || STATUS_FILL.free;
+      const stroke = STATUS_STROKE[apt.status] || STATUS_STROKE.free;
+      const tCol   = STATUS_TEXT[apt.status]   || STATUS_TEXT.free;
+      const cx = apt.x + apt.w / 2;
+      const cy = apt.y + apt.h / 2;
+
+      const group = document.createElementNS('http://www.w3.org/2000/svg','g');
+      group.style.cursor = 'pointer';
+
+      const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x', apt.x); rect.setAttribute('y', apt.y);
+      rect.setAttribute('width', apt.w); rect.setAttribute('height', apt.h);
+      rect.setAttribute('fill', fill);
+      rect.setAttribute('stroke', stroke);
+      rect.setAttribute('stroke-width', sel ? '2.5' : '1.5');
+      rect.setAttribute('stroke-dasharray', sel ? '6 3' : 'none');
+      rect.setAttribute('rx', '3');
+
+      const mkTxt = (txt, dy, size, bold) => {
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', cx); t.setAttribute('y', cy + dy);
+        t.setAttribute('text-anchor','middle');
+        t.setAttribute('font-size', size);
+        t.setAttribute('fill', tCol);
+        t.setAttribute('font-family','system-ui,sans-serif');
+        if (bold) t.setAttribute('font-weight','700');
+        t.textContent = txt;
+        return t;
+      };
+
+      group.appendChild(rect);
+      if (apt.apt_number) group.appendChild(mkTxt('ბ. ' + apt.apt_number, -10, 12, true));
+      if (apt.area)       group.appendChild(mkTxt(apt.area + ' მ²', 6, 11, false));
+      if (apt.rooms)      group.appendChild(mkTxt(apt.rooms + ' ოთ.', 20, 10, false));
+
+      group.addEventListener('click', e => {
+        e.stopPropagation();
+        selectApt(apt.tempId);
+      });
+
+      g.appendChild(group);
+    });
+  }
+
+  function selectApt(tempId) {
+    dSelId = tempId;
+    const apt = dApts.find(a => a.tempId === tempId);
+    if (!apt) return;
+    document.getElementById('designer-empty-hint').style.display = 'none';
+    document.getElementById('designer-form').style.display = '';
+    document.getElementById('dp-num').value    = apt.apt_number || '';
+    document.getElementById('dp-area').value   = apt.area  || '';
+    document.getElementById('dp-rooms').value  = apt.rooms || '';
+    document.getElementById('dp-price').value  = apt.price || '';
+    document.getElementById('dp-status').value = apt.status || 'free';
+    document.getElementById('dp-entry').value  = apt.entry || 'bottom';
+    renderDesigner();
+    setDesignerTool('select');
+  }
+
+  window.syncSelectedApt = function() {
+    const apt = dApts.find(a => a.tempId === dSelId);
+    if (!apt) return;
+    apt.apt_number = document.getElementById('dp-num').value.trim();
+    apt.area       = parseFloat(document.getElementById('dp-area').value)  || null;
+    apt.rooms      = parseInt(document.getElementById('dp-rooms').value)   || null;
+    apt.price      = parseFloat(document.getElementById('dp-price').value) || null;
+    apt.status     = document.getElementById('dp-status').value;
+    apt.entry      = document.getElementById('dp-entry').value;
+    renderDesigner();
+  };
+
+  window.deleteSelectedApt = function() {
+    if (!dSelId) return;
+    const idx = dApts.findIndex(a => a.tempId === dSelId);
+    if (idx < 0) return;
+    const apt = dApts[idx];
+    if (apt.id) dDeleted.push(apt.id);
+    dApts.splice(idx, 1);
+    dSelId = null;
+    document.getElementById('designer-empty-hint').style.display = '';
+    document.getElementById('designer-form').style.display = 'none';
+    renderDesigner();
+  };
+
+  window.saveDesignerApts = async function() {
+    for (const id of dDeleted) {
+      await db.from('apartments').delete().eq('id', id);
+    }
+    dDeleted = [];
+
+    for (const apt of dApts) {
+      const payload = {
+        project_id: dProjId, floor: dFloor,
+        apt_number: apt.apt_number || null,
+        area: apt.area, rooms: apt.rooms, price: apt.price,
+        status: apt.status || 'free', entry: apt.entry || 'bottom',
+        x: Math.round(apt.x), y: Math.round(apt.y),
+        w: Math.round(apt.w), h: Math.round(apt.h),
+      };
+      if (apt.id) {
+        await db.from('apartments').update(payload).eq('id', apt.id);
+      } else {
+        const { data } = await db.from('apartments').insert([payload]).select().single();
+        if (data) { apt.id = data.id; apt.tempId = 'db_' + data.id; }
+      }
+    }
+    toast('სართულის გეგმა შეინახა!');
+    loadApartments();
+  };
+
+  window.closeDesigner = function() {
+    document.getElementById('designer-overlay').style.display = 'none';
+    loadApartments();
+  };
+
+  window.setDesignerTool = function(tool) {
+    dTool = tool;
+    const svg = document.getElementById('apt-svg');
+    document.getElementById('tool-draw').classList.toggle('active', tool === 'draw');
+    document.getElementById('tool-select').classList.toggle('active', tool === 'select');
+    if (svg) svg.style.cursor = tool === 'draw' ? 'crosshair' : 'default';
+    document.getElementById('designer-hint').textContent = tool === 'draw'
+      ? 'დახაზვის რეჟიმი: გამოსახეთ ბინა SVG-ზე'
+      : 'არჩევის რეჟიმი: ბინაზე დააჭირეთ';
+  };
+
+  let svgInitDone = false;
+  function initDesignerSVG() {
+    if (svgInitDone) return;
+    svgInitDone = true;
+    const svg = document.getElementById('apt-svg');
+    const rb  = document.getElementById('rubber-band');
+
+    svg.addEventListener('mousedown', e => {
+      if (dTool !== 'draw') return;
+      dDrawing = true;
+      dStart   = svgCoords(svg, e);
+      rb.setAttribute('x', dStart.x); rb.setAttribute('y', dStart.y);
+      rb.setAttribute('width', 0);    rb.setAttribute('height', 0);
+      rb.setAttribute('display', '');
+    });
+
+    svg.addEventListener('mousemove', e => {
+      if (!dDrawing || !dStart) return;
+      const pt = svgCoords(svg, e);
+      const x = Math.min(pt.x, dStart.x), y = Math.min(pt.y, dStart.y);
+      const w = Math.abs(pt.x - dStart.x), h = Math.abs(pt.y - dStart.y);
+      rb.setAttribute('x', x); rb.setAttribute('y', y);
+      rb.setAttribute('width', w); rb.setAttribute('height', h);
+    });
+
+    svg.addEventListener('mouseup', e => {
+      if (!dDrawing || !dStart) return;
+      dDrawing = false;
+      rb.setAttribute('display', 'none');
+      const pt = svgCoords(svg, e);
+      const x = Math.min(pt.x, dStart.x), y = Math.min(pt.y, dStart.y);
+      const w = Math.abs(pt.x - dStart.x), h = Math.abs(pt.y - dStart.y);
+      dStart = null;
+      if (w < 20 || h < 20) return;
+      const tempId = 'new_' + (++dTempCtr);
+      dApts.push({ tempId, id: null, apt_number: '', floor: dFloor,
+        x, y, w, h, area: null, rooms: null, price: null, status: 'free', entry: 'bottom' });
+      renderDesigner();
+      selectApt(tempId);
+    });
+
+    svg.addEventListener('click', e => {
+      if (e.target === svg || e.target.tagName === 'rect' && !e.target.closest('g[data-tempid]')) {
+        if (dTool === 'select') {
+          dSelId = null;
+          document.getElementById('designer-empty-hint').style.display = '';
+          document.getElementById('designer-form').style.display = 'none';
+          renderDesigner();
+        }
+      }
+    });
+  }
 
   /* ── INIT ────────────────────────────────────── */
   checkSession();
