@@ -220,15 +220,6 @@
     }
 
     /* ── Description ─────────────────────── */
-    .listing-body {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 28px;
-      align-items: start;
-    }
-    @media (max-width: 900px) {
-      .listing-body { grid-template-columns: 1fr; }
-    }
     .listing-desc-card {
       background: #fff;
       border-radius: 14px;
@@ -248,45 +239,8 @@
       line-height: 1.85;
       color: #444;
     }
-
-    /* ── Highlights sidebar ──────────────── */
-    .listing-highlights {
-      background: #fff;
-      border-radius: 14px;
-      padding: 24px 26px;
-      border: 1px solid #e8e7e2;
-      position: sticky;
-      top: 90px;
-    }
-    .listing-highlights-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 18px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid #f0efe9;
-    }
-    .highlight-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 11px 0;
-      border-bottom: 1px solid #f5f4f0;
-      font-size: 14px;
-      color: #333;
-    }
-    .highlight-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .highlight-icon {
-      width: 30px; height: 30px;
-      background: rgba(61,190,108,0.08);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      color: #3DBE6C;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
-    .highlight-label { font-size: 11px; color: #aaa; display: block; }
-    .highlight-val   { font-weight: 600; color: #111; }
+    .listing-desc-text p { margin-bottom: 1em; }
+    .listing-desc-text p:last-child { margin-bottom: 0; }
 
     /* ── Section title override ──────────── */
     .project-info-col .section-title { display: none; }
@@ -590,13 +544,10 @@
           <!-- Key stats strip -->
           <div class="listing-stats" id="listing-stats"></div>
 
-          <!-- Body: description + highlights -->
-          <div class="listing-body">
-            <div class="listing-desc-card">
-              <div class="listing-desc-card-label" data-ka="პროექტის შესახებ" data-en="About the Project">პროექტის შესახებ</div>
-              <div class="listing-desc-text" id="project-description"></div>
-            </div>
-            <div class="listing-highlights" id="listing-highlights"></div>
+          <!-- Description -->
+          <div class="listing-desc-card">
+            <div class="listing-desc-card-label" data-ka="პროექტის შესახებ" data-en="About the Project">პროექტის შესახებ</div>
+            <div class="listing-desc-text" id="project-description"></div>
           </div>
 
           <!-- Hidden legacy elements (JS still targets these) -->
@@ -901,10 +852,11 @@
       if (!el) return;
       const desc = currentLang === 'ka' ? p.description_ka : (p.description_en || p.description_ka);
       if (desc) {
-        el.innerHTML = `<p class="project-description-label" data-ka="პროექტის შესახებ" data-en="About the Project">${currentLang === 'ka' ? 'პროექტის შესახებ' : 'About the Project'}</p>${desc}`;
+        // Wrap plain-text paragraphs (separated by double newlines) in <p> tags
+        const html = desc.includes('<') ? desc : desc.split(/\n\n+/).map(s => `<p>${s.trim()}</p>`).join('');
+        el.innerHTML = html;
       } else {
-        el.innerHTML = `<p style="color:#aaa;font-size:14px" data-ka="აღწერა მალე დაემატება" data-en="Description coming soon">აღწერა მალე დაემატება</p>`;
-        applyLang(currentLang);
+        el.innerHTML = `<p style="color:#aaa;font-size:14px">${currentLang === 'ka' ? 'აღწერა მალე დაემატება' : 'Description coming soon'}</p>`;
       }
     }
 
@@ -962,25 +914,21 @@
       }
     }
 
-    /* ── Populate listing stats + highlights ── */
+    /* ── Populate listing stats ── */
     function populateInfoCards(p) {
-      // Legacy hidden container (keeps old JS references working)
-      const legacyContainer = document.getElementById('info-cards');
-
       const catKa  = p.category === 'residential' ? 'საცხოვრებელი' : 'კომერციული';
       const catEn  = p.category === 'residential' ? 'Residential' : 'Commercial';
       const statKa = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
       const statEn = p.status === 'completed' ? 'Completed' : 'Ongoing';
 
-      // ── Key stats strip ──
       const statsEl = document.getElementById('listing-stats');
       if (statsEl) {
         const stats = [
-          { icon: 'fa-location-dot',   labelKa: 'მდებარეობა',  labelEn: 'Location',      value: p.location || '—' },
-          { icon: 'fa-layer-group',    labelKa: 'სართულები',   labelEn: 'Floors',         value: p.total_floors ? `${p.total_floors}` : '—' },
-          { icon: 'fa-tag',            labelKa: 'კატეგორია',   labelEn: 'Category',       value: currentLang === 'ka' ? catKa : catEn },
-          { icon: 'fa-circle-check',   labelKa: 'სტატუსი',     labelEn: 'Status',         value: currentLang === 'ka' ? statKa : statEn },
-          { icon: 'fa-ruler-combined', labelKa: 'ტიპი',        labelEn: 'Type',           value: p.payment_type || (currentLang === 'ka' ? 'ბინა' : 'Apartment') },
+          { icon: 'fa-location-dot',   labelKa: 'მდებარეობა', labelEn: 'Location',  value: p.location || '—' },
+          { icon: 'fa-layer-group',    labelKa: 'სართულები',  labelEn: 'Floors',    value: p.total_floors ? `${p.total_floors}` : '—' },
+          { icon: 'fa-tag',            labelKa: 'კატეგორია',  labelEn: 'Category',  value: currentLang === 'ka' ? catKa : catEn },
+          { icon: 'fa-circle-check',   labelKa: 'სტატუსი',    labelEn: 'Status',    value: currentLang === 'ka' ? statKa : statEn },
+          { icon: 'fa-ruler-combined', labelKa: 'ტიპი',       labelEn: 'Type',      value: p.payment_type || (currentLang === 'ka' ? 'ბინა' : 'Apartment') },
         ];
         statsEl.innerHTML = stats.map(s => `
           <div class="listing-stat">
@@ -989,33 +937,6 @@
             <div class="listing-stat-value">${s.value}</div>
           </div>
         `).join('');
-      }
-
-      // ── Highlights sidebar ──
-      const hlEl = document.getElementById('listing-highlights');
-      if (hlEl) {
-        const items = [
-          { icon: 'fa-shield-halved', labelKa: 'გარანტია',           labelEn: 'Warranty',          val: currentLang === 'ka' ? '5 წელი' : '5 Years' },
-          { icon: 'fa-clock',         labelKa: 'ჩაბარება',           labelEn: 'Delivery',           val: p.delivery || (currentLang === 'ka' ? 'განსაზღვრული' : 'Defined') },
-          { icon: 'fa-building',      labelKa: 'სართულები',          labelEn: 'Total Floors',        val: p.total_floors ? `${p.total_floors}` : '—' },
-          { icon: 'fa-credit-card',   labelKa: 'განვადება',           labelEn: 'Installment',        val: currentLang === 'ka' ? 'ხელმისაწვდომია' : 'Available' },
-          { icon: 'fa-key',           labelKa: 'გასაღების ჩაბარება', labelEn: 'Key Handover',       val: currentLang === 'ka' ? 'ჩვენი გუნდი' : 'Our Team' },
-          { icon: 'fa-headset',       labelKa: 'მხარდაჭერა',         labelEn: 'Support',            val: '24/7' },
-        ];
-        hlEl.innerHTML = `
-          <div class="listing-highlights-title" data-ka="ძირითადი მახასიათებლები" data-en="Key Features">
-            ${currentLang === 'ka' ? 'ძირითადი მახასიათებლები' : 'Key Features'}
-          </div>
-          ${items.map(it => `
-            <div class="highlight-item">
-              <div class="highlight-icon"><i class="fa-solid ${it.icon}"></i></div>
-              <div>
-                <span class="highlight-label">${currentLang === 'ka' ? it.labelKa : it.labelEn}</span>
-                <span class="highlight-val">${it.val}</span>
-              </div>
-            </div>
-          `).join('')}
-        `;
       }
     }
 
