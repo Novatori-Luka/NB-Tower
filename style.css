@@ -305,7 +305,7 @@ main { counter-reset: section-num; }
   overflow: hidden;
 }
 
-/* Hide dark-themed bg elements */
+/* Night city SVG background */
 .hero-particles { display: none; }
 
 .hero-bg {
@@ -314,97 +314,11 @@ main { counter-reset: section-num; }
   pointer-events: none;
 }
 
-/* Architectural facade — right side */
-.hero-skyline {
-  position: absolute;
-  right: 0; top: 0; bottom: 0;
-  width: 50%;
-  overflow: hidden;
-}
-.skyline-svg {
-  display: none; /* replaced by CSS facade below */
-}
-
-/* CSS building facade */
-.hero-skyline::before {
-  content: '';
+.hero-city-svg {
   position: absolute;
   inset: 0;
-  background:
-    /* Window grid: repeating horizontal bands */
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 54px,
-      rgba(0,0,0,0.04) 54px,
-      rgba(0,0,0,0.04) 55px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0px,
-      transparent 54px,
-      rgba(0,0,0,0.04) 54px,
-      rgba(0,0,0,0.04) 55px
-    );
-}
-.hero-skyline::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right,
-    var(--bg-base) 0%,
-    transparent 30%
-  );
-}
-
-/* Tall building shapes via box-shadow trick on a div */
-.hero-skyline .skyline-buildings {
-  position: absolute;
-  bottom: 0; right: 0;
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 0;
-}
-
-/* Building silhouettes */
-.sb { flex-shrink: 0; position: relative; }
-.sb::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0; right: 0;
-  background: rgba(0,0,0,0.045);
-  border-top: 2px solid rgba(0,0,0,0.06);
-}
-.sb-1::before { height: 72%; width: 80px; }
-.sb-2::before { height: 90%; width: 56px; border-left: 2px solid rgba(0,0,0,0.06); }
-.sb-3::before { height: 58%; width: 100px; }
-.sb-4::before { height: 82%; width: 64px; border-left: 2px solid rgba(0,0,0,0.06); }
-.sb-5::before { height: 44%; width: 88px; }
-
-/* Vertical accent lines */
-.hero-facade-lines {
-  position: absolute;
-  inset: 0;
-}
-.hero-facade-lines::before {
-  content: '';
-  position: absolute;
-  top: 20%; bottom: 0;
-  left: 12%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(61,190,108,0.25), transparent);
-}
-.hero-facade-lines::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 15%;
-  left: 38%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.08), transparent);
+  width: 100%;
+  height: 100%;
 }
 
 .hero-gradient { display: none; }
@@ -468,7 +382,7 @@ main { counter-reset: section-num; }
   font-family: 'Fraunces', serif;
   font-size: clamp(24px, 3vw, 42px);
   font-weight: 400;
-  color: #888888;
+  color: rgba(255,255,255,0.65);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -476,7 +390,7 @@ main { counter-reset: section-num; }
   font-family: 'Fraunces', serif;
   font-size: clamp(40px, 6vw, 80px);
   font-weight: 800;
-  color: #111111;
+  color: #ffffff;
   line-height: 1.1;
   letter-spacing: -0.03em;
 }
@@ -491,7 +405,7 @@ main { counter-reset: section-num; }
 
 .hero-subline {
   font-size: 17px;
-  color: #666666;
+  color: rgba(255,255,255,0.65);
   line-height: 1.75;
   margin-top: 20px;
   margin-bottom: 0;
@@ -1451,8 +1365,7 @@ input.error { border-color: #E85D04; }
   /* ── Hero ───────────────────────────────── */
   .hero { width: 100%; padding: 18px 20px 40px; overflow: hidden; }
   .hero-bg { overflow: hidden; }
-  .hero-skyline { display: none; }
-  .hero-facade-lines { display: none; }
+
   .hero-badge {
     width: auto;
     max-width: calc(100% - 40px);
