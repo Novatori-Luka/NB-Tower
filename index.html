@@ -84,7 +84,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- ===== HERO SECTION ===== -->
     <section class="hero" id="hero">
       <div class="hero-bg" aria-hidden="true">
-        <svg class="hero-city-svg" viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <canvas id="hero-canvas"></canvas>
+        <!-- THREE.JS HERO PLACEHOLDER SVG REMOVED --><svg style="display:none" viewBox="0 0 1440 700" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
           <defs>
             <linearGradient id="hSky" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stop-color="#04060E"/>
@@ -910,5 +911,281 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <script src="constants.js"></script>
   <script src="script.js"></script>
+
+  <!-- ── THREE.JS HERO SCENE ─────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script>
+  (function initHeroScene() {
+    'use strict';
+
+    var canvas = document.getElementById('hero-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+
+    // ── SEEDED PRNG (mulberry32) ──────────────────────────────
+    function mulberry32(seed) {
+      return function () {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        var z = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        z = (z + Math.imul(z ^ (z >>> 7), 61 | z)) ^ z;
+        return ((z ^ (z >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    // ── RENDERER ─────────────────────────────────────────────
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x060d14, 1);
+
+    var scene = new THREE.Scene();
+
+    var FOV   = 60;
+    var ZDIST = 5;
+    var W = window.innerWidth;
+    var H = window.innerHeight;
+
+    var camera = new THREE.PerspectiveCamera(FOV, W / H, 0.1, 100);
+    camera.position.z = ZDIST;
+    renderer.setSize(W, H);
+
+    function viewBounds() {
+      var hh = ZDIST * Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+      return { hh: hh, hw: hh * (W / H) };
+    }
+
+    // ── MATERIALS (created once, reused) ─────────────────────
+    var matBack  = new THREE.MeshBasicMaterial({ color: 0x0a1420 });
+    var matFront = new THREE.MeshBasicMaterial({ color: 0x050c16 });
+    var matGreen = new THREE.MeshBasicMaterial({ color: 0x0d2a1a });
+
+    // Pre-built window materials pool
+    var winMats = [];
+    for (var mi = 0; mi < 12; mi++) {
+      winMats.push(new THREE.MeshBasicMaterial({
+        color: (mi % 3 === 0) ? 0xffd580 : 0xf5c842,
+        transparent: true,
+        opacity: 0.35 + (mi * 0.041) % 0.45
+      }));
+    }
+
+    // ── CITY BUILDINGS ───────────────────────────────────────
+    var cityGroup = new THREE.Group();
+    scene.add(cityGroup);
+
+    function buildCity() {
+      while (cityGroup.children.length) {
+        cityGroup.remove(cityGroup.children[0]);
+      }
+
+      var b = viewBounds();
+      var hh = b.hh, hw = b.hw;
+      var floor = -hh;
+      var rng = mulberry32(42); // deterministic city layout
+
+      // ── BACK ROW (depth layer) ──
+      var x = -hw - 0.2;
+      while (x < hw + 0.2) {
+        var bw = 0.28 + rng() * 0.75;
+        var bh = 0.4  + rng() * 2.0;
+        var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.03), bh, 0.12);
+        var mesh = new THREE.Mesh(geo, matBack);
+        mesh.position.set(x + bw * 0.5, floor + bh * 0.5, -1.2);
+        cityGroup.add(mesh);
+        x += bw;
+      }
+
+      // ── MID ROW ──
+      x = -hw - 0.1;
+      while (x < hw + 0.1) {
+        var bw = 0.32 + rng() * 0.9;
+        var bh = 0.6  + rng() * 2.8;
+        var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.03), bh, 0.16);
+        var mesh = new THREE.Mesh(geo, (rng() < 0.15) ? matGreen : matBack);
+        mesh.position.set(x + bw * 0.5, floor + bh * 0.5, -0.6);
+        cityGroup.add(mesh);
+        x += bw;
+      }
+
+      // ── FRONT ROW (main silhouette) ──
+      x = -hw - 0.1;
+      while (x < hw + 0.1) {
+        var bw = 0.38 + rng() * 1.2;
+        var bh = 1.0  + rng() * 4.2;
+        var isGreen = rng() < 0.18;
+        var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.04), bh, 0.22);
+        var mesh = new THREE.Mesh(geo, isGreen ? matGreen : matFront);
+        mesh.position.set(x + bw * 0.5, floor + bh * 0.5, 0);
+        cityGroup.add(mesh);
+
+        // Windows
+        if (bh > 1.3 && bw > 0.3) {
+          var cols = Math.max(1, Math.floor(bw * 5));
+          var rows = Math.max(2, Math.floor(bh * 4));
+          var step_x = bw / (cols + 1);
+          var step_y = bh / (rows + 1);
+          var ww = step_x * 0.48;
+          var wh = step_y * 0.44;
+          var winGeo = new THREE.PlaneGeometry(ww, wh);
+          for (var row = 0; row < rows; row++) {
+            for (var col = 0; col < cols; col++) {
+              if (rng() < 0.44) continue;
+              var mat = winMats[Math.floor(rng() * winMats.length)];
+              var win = new THREE.Mesh(winGeo, mat);
+              win.position.set(
+                x + step_x * (col + 1),
+                floor + step_y * (row + 1),
+                0.13
+              );
+              cityGroup.add(win);
+            }
+          }
+        }
+        x += bw;
+      }
+
+      // Rooftop green glow strips on tallest buildings
+      var rng2 = mulberry32(99);
+      x = -hw - 0.1;
+      while (x < hw + 0.1) {
+        var bw = 0.38 + rng2() * 1.2;
+        var bh = 1.0  + rng2() * 4.2;
+        if (bh > 3.5 && rng2() < 0.5) {
+          var glowGeo = new THREE.PlaneGeometry(bw * 0.7, 0.04);
+          var glowMat = new THREE.MeshBasicMaterial({ color: 0x3dbe6c, transparent: true, opacity: 0.55 });
+          var g = new THREE.Mesh(glowGeo, glowMat);
+          g.position.set(x + bw * 0.5, floor + bh + 0.02, 0.14);
+          cityGroup.add(g);
+        }
+        x += bw;
+      }
+    }
+
+    // ── PARTICLES ────────────────────────────────────────────
+    var N      = 180;
+    var pPos   = new Float32Array(N * 3);
+    var pCol   = new Float32Array(N * 3);
+    var pVelY  = new Float32Array(N);
+    var pPhase = new Float32Array(N);
+
+    var C_GREEN = new THREE.Color(0x00c853);
+    var C_WHITE = new THREE.Color(0xffffff);
+    var C_LIGHT = new THREE.Color(0x88ffbb);
+
+    function setParticleColor(i) {
+      var r = Math.random();
+      var c = (r < 0.30) ? C_GREEN : (r < 0.90) ? C_WHITE : C_LIGHT;
+      pCol[i*3] = c.r; pCol[i*3+1] = c.g; pCol[i*3+2] = c.b;
+    }
+
+    function initParticles() {
+      var b = viewBounds();
+      for (var i = 0; i < N; i++) {
+        pPos[i*3]   = (Math.random() * 2 - 1) * b.hw;
+        pPos[i*3+1] = (Math.random() * 2 - 1) * b.hh;
+        pPos[i*3+2] = -0.6 + Math.random() * 1.2;
+        pVelY[i]    = 0.004 + Math.random() * 0.009;
+        pPhase[i]   = Math.random() * Math.PI * 2;
+        setParticleColor(i);
+      }
+    }
+
+    // Three particle systems for size variety
+    function makeParticleSystem(indices, sz) {
+      var count = indices.length;
+      var pos = new Float32Array(count * 3);
+      var col = new Float32Array(count * 3);
+      for (var k = 0; k < count; k++) {
+        var i = indices[k];
+        pos[k*3]   = pPos[i*3];   pos[k*3+1]   = pPos[i*3+1];   pos[k*3+2]   = pPos[i*3+2];
+        col[k*3]   = pCol[i*3];   col[k*3+1]   = pCol[i*3+1];   col[k*3+2]   = pCol[i*3+2];
+      }
+      var geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+      var mat = new THREE.PointsMaterial({
+        size: sz, sizeAttenuation: false,
+        vertexColors: true, transparent: true, opacity: 0.65,
+        depthWrite: false
+      });
+      return new THREE.Points(geo, mat);
+    }
+
+    initParticles();
+
+    // Split into 3 size groups
+    var idx1 = [], idx2 = [], idx3 = [];
+    for (var i = 0; i < N; i++) {
+      var r = Math.random();
+      if (r < 0.40) idx1.push(i);
+      else if (r < 0.85) idx2.push(i);
+      else idx3.push(i);
+    }
+
+    var ps1 = makeParticleSystem(idx1, 1.5);
+    var ps2 = makeParticleSystem(idx2, 2.5);
+    var ps3 = makeParticleSystem(idx3, 3.5);
+    scene.add(ps1); scene.add(ps2); scene.add(ps3);
+
+    function updateParticleSystems() {
+      function syncSystem(ps, indices) {
+        var pos = ps.geometry.attributes.position.array;
+        for (var k = 0; k < indices.length; k++) {
+          var i = indices[k];
+          pos[k*3] = pPos[i*3]; pos[k*3+1] = pPos[i*3+1]; pos[k*3+2] = pPos[i*3+2];
+        }
+        ps.geometry.attributes.position.needsUpdate = true;
+      }
+      syncSystem(ps1, idx1);
+      syncSystem(ps2, idx2);
+      syncSystem(ps3, idx3);
+    }
+
+    buildCity();
+
+    // ── ANIMATION LOOP ───────────────────────────────────────
+    var rafId, t = 0;
+
+    function animate() {
+      rafId = requestAnimationFrame(animate);
+      t += 0.016;
+      var b = viewBounds();
+
+      for (var i = 0; i < N; i++) {
+        pPos[i*3]   += Math.sin(t * 0.45 + pPhase[i]) * 0.0007;
+        pPos[i*3+1] += pVelY[i];
+        if (pPos[i*3+1] > b.hh + 0.3) {
+          pPos[i*3+1] = -b.hh - 0.3;
+          pPos[i*3]   = (Math.random() * 2 - 1) * b.hw;
+        }
+      }
+
+      updateParticleSystems();
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // ── RESIZE ───────────────────────────────────────────────
+    var resizeTimer;
+    function onResize() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        camera.aspect = W / H;
+        camera.updateProjectionMatrix();
+        renderer.setSize(W, H);
+        buildCity();
+        initParticles();
+      }, 150);
+    }
+    window.addEventListener('resize', onResize);
+
+    window.addEventListener('pagehide', function () {
+      cancelAnimationFrame(rafId);
+      renderer.dispose();
+    });
+
+  })();
+  </script>
 </body>
 </html>

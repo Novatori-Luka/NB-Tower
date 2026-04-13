@@ -305,20 +305,22 @@ main { counter-reset: section-num; }
   overflow: hidden;
 }
 
-/* Night city SVG background */
+/* Three.js WebGL hero background */
 .hero-particles { display: none; }
 
 .hero-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background: #060d14;
 }
 
-.hero-city-svg {
+#hero-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 .hero-gradient { display: none; }
