@@ -1307,6 +1307,13 @@
           </button>
         </div>
         <span style="color:#555;font-size:12px" id="designer-hint">გამოსახეთ ბინა SVG-ზე</span>
+        <label style="display:flex;align-items:center;gap:6px;padding:5px 10px;background:#2a2a2a;border:1.5px solid rgba(255,255,255,0.15);border-radius:6px;color:#ccc;font-size:12px;cursor:pointer;white-space:nowrap" title="Upload floor plan image">
+          <i class="fa-solid fa-image"></i> გეგმის ფოტო
+          <input type="file" accept="image/*" style="display:none" onchange="handleFloorplanUpload(this)" />
+        </label>
+        <button id="btn-clear-floorplan" onclick="clearFloorplanImage()" style="display:none;padding:5px 10px;background:none;border:1.5px solid rgba(255,100,100,0.4);border-radius:6px;color:#f88;font-size:12px;cursor:pointer" title="Remove floor plan image">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-secondary btn-sm" onclick="saveDesignerApts()" style="background:#3DBE6C;color:#000;border-color:#3DBE6C;font-weight:700">
@@ -1335,6 +1342,8 @@
             <rect width="800" height="440" fill="url(#dgrid)"/>
             <!-- Outer wall -->
             <rect x="20" y="20" width="760" height="400" fill="none" stroke="#2c2c2a" stroke-width="2" rx="4"/>
+            <!-- Floor plan background image (uploaded per floor) -->
+            <g id="designer-bg-group"></g>
             <!-- Dynamic corridor + stairwells (updated by JS) -->
             <g id="designer-layout-group"></g>
             <!-- Apartments group -->
@@ -1818,8 +1827,56 @@
         </div>
         <input type="hidden" id="f-buildingRender" value="${escHtml(p.building_render_url||'')}" />
         <small style="color:#aaa;font-size:11px">project.html-ის სართულის განყოფილებაში გამოჩნდება</small>
+      </div>
+      <div id="render-calibration" style="display:${p.building_render_url ? '' : 'none'};margin-top:12px;border:1.5px solid #e0e0e0;border-radius:8px;padding:14px;background:#fafafa;">
+        <div style="font-weight:600;font-size:12px;margin-bottom:10px;color:#444;display:flex;align-items:center;gap:6px">
+          <i class="fas fa-sliders-h" style="color:#3DBE6C"></i>
+          სართულის ზონების კალიბრაცია / Floor Zone Calibration
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Building Top: <strong id="calib-top-val">${Math.round((p.building_top??0.15)*100)}</strong>%</label>
+            <input type="range" id="f-buildingTop" min="0" max="100" step="1" value="${Math.round((p.building_top??0.15)*100)}" oninput="updateCalibration()" style="width:100%;accent-color:#3DBE6C" />
+          </div>
+          <div>
+            <label style="font-size:11px;color:#666;display:block;margin-bottom:3px">Building Bottom: <strong id="calib-bot-val">${Math.round((p.building_bottom??0.90)*100)}</strong>%</label>
+            <input type="range" id="f-buildingBottom" min="0" max="100" step="1" value="${Math.round((p.building_bottom??0.90)*100)}" oninput="updateCalibration()" style="width:100%;accent-color:#3DBE6C" />
+          </div>
+        </div>
+        <div style="position:relative;border-radius:6px;overflow:hidden;background:#111;line-height:0">
+          <img id="calib-img" src="${escHtml(p.building_render_url||'')}" style="width:100%;max-height:260px;object-fit:contain;display:block" />
+          <div id="calib-overlays" style="position:absolute;inset:0;pointer-events:none"></div>
+        </div>
       </div>`;
   }
+
+  window.updateCalibration = function() {
+    const topSlider = document.getElementById('f-buildingTop');
+    const botSlider = document.getElementById('f-buildingBottom');
+    if (!topSlider || !botSlider) return;
+    const topPct = parseInt(topSlider.value);
+    const botPct = parseInt(botSlider.value);
+    document.getElementById('calib-top-val').textContent = topPct;
+    document.getElementById('calib-bot-val').textContent = botPct;
+
+    // Draw floor zone lines on live preview
+    const overlays = document.getElementById('calib-overlays');
+    const totalFloors = parseInt(document.getElementById('f-totalFloors')?.value) || 10;
+    if (!overlays) return;
+    const top = topPct / 100;
+    const bot = botPct / 100;
+    const zH  = (bot - top) / totalFloors;
+    let html = '';
+    // Draw a line at each floor boundary
+    for (let i = 0; i <= totalFloors; i++) {
+      const pct = (top + i * zH) * 100;
+      html += `<div style="position:absolute;left:0;right:0;top:${pct}%;height:1px;background:rgba(61,190,108,0.7)"></div>`;
+    }
+    // Shade top and bottom dead zones
+    html += `<div style="position:absolute;left:0;right:0;top:0;height:${topPct}%;background:rgba(0,0,0,0.35)"></div>`;
+    html += `<div style="position:absolute;left:0;right:0;top:${botPct}%;bottom:0;background:rgba(0,0,0,0.35)"></div>`;
+    overlays.innerHTML = html;
+  };
 
   window.handleRenderUpload = async function handleRenderUpload(input) {
     const file = input.files[0];
@@ -1838,6 +1895,13 @@
     previewImg.src = localUrl;
     placeholder.style.display = 'none';
     previewWrap.style.display = 'inline-block';
+
+    // Show calibration section with local preview
+    const calibSection = document.getElementById('render-calibration');
+    const calibImg = document.getElementById('calib-img');
+    if (calibSection) calibSection.style.display = '';
+    if (calibImg) calibImg.src = localUrl;
+    setTimeout(updateCalibration, 50);
     progressBox.style.display = '';
     progressBar.style.width = '10%';
     progressBar.style.background = '#3DBE6C';
@@ -1896,6 +1960,8 @@
       progressStage:    document.getElementById('f-progressStage')?.value || null,
       progressUpdated:  document.getElementById('f-progressUpdated')?.value.trim() || null,
       buildingRenderUrl: document.getElementById('f-buildingRender')?.value.trim() || null,
+      buildingTop:    parseFloat(document.getElementById('f-buildingTop')?.value ?? 15) / 100,
+      buildingBottom: parseFloat(document.getElementById('f-buildingBottom')?.value ?? 90) / 100,
     };
   }
 
@@ -1922,6 +1988,8 @@
       progress_stage:  data.progressStage || null,
       progress_updated: data.progressUpdated || null,
       building_render_url: data.buildingRenderUrl || null,
+      building_top:    data.buildingTop    ?? 0.15,
+      building_bottom: data.buildingBottom ?? 0.90,
     };
     try {
       if (id) {
@@ -2784,6 +2852,20 @@
   };
 
   function renderDesigner() {
+    // Render floor plan background image if uploaded for this floor
+    const bg = document.getElementById('designer-bg-group');
+    const clearBtn = document.getElementById('btn-clear-floorplan');
+    if (bg) {
+      const imgUrl = dConfig.floorImages?.[dFloor];
+      if (imgUrl) {
+        bg.innerHTML = `<image href="${imgUrl}" x="20" y="20" width="760" height="400" preserveAspectRatio="xMidYMid meet" style="opacity:0.85"/>`;
+        if (clearBtn) clearBtn.style.display = '';
+      } else {
+        bg.innerHTML = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+      }
+    }
+
     // Render corridor + stairwells from dConfig
     const lg = document.getElementById('designer-layout-group');
     if (lg) {
@@ -2889,6 +2971,38 @@
     dSelId = null;
     document.getElementById('designer-empty-hint').style.display = '';
     document.getElementById('designer-form').style.display = 'none';
+    renderDesigner();
+  };
+
+  window.handleFloorplanUpload = async function(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Show local preview immediately
+    const localUrl = URL.createObjectURL(file);
+    if (!dConfig.floorImages) dConfig.floorImages = {};
+    dConfig.floorImages[dFloor] = localUrl;
+    renderDesigner();
+
+    // Upload to Supabase Storage
+    const ext = file.name.split('.').pop();
+    const filePath = `floorplans/${dProjId}_floor${dFloor}_${Date.now()}.${ext}`;
+    try {
+      const { error } = await db.storage.from('project-assets').upload(filePath, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = db.storage.from('project-assets').getPublicUrl(filePath);
+      dConfig.floorImages[dFloor] = urlData.publicUrl;
+      URL.revokeObjectURL(localUrl);
+      renderDesigner();
+    } catch (err) {
+      console.warn('Floorplan upload failed, using local preview:', err.message);
+    }
+    input.value = '';
+  };
+
+  window.clearFloorplanImage = function() {
+    if (!dConfig.floorImages) return;
+    delete dConfig.floorImages[dFloor];
     renderDesigner();
   };
 

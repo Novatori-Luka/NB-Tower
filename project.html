@@ -1054,7 +1054,7 @@
     }
 
     /* ── Building Visual ─────────────────── */
-    function buildBuildingVisual(totalFloors, projectId, renderUrl) {
+    function buildBuildingVisual(totalFloors, projectId, renderUrl, buildingTop = 0.15, buildingBottom = 0.90) {
       // Set building render image
       const img = document.getElementById('bfloor-render-img');
       const placeholder = document.getElementById('bfloor-render-placeholder');
@@ -1086,9 +1086,7 @@
       document.getElementById('bstat-reserved').textContent = totalReserved;
       document.getElementById('bstat-sold').textContent     = totalSold;
 
-      // Building area in the image: roof at ~15% from top, ground at ~90%
-      const buildingTop    = 0.15;
-      const buildingBottom = 0.90;
+      // Building area — values come from admin calibration sliders
       const zoneH = (buildingBottom - buildingTop) / floors;
 
       const tooltip  = document.getElementById('bfloor-tooltip');
@@ -1284,7 +1282,7 @@
         buildFloorSelector(p.total_floors);
         populateProgress(p);
         initCalculator(p);
-        buildBuildingVisual(p.total_floors, p.id, p.building_render_url);
+        buildBuildingVisual(p.total_floors, p.id, p.building_render_url, p.building_top ?? 0.15, p.building_bottom ?? 0.90);
 
         // Show content, hide loading
         document.getElementById('project-loading').style.display = 'none';
