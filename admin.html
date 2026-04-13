@@ -1294,6 +1294,10 @@
     <div class="designer-head">
       <div class="designer-head-left">
         <span class="designer-title" id="designer-title">სართულის გეგმა</span>
+        <!-- Floor switcher -->
+        <select id="designer-floor-select" onchange="switchDesignerFloor(this.value)"
+          style="padding:6px 12px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.2);background:#222;color:#fff;font-size:13px;cursor:pointer;font-family:inherit">
+        </select>
         <div class="designer-tools">
           <button class="designer-tool active" id="tool-draw" onclick="setDesignerTool('draw')">
             <i class="fa-solid fa-pen-to-square"></i> დახაზვა
@@ -1302,7 +1306,7 @@
             <i class="fa-solid fa-arrow-pointer"></i> არჩევა
           </button>
         </div>
-        <span style="color:#666;font-size:12px" id="designer-hint">დახაზვის რეჟიმი: გამოსახეთ ბინა SVG-ზე</span>
+        <span style="color:#555;font-size:12px" id="designer-hint">გამოსახეთ ბინა SVG-ზე</span>
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-secondary btn-sm" onclick="saveDesignerApts()" style="background:#3DBE6C;color:#000;border-color:#3DBE6C;font-weight:700">
@@ -2408,8 +2412,7 @@
     const designerBtn  = document.getElementById('btn-open-designer');
 
     function updateDesignerBtn() {
-      const hasBoth = sel.value && floorSel.value;
-      if (designerBtn) designerBtn.style.display = hasBoth ? '' : 'none';
+      if (designerBtn) designerBtn.style.display = sel.value ? '' : 'none';
     }
 
     sel.addEventListener('change', () => {
@@ -2605,25 +2608,46 @@
   }
 
   window.openFloorDesigner = function() {
-    const projId = document.getElementById('apt-project-select')?.value;
-    const floor  = parseInt(document.getElementById('apt-floor-select')?.value);
-    if (!projId || !floor) { toast('პროექტი და სართული ასარჩევია', 'error'); return; }
+    const projId   = document.getElementById('apt-project-select')?.value;
+    const projOpt  = document.getElementById('apt-project-select')?.selectedOptions[0];
+    const floorSel = document.getElementById('apt-floor-select')?.value;
+    if (!projId) { toast('პროექტი ასარჩევია', 'error'); return; }
 
     dProjId  = projId;
-    dFloor   = floor;
+    dFloor   = parseInt(floorSel) || 1;
     dApts    = [];
     dDeleted = [];
     dSelId   = null;
     dTempCtr = 0;
 
-    const projName = document.getElementById('apt-project-select').selectedOptions[0]?.text || '';
-    document.getElementById('designer-title').textContent = `${projName} — სართული ${floor}`;
+    const projName   = projOpt?.text || '';
+    const totalFloors = parseInt(projOpt?.dataset.floors) || 10;
+
+    document.getElementById('designer-title').textContent = projName;
     document.getElementById('designer-overlay').style.display = 'flex';
     document.getElementById('designer-empty-hint').style.display = '';
     document.getElementById('designer-form').style.display = 'none';
 
+    // Populate floor switcher inside designer
+    const fsEl = document.getElementById('designer-floor-select');
+    if (fsEl) {
+      fsEl.innerHTML = Array.from({ length: totalFloors }, (_, i) =>
+        `<option value="${i+1}" ${dFloor === i+1 ? 'selected' : ''}>${i+1} სართული</option>`
+      ).join('');
+    }
+
     setDesignerTool('draw');
     initDesignerSVG();
+    loadDesignerApts();
+  };
+
+  window.switchDesignerFloor = function(floor) {
+    dFloor   = parseInt(floor);
+    dApts    = [];
+    dDeleted = [];
+    dSelId   = null;
+    document.getElementById('designer-empty-hint').style.display = '';
+    document.getElementById('designer-form').style.display = 'none';
     loadDesignerApts();
   };
 

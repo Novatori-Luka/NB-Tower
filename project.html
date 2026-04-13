@@ -358,26 +358,19 @@
       position: absolute;
       pointer-events: none;
       display: none;
-      background: #1a4731;
+      background: rgba(15, 35, 22, 0.96);
       color: #fff;
-      border-radius: 8px;
-      padding: 10px 16px;
-      min-width: 160px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      transform: translateX(-50%);
+      border: 1.5px solid #3DBE6C;
+      border-radius: 10px;
+      padding: 14px 22px;
+      min-width: 190px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 20px rgba(61,190,108,0.25);
+      transform: translate(-50%, -50%);
       z-index: 10;
+      text-align: center;
     }
-    .bfloor-tooltip::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: #1a4731;
-    }
-    .bfloor-tooltip-floor  { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-    .bfloor-tooltip-detail { font-size: 12px; opacity: 0.8; }
+    .bfloor-tooltip-floor  { font-weight: 800; font-size: 17px; color: #3DBE6C; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .bfloor-tooltip-detail { font-size: 13px; color: #e0ffe8; font-weight: 600; }
     @media (max-width: 900px) {
       .bfloor-wrapper    { flex-direction: column; max-height: none; }
       .bfloor-sidebar    { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
@@ -1122,12 +1115,15 @@
           ? `გასაყიდია ${info.free} ბინა`
           : `${info.free} unit${info.free !== 1 ? 's' : ''} available`;
 
+        // Center of this floor zone
+        const zoneCenterPct = topPct + (zoneH * 100 / 2);
+
         // Hover: show tooltip
         zone.addEventListener('mouseenter', () => {
           ttFloor.textContent  = floorLabel;
           ttDetail.textContent = detail;
           tooltip.style.display = '';
-          tooltip.style.top  = topPct + '%';
+          tooltip.style.top  = zoneCenterPct + '%';
           tooltip.style.left = '50%';
         });
         zone.addEventListener('mouseleave', () => {
@@ -1143,7 +1139,7 @@
           ttFloor.textContent  = floorLabel;
           ttDetail.textContent = detail;
           tooltip.style.display = '';
-          tooltip.style.top  = topPct + '%';
+          tooltip.style.top  = zoneCenterPct + '%';
           tooltip.style.left = '50%';
 
           // Update sidebar
