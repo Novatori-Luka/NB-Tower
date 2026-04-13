@@ -1798,10 +1798,77 @@
       </div>
       <hr style="border:none;border-top:1px solid #eee;margin:8px 0"/>
       <div class="form-group">
-        <label>შენობის რენდერი URL / Building Render URL</label>
-        <input type="url" id="f-buildingRender" value="${escHtml(p.building_render_url||'')}" placeholder="https://..." />
+        <label>შენობის რენდერი / Building Render</label>
+        <div id="render-upload-area" style="border:2px dashed #ddd;border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color 0.2s;position:relative;" onclick="document.getElementById('f-buildingRenderFile').click()" onmouseenter="this.style.borderColor='#3DBE6C'" onmouseleave="this.style.borderColor='#ddd'">
+          <input type="file" id="f-buildingRenderFile" accept="image/*" style="display:none" onchange="handleRenderUpload(this)" />
+          <div id="render-upload-placeholder" style="${p.building_render_url ? 'display:none' : ''}">
+            <i class="fas fa-cloud-upload-alt" style="font-size:28px;color:#aaa;margin-bottom:8px;display:block"></i>
+            <span style="color:#aaa;font-size:13px">ფოტოს ასატვირთად დააჭირეთ / Click to upload photo</span>
+          </div>
+          <div id="render-preview-wrap" style="position:relative;display:${p.building_render_url ? 'inline-block' : 'none'};">
+            <img id="render-preview-img" src="${escHtml(p.building_render_url||'')}" style="max-height:140px;max-width:100%;border-radius:6px;object-fit:cover;" />
+            <button type="button" onclick="event.stopPropagation();clearRenderUpload()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px;line-height:22px">&times;</button>
+          </div>
+          <div id="render-upload-progress" style="display:none;margin-top:8px;">
+            <div style="background:#eee;border-radius:4px;height:6px;overflow:hidden">
+              <div id="render-progress-bar" style="background:#3DBE6C;height:100%;width:0%;transition:width 0.3s"></div>
+            </div>
+            <span id="render-upload-status" style="font-size:11px;color:#888;margin-top:4px;display:block">Uploading…</span>
+          </div>
+        </div>
+        <input type="hidden" id="f-buildingRender" value="${escHtml(p.building_render_url||'')}" />
         <small style="color:#aaa;font-size:11px">project.html-ის სართულის განყოფილებაში გამოჩნდება</small>
       </div>`;
+  }
+
+  async function handleRenderUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const placeholder = document.getElementById('render-upload-placeholder');
+    const previewWrap = document.getElementById('render-preview-wrap');
+    const previewImg  = document.getElementById('render-preview-img');
+    const progressBox = document.getElementById('render-upload-progress');
+    const progressBar = document.getElementById('render-progress-bar');
+    const statusTxt   = document.getElementById('render-upload-status');
+    const hiddenInput = document.getElementById('f-buildingRender');
+
+    placeholder.style.display = 'none';
+    previewWrap.style.display = 'none';
+    progressBox.style.display = '';
+    progressBar.style.width = '30%';
+    statusTxt.textContent = 'Uploading…';
+
+    // Unique filename: timestamp + original name
+    const ext = file.name.split('.').pop();
+    const path = `renders/${Date.now()}.${ext}`;
+
+    const { data, error } = await db.storage.from('project-assets').upload(path, file, { upsert: true });
+
+    if (error) {
+      progressBar.style.background = '#e55';
+      statusTxt.textContent = 'Upload failed: ' + error.message;
+      return;
+    }
+
+    progressBar.style.width = '100%';
+    statusTxt.textContent = 'Done!';
+    setTimeout(() => { progressBox.style.display = 'none'; }, 800);
+
+    const { data: urlData } = db.storage.from('project-assets').getPublicUrl(path);
+    const publicUrl = urlData.publicUrl;
+
+    hiddenInput.value = publicUrl;
+    previewImg.src = publicUrl;
+    previewWrap.style.display = 'inline-block';
+  }
+
+  function clearRenderUpload() {
+    document.getElementById('f-buildingRender').value = '';
+    document.getElementById('render-preview-img').src = '';
+    document.getElementById('render-preview-wrap').style.display = 'none';
+    document.getElementById('render-upload-placeholder').style.display = '';
+    document.getElementById('f-buildingRenderFile').value = '';
   }
 
   function getProjectFormData() {
