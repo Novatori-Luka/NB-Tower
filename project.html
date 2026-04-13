@@ -226,35 +226,118 @@
     }
 
     /* ── CTA Section ─────────────────────── */
-    .project-cta-section {
-      background: #3DBE6C;
-      padding: 72px 0;
-      text-align: center;
+    /* ── PROJECT CONTACT FORM ─────────────────────────── */
+    .project-contact-section {
+      background: #0a0a0a;
+      border-top: 1px solid rgba(61,190,108,0.12);
+      padding: 80px 0;
     }
-    .project-cta-section h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 2.5rem;
-      letter-spacing: 0.05em;
-      color: #000;
+    .project-contact-inner {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .project-contact-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #3DBE6C;
       margin-bottom: 12px;
     }
-    .project-cta-section p {
-      color: rgba(0,0,0,0.65);
-      font-size: 16px;
-      margin-bottom: 28px;
-    }
-    .btn-cta {
-      display: inline-block;
-      padding: 16px 36px;
-      background: #000;
+    .project-contact-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: 0.04em;
       color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.1;
+    }
+    .project-contact-sub {
+      font-size: 15px;
+      color: #777;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    .pf-form { display: flex; flex-direction: column; gap: 16px; }
+    .pf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 540px) { .pf-row { grid-template-columns: 1fr; } }
+    .pf-group { display: flex; flex-direction: column; gap: 6px; }
+    .pf-group label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #999;
+    }
+    .pf-group input,
+    .pf-group textarea {
+      background: #141414;
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 8px;
+      padding: 13px 16px;
+      font-size: 15px;
+      color: #fff;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .pf-group input:focus,
+    .pf-group textarea:focus {
+      border-color: #3DBE6C;
+      box-shadow: 0 0 0 3px rgba(61,190,108,0.12);
+    }
+    .pf-group input[readonly] {
+      color: #3DBE6C;
+      border-color: rgba(61,190,108,0.25);
+      cursor: default;
+    }
+    .pf-group textarea { resize: vertical; min-height: 100px; }
+    .pf-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 32px;
+      background: #3DBE6C;
+      color: #000;
       font-weight: 700;
       font-size: 15px;
-      text-decoration: none;
-      transition: transform 0.15s;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+      font-family: inherit;
+      margin-top: 4px;
     }
-    .btn-cta:hover { transform: scale(1.03); }
+    .pf-submit:hover {
+      background: #4fd47e;
+      box-shadow: 0 0 24px rgba(61,190,108,0.35);
+      transform: translateY(-1px);
+    }
+    .pf-success {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .pf-success-icon {
+      width: 56px; height: 56px;
+      background: rgba(61,190,108,0.12);
+      border: 1px solid rgba(61,190,108,0.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #3DBE6C;
+    }
+    .pf-success h3 { color: #fff; font-size: 20px; margin: 0; }
+    .pf-success p  { color: #777; font-size: 14px; margin: 0; }
+    .pf-error-msg {
+      font-size: 11px; color: #ff5555; margin-top: 2px; display: none;
+    }
 
     /* ── Calculator ──────────────────────── */
     .project-calculator { padding: 80px 0; background: #fff; }
@@ -533,12 +616,64 @@
         </div>
       </section>
 
-      <!-- CTA -->
-      <section class="project-cta-section">
-        <div class="container">
-          <h2 data-ka="დაინტერესდით?" data-en="Interested?">დაინტერესდით?</h2>
-          <p data-ka="ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას" data-en="Our team is ready to answer all your questions">ჩვენი გუნდი მზადაა პასუხი გასცეს თქვენს ყველა კითხვას</p>
-          <a href="/#contact" class="btn-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      <!-- ── PROJECT CONTACT FORM ── -->
+      <section class="project-contact-section" id="project-contact">
+        <div class="project-contact-inner">
+          <div class="project-contact-label" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</div>
+          <h2 class="project-contact-title" data-ka="დაგვიკავშირდით" data-en="Get in Touch">დაგვიკავშირდით</h2>
+          <p class="project-contact-sub"
+             data-ka="ჩვენი გუნდი მზადაა უპასუხოს თქვენს ყველა კითხვას ამ პროექტთან დაკავშირებით"
+             data-en="Our team is ready to answer all your questions about this project">
+            ჩვენი გუნდი მზადაა უპასუხოს თქვენს ყველა კითხვას ამ პროექტთან დაკავშირებით
+          </p>
+
+          <form class="pf-form" id="pf-form" novalidate>
+            <div class="pf-row">
+              <div class="pf-group">
+                <label for="pf-name" data-ka="სახელი *" data-en="Full Name *">სახელი *</label>
+                <input type="text" id="pf-name" required
+                       data-ka-placeholder="თქვენი სახელი"
+                       data-en-placeholder="Your name"
+                       placeholder="თქვენი სახელი" />
+                <span class="pf-error-msg" id="pf-err-name"
+                      data-ka="სახელი სავალდებულოა" data-en="Name is required">სახელი სავალდებულოა</span>
+              </div>
+              <div class="pf-group">
+                <label for="pf-phone" data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
+                <input type="tel" id="pf-phone" required placeholder="+995 XXX XXX XXX" />
+                <span class="pf-error-msg" id="pf-err-phone"
+                      data-ka="ტელეფონი სავალდებულოა" data-en="Phone is required">ტელეფონი სავალდებულოა</span>
+              </div>
+            </div>
+
+            <div class="pf-group">
+              <label for="pf-project" data-ka="პროექტი" data-en="Project">პროექტი</label>
+              <input type="text" id="pf-project" readonly
+                     placeholder="იტვირთება..." />
+            </div>
+
+            <div class="pf-group">
+              <label for="pf-message" data-ka="შეტყობინება (არასავალდებულო)" data-en="Message (optional)">შეტყობინება (არასავალდებულო)</label>
+              <textarea id="pf-message" rows="4"
+                        data-ka-placeholder="მოგვიყევით თქვენს საჭიროებებზე..."
+                        data-en-placeholder="Tell us about your needs..."
+                        placeholder="მოგვიყევით თქვენს საჭიროებებზე..."></textarea>
+            </div>
+
+            <button type="submit" class="pf-submit">
+              <span data-ka="გაგზავნა" data-en="Send Message">გაგზავნა</span>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+
+            <div class="pf-success" id="pf-success">
+              <div class="pf-success-icon"><i class="fa-solid fa-check"></i></div>
+              <h3 data-ka="გმადლობთ!" data-en="Thank you!">გმადლობთ!</h3>
+              <p data-ka="თქვენი შეტყობინება მიღებულია. მალე დაგიკავშირდებით."
+                 data-en="Your message has been received. We'll be in touch soon.">
+                თქვენი შეტყობინება მიღებულია. მალე დაგიკავშირდებით.
+              </p>
+            </div>
+          </form>
         </div>
       </section>
 
@@ -900,11 +1035,80 @@
         // Apply lang to all static data-ka elements
         applyLang(currentLang);
 
+        // ── Pre-fill contact form project field ──
+        const pfProject = document.getElementById('pf-project');
+        if (pfProject) {
+          pfProject.value = currentLang === 'ka'
+            ? (p.name_ka || p.name_en || '')
+            : (p.name_en || p.name_ka || '');
+        }
+        // Update placeholder text on lang placeholders inside pf-form
+        document.querySelectorAll('#pf-form [data-ka-placeholder]').forEach(el => {
+          el.placeholder = currentLang === 'ka'
+            ? el.dataset.kaPlaceholder
+            : el.dataset.enPlaceholder;
+        });
+
       } catch (e) {
         console.warn('Project fetch failed', e);
         showNotFound();
       }
     }
+
+    // ── PROJECT CONTACT FORM HANDLER ──────────────────────────
+    (function() {
+      var form    = document.getElementById('pf-form');
+      var success = document.getElementById('pf-success');
+      if (!form) return;
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var valid = true;
+
+        var name  = document.getElementById('pf-name');
+        var phone = document.getElementById('pf-phone');
+        var errN  = document.getElementById('pf-err-name');
+        var errP  = document.getElementById('pf-err-phone');
+
+        // Reset errors
+        errN.style.display = 'none';
+        errP.style.display = 'none';
+        name.style.borderColor  = '';
+        phone.style.borderColor = '';
+
+        if (!name.value.trim()) {
+          errN.style.display = 'block';
+          name.style.borderColor = '#ff5555';
+          valid = false;
+        }
+        if (!phone.value.trim()) {
+          errP.style.display = 'block';
+          phone.style.borderColor = '#ff5555';
+          valid = false;
+        }
+        if (!valid) return;
+
+        // Demo success state
+        form.style.display = 'none';
+        success.style.display = 'flex';
+      });
+    })();
+
+    // ── Update pf-project label on language toggle ─────────────
+    var _origApplyLang = applyLang;
+    applyLang = function(lang) {
+      _origApplyLang(lang);
+      var pfProject = document.getElementById('pf-project');
+      if (pfProject && window._currentProject) {
+        var p = window._currentProject;
+        pfProject.value = lang === 'ka'
+          ? (p.name_ka || p.name_en || '')
+          : (p.name_en || p.name_ka || '');
+      }
+      document.querySelectorAll('#pf-form [data-ka-placeholder]').forEach(function(el) {
+        el.placeholder = lang === 'ka' ? el.dataset.kaPlaceholder : el.dataset.enPlaceholder;
+      });
+    };
 
     loadProject();
 
