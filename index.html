@@ -1010,18 +1010,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     animate();
 
     // ── RESIZE ───────────────────────────────────────────────
+    // Track last width — mobile address-bar show/hide only changes HEIGHT,
+    // not WIDTH. We skip rebuilds that are height-only to keep the scene static.
+    var prevW = W;
     var resizeTimer;
     function onResize() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        W = window.innerWidth;
+        var newW = window.innerWidth;
+        // Ignore pure height changes (mobile browser chrome appearing/disappearing)
+        if (Math.abs(newW - prevW) < 10) return;
+        prevW = newW;
+        W = newW;
         H = window.innerHeight;
         camera.aspect = W / H;
         camera.updateProjectionMatrix();
         renderer.setSize(W, H);
         buildCity();
         initParticles();
-      }, 150);
+      }, 200);
     }
     window.addEventListener('resize', onResize);
 

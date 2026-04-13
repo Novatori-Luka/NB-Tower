@@ -298,7 +298,10 @@ main { counter-reset: section-num; }
 ══════════════════════════════════════════════ */
 .hero {
   position: relative;
-  min-height: 100vh;
+  /* 100svh = small viewport height (address bar always counted in) —
+     prevents the section from jumping when mobile browser chrome appears/disappears */
+  min-height: 100svh;
+  min-height: 100vh; /* fallback for older browsers */
   background: var(--bg-base);
   display: flex;
   align-items: center;
@@ -348,6 +351,7 @@ main { counter-reset: section-num; }
   align-items: center;
   justify-content: center;
   text-align: center;
+  min-height: 100svh;
   min-height: 100vh;
   padding-top: var(--header-h);
   padding-bottom: 80px;
