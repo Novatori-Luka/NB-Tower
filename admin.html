@@ -1821,7 +1821,7 @@
       </div>`;
   }
 
-  async function handleRenderUpload(input) {
+  window.handleRenderUpload = async function handleRenderUpload(input) {
     const file = input.files[0];
     if (!file) return;
 
@@ -1870,7 +1870,7 @@
     }
   }
 
-  function clearRenderUpload() {
+  window.clearRenderUpload = function clearRenderUpload() {
     document.getElementById('f-buildingRender').value = '';
     document.getElementById('render-preview-img').src = '';
     document.getElementById('render-preview-wrap').style.display = 'none';
