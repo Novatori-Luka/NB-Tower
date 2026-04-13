@@ -932,9 +932,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     // ── RENDERER ─────────────────────────────────────────────
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x060d14, 1);
+    renderer.setClearColor(0x000000, 0); // transparent — sky comes from CSS gradient
 
     var scene = new THREE.Scene();
 
@@ -953,17 +953,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     // ── MATERIALS (created once, reused) ─────────────────────
-    var matBack  = new THREE.MeshBasicMaterial({ color: 0x0a1420 });
-    var matFront = new THREE.MeshBasicMaterial({ color: 0x050c16 });
-    var matGreen = new THREE.MeshBasicMaterial({ color: 0x0d2a1a });
+    // Near-black silhouettes — clearly visible against the CSS sky gradient
+    var matBack  = new THREE.MeshBasicMaterial({ color: 0x050e1a }); // back row: slightly lighter = depth
+    var matFront = new THREE.MeshBasicMaterial({ color: 0x010306 }); // front: almost black
+    var matGreen = new THREE.MeshBasicMaterial({ color: 0x020a04 }); // green-tinted dark
 
-    // Pre-built window materials pool
+    // Bright window materials pool — warm amber/yellow, high opacity
     var winMats = [];
     for (var mi = 0; mi < 12; mi++) {
       winMats.push(new THREE.MeshBasicMaterial({
-        color: (mi % 3 === 0) ? 0xffd580 : 0xf5c842,
+        color: (mi % 4 === 0) ? 0xffcc44 : (mi % 4 === 1) ? 0xffa020 : (mi % 4 === 2) ? 0xffe080 : 0xffb830,
         transparent: true,
-        opacity: 0.35 + (mi * 0.041) % 0.45
+        opacity: 0.72 + (mi * 0.023) % 0.28   // 0.72 – 1.0
       }));
     }
 
@@ -981,25 +982,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       var floor = -hh;
       var rng = mulberry32(42); // deterministic city layout
 
-      // ── BACK ROW (depth layer) ──
+      // Buildings occupy only the bottom third of the viewport
+      // floor = -hh ≈ -2.89; we want tallest buildings to reach ~-0.3 (just below centre)
+      // so max front bh ≈ hh * 0.82 ≈ 2.37 units
+
+      // ── BACK ROW ──
+      var matBackFar = new THREE.MeshBasicMaterial({ color: 0x0a1c30 });
       var x = -hw - 0.2;
       while (x < hw + 0.2) {
         var bw = 0.28 + rng() * 0.75;
-        var bh = 0.4  + rng() * 2.0;
+        var bh = 0.25 + rng() * (hh * 0.42); // max ~1.5 units
         var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.03), bh, 0.12);
-        var mesh = new THREE.Mesh(geo, matBack);
+        var mesh = new THREE.Mesh(geo, matBackFar);
         mesh.position.set(x + bw * 0.5, floor + bh * 0.5, -1.2);
         cityGroup.add(mesh);
         x += bw;
       }
 
       // ── MID ROW ──
+      var matMid = new THREE.MeshBasicMaterial({ color: 0x040c14 });
       x = -hw - 0.1;
       while (x < hw + 0.1) {
         var bw = 0.32 + rng() * 0.9;
-        var bh = 0.6  + rng() * 2.8;
+        var bh = 0.35 + rng() * (hh * 0.60); // max ~2.1 units
         var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.03), bh, 0.16);
-        var mesh = new THREE.Mesh(geo, (rng() < 0.15) ? matGreen : matBack);
+        var mesh = new THREE.Mesh(geo, (rng() < 0.15) ? matGreen : matMid);
         mesh.position.set(x + bw * 0.5, floor + bh * 0.5, -0.6);
         cityGroup.add(mesh);
         x += bw;
@@ -1009,7 +1016,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       x = -hw - 0.1;
       while (x < hw + 0.1) {
         var bw = 0.38 + rng() * 1.2;
-        var bh = 1.0  + rng() * 4.2;
+        var bh = 0.5  + rng() * (hh * 0.82); // max ~2.87 → tallest buildings just reach centre
         var isGreen = rng() < 0.18;
         var geo = new THREE.BoxGeometry(Math.max(0.01, bw - 0.04), bh, 0.22);
         var mesh = new THREE.Mesh(geo, isGreen ? matGreen : matFront);
@@ -1027,7 +1034,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           var winGeo = new THREE.PlaneGeometry(ww, wh);
           for (var row = 0; row < rows; row++) {
             for (var col = 0; col < cols; col++) {
-              if (rng() < 0.44) continue;
+              if (rng() < 0.58) continue; // ~42% of windows lit
               var mat = winMats[Math.floor(rng() * winMats.length)];
               var win = new THREE.Mesh(winGeo, mat);
               win.position.set(
@@ -1047,16 +1054,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       x = -hw - 0.1;
       while (x < hw + 0.1) {
         var bw = 0.38 + rng2() * 1.2;
-        var bh = 1.0  + rng2() * 4.2;
-        if (bh > 3.5 && rng2() < 0.5) {
-          var glowGeo = new THREE.PlaneGeometry(bw * 0.7, 0.04);
-          var glowMat = new THREE.MeshBasicMaterial({ color: 0x3dbe6c, transparent: true, opacity: 0.55 });
+        var bh = 0.5  + rng2() * (hh * 0.82);
+        if (bh > hh * 0.55 && rng2() < 0.55) {
+          var glowGeo = new THREE.PlaneGeometry(bw * 0.75, 0.05);
+          var glowMat = new THREE.MeshBasicMaterial({ color: 0x3dbe6c, transparent: true, opacity: 0.7 });
           var g = new THREE.Mesh(glowGeo, glowMat);
-          g.position.set(x + bw * 0.5, floor + bh + 0.02, 0.14);
+          g.position.set(x + bw * 0.5, floor + bh + 0.025, 0.14);
           cityGroup.add(g);
         }
         x += bw;
       }
+
+      // ── SOLID SKYLINE BASE ── guarantees a continuous dark band at the bottom
+      // This is a full-width rect that ensures the horizon always reads as "city"
+      var baseGeo = new THREE.PlaneGeometry(hw * 2.4, hh * 0.32);
+      var baseMat = new THREE.MeshBasicMaterial({ color: 0x020609, depthWrite: true });
+      var base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.set(0, floor + (hh * 0.32) * 0.5, 0.05);
+      cityGroup.add(base);
+
+      // ── HORIZON GLOW ── wide warm-green band just above the base
+      var horizGeo = new THREE.PlaneGeometry(hw * 2.4, 0.6);
+      var horizMat = new THREE.MeshBasicMaterial({ color: 0x163825, transparent: true, opacity: 0.50, depthWrite: false });
+      var horiz = new THREE.Mesh(horizGeo, horizMat);
+      horiz.position.set(0, floor + (hh * 0.32) + 0.1, -0.9);
+      cityGroup.add(horiz);
+
+      // Narrow bright green seam right at the base top edge
+      var seamGeo = new THREE.PlaneGeometry(hw * 2.4, 0.06);
+      var seamMat = new THREE.MeshBasicMaterial({ color: 0x2aae5a, transparent: true, opacity: 0.30, depthWrite: false });
+      var seam = new THREE.Mesh(seamGeo, seamMat);
+      seam.position.set(0, floor + (hh * 0.32), -0.80);
+      cityGroup.add(seam);
     }
 
     // ── PARTICLES ────────────────────────────────────────────
@@ -1088,6 +1117,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     }
 
+    // Circular sprite texture for round particles
+    function makeCircleSprite() {
+      var c = document.createElement('canvas');
+      c.width = 32; c.height = 32;
+      var ctx = c.getContext('2d');
+      var g = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+      g.addColorStop(0,    'rgba(255,255,255,1)');
+      g.addColorStop(0.45, 'rgba(255,255,255,0.85)');
+      g.addColorStop(1,    'rgba(255,255,255,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 32, 32);
+      var tex = new THREE.CanvasTexture(c);
+      return tex;
+    }
+    var particleSprite = makeCircleSprite();
+
     // Three particle systems for size variety
     function makeParticleSystem(indices, sz) {
       var count = indices.length;
@@ -1103,8 +1148,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
       var mat = new THREE.PointsMaterial({
         size: sz, sizeAttenuation: false,
-        vertexColors: true, transparent: true, opacity: 0.65,
-        depthWrite: false
+        map: particleSprite,
+        vertexColors: true, transparent: true, opacity: 0.70,
+        depthWrite: false, alphaTest: 0.05
       });
       return new THREE.Points(geo, mat);
     }

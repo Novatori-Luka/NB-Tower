@@ -312,7 +312,23 @@ main { counter-reset: section-num; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: #060d14;
+  /* Sky gradient — deep space → atmospheric blue → city glow horizon */
+  background:
+    /* Dark vignette — covers only the text area (top ~45%), not the building zone */
+    radial-gradient(ellipse 65% 32% at 50% 22%, rgba(1, 4, 12, 0.60) 0%, transparent 100%),
+    /* Green city-glow at horizon */
+    radial-gradient(ellipse 90% 45% at 50% 100%, rgba(15, 60, 25, 0.55) 0%, transparent 70%),
+    /* Warm amber light pollution */
+    radial-gradient(ellipse 50% 25% at 50% 100%, rgba(180, 70, 10, 0.10) 0%, transparent 55%),
+    linear-gradient(
+      to bottom,
+      #010408  0%,
+      #020810 25%,
+      #040c1c 55%,
+      #071525 78%,
+      #0a1a2a 92%,
+      #081418 100%
+    );
 }
 
 #hero-canvas {
