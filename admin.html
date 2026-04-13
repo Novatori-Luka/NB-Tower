@@ -1833,34 +1833,41 @@
     const statusTxt   = document.getElementById('render-upload-status');
     const hiddenInput = document.getElementById('f-buildingRender');
 
+    // Show local preview immediately (no waiting for upload)
+    const localUrl = URL.createObjectURL(file);
+    previewImg.src = localUrl;
     placeholder.style.display = 'none';
-    previewWrap.style.display = 'none';
-    progressBox.style.display = '';
-    progressBar.style.width = '30%';
-    statusTxt.textContent = 'Uploading…';
-
-    // Unique filename: timestamp + original name
-    const ext = file.name.split('.').pop();
-    const path = `renders/${Date.now()}.${ext}`;
-
-    const { data, error } = await db.storage.from('project-assets').upload(path, file, { upsert: true });
-
-    if (error) {
-      progressBar.style.background = '#e55';
-      statusTxt.textContent = 'Upload failed: ' + error.message;
-      return;
-    }
-
-    progressBar.style.width = '100%';
-    statusTxt.textContent = 'Done!';
-    setTimeout(() => { progressBox.style.display = 'none'; }, 800);
-
-    const { data: urlData } = db.storage.from('project-assets').getPublicUrl(path);
-    const publicUrl = urlData.publicUrl;
-
-    hiddenInput.value = publicUrl;
-    previewImg.src = publicUrl;
     previewWrap.style.display = 'inline-block';
+    progressBox.style.display = '';
+    progressBar.style.width = '10%';
+    progressBar.style.background = '#3DBE6C';
+    statusTxt.textContent = 'Uploading to cloud…';
+
+    const ext = file.name.split('.').pop();
+    const filePath = `renders/${Date.now()}.${ext}`;
+
+    try {
+      const { error } = await db.storage.from('project-assets').upload(filePath, file, { upsert: true });
+
+      if (error) throw error;
+
+      progressBar.style.width = '100%';
+      statusTxt.textContent = 'Uploaded!';
+      setTimeout(() => { progressBox.style.display = 'none'; }, 1000);
+
+      const { data: urlData } = db.storage.from('project-assets').getPublicUrl(filePath);
+      hiddenInput.value = urlData.publicUrl;
+      previewImg.src = urlData.publicUrl;
+      URL.revokeObjectURL(localUrl);
+
+    } catch (err) {
+      // Upload failed — keep local preview, warn user
+      progressBar.style.width = '100%';
+      progressBar.style.background = '#e55';
+      statusTxt.textContent = '⚠ Storage upload failed — photo saved locally only. Create "project-assets" bucket in Supabase Storage.';
+      // Store local blob URL temporarily so form save still captures it
+      hiddenInput.value = localUrl;
+    }
   }
 
   function clearRenderUpload() {
