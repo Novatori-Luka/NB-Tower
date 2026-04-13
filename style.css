@@ -372,7 +372,7 @@ main { counter-reset: section-num; }
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: #ffffff;
   margin-bottom: 32px;
 }
 .badge-dot {
