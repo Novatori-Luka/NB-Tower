@@ -651,7 +651,11 @@
 
           <!-- RIGHT: Building render + floor zone overlays -->
           <div class="bfloor-render-wrap">
-            <img src="assets/building-render.jpg" alt="Building" class="bfloor-render-img" id="bfloor-render-img" />
+            <img src="" alt="Building" class="bfloor-render-img" id="bfloor-render-img" style="display:none" />
+            <div id="bfloor-render-placeholder" style="width:100%;height:100%;min-height:500px;display:flex;align-items:center;justify-content:center;background:#141414;flex-direction:column;gap:12px">
+              <i class="fa-solid fa-building" style="font-size:3rem;color:#333"></i>
+              <span style="color:#555;font-size:13px" data-ka="შენობის რენდერი არ არის" data-en="No building render added">შენობის რენდერი არ არის</span>
+            </div>
             <div class="bfloor-overlays" id="bfloor-overlays"></div>
             <div class="bfloor-tooltip" id="bfloor-tooltip">
               <div class="bfloor-tooltip-floor"  id="bfloor-tooltip-floor"></div>
@@ -1057,7 +1061,18 @@
     }
 
     /* ── Building Visual ─────────────────── */
-    function buildBuildingVisual(totalFloors, projectId) {
+    function buildBuildingVisual(totalFloors, projectId, renderUrl) {
+      // Set building render image
+      const img = document.getElementById('bfloor-render-img');
+      const placeholder = document.getElementById('bfloor-render-placeholder');
+      if (renderUrl) {
+        img.src = renderUrl;
+        img.style.display = '';
+        if (placeholder) placeholder.style.display = 'none';
+      } else {
+        img.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
+      }
       const overlaysEl = document.getElementById('bfloor-overlays');
       if (!overlaysEl) return;
       const floors = totalFloors || 10;
@@ -1273,7 +1288,7 @@
         buildFloorSelector(p.total_floors);
         populateProgress(p);
         initCalculator(p);
-        buildBuildingVisual(p.total_floors, p.id);
+        buildBuildingVisual(p.total_floors, p.id, p.building_render_url);
 
         // Show content, hide loading
         document.getElementById('project-loading').style.display = 'none';

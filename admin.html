@@ -1331,14 +1331,8 @@
             <rect width="800" height="440" fill="url(#dgrid)"/>
             <!-- Outer wall -->
             <rect x="20" y="20" width="760" height="400" fill="none" stroke="#2c2c2a" stroke-width="2" rx="4"/>
-            <!-- Corridor -->
-            <rect x="20" y="160" width="760" height="110" fill="#e8e4dc" stroke="#c8c4bc" stroke-width="0.5"/>
-            <text x="400" y="220" text-anchor="middle" font-size="12" fill="#aaa" font-family="system-ui,sans-serif">დერეფანი / Corridor</text>
-            <!-- Stairwells -->
-            <rect x="350" y="160" width="80" height="110" fill="#d4cfc6" stroke="#b0aca4" stroke-width="0.5"/>
-            <text x="390" y="219" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,sans-serif">სად. I</text>
-            <rect x="645" y="160" width="80" height="110" fill="#d4cfc6" stroke="#b0aca4" stroke-width="0.5"/>
-            <text x="685" y="219" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,sans-serif">სად. II</text>
+            <!-- Dynamic corridor + stairwells (updated by JS) -->
+            <g id="designer-layout-group"></g>
             <!-- Apartments group -->
             <g id="designer-apts-group"></g>
             <!-- Rubber-band rect (drawn during drag) -->
@@ -1349,6 +1343,26 @@
 
       <!-- Properties panel -->
       <div class="designer-props-panel">
+        <!-- Floor plan layout config (always visible) -->
+        <div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #e8e8e8">
+          <h4 style="margin-bottom:10px">სართულის გეგმა / Layout</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+            <div class="form-group" style="margin:0">
+              <label>დერეფანი Y1</label>
+              <input id="dc-corY1" type="number" value="160" min="0" max="440" oninput="updateDesignerLayout()"/>
+            </div>
+            <div class="form-group" style="margin:0">
+              <label>დერეფანი Y2</label>
+              <input id="dc-corY2" type="number" value="270" min="0" max="440" oninput="updateDesignerLayout()"/>
+            </div>
+          </div>
+          <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">კიბის უჯრები / Stairwells</div>
+          <div id="dc-stairwells-list"></div>
+          <button class="btn btn-secondary btn-sm" onclick="addDesignerStairwell()" style="width:100%;margin-top:6px;font-size:12px">
+            <i class="fa-solid fa-plus"></i> კიბის დამატება
+          </button>
+        </div>
+
         <div id="designer-empty-hint" class="designer-empty-hint">
           <i class="fa-solid fa-pen-ruler"></i>
           SVG-ზე გამოსახეთ ბინა<br>
@@ -1777,6 +1791,12 @@
           <option value="დასრულება"        ${(p.progress_stage==='დასრულება')       ?'selected':''}>დასრულება / Finishing</option>
           <option value="ჩაბარებულია"      ${(p.progress_stage==='ჩაბარებულია')    ?'selected':''}>ჩაბარებულია / Completed</option>
         </select>
+      </div>
+      <hr style="border:none;border-top:1px solid #eee;margin:8px 0"/>
+      <div class="form-group">
+        <label>შენობის რენდერი URL / Building Render URL</label>
+        <input type="url" id="f-buildingRender" value="${escHtml(p.building_render_url||'')}" placeholder="https://..." />
+        <small style="color:#aaa;font-size:11px">project.html-ის სართულის განყოფილებაში გამოჩნდება</small>
       </div>`;
   }
 
@@ -1797,6 +1817,7 @@
       progressPercent:  parseInt(document.getElementById('f-progressPercent')?.value) || 0,
       progressStage:    document.getElementById('f-progressStage')?.value || null,
       progressUpdated:  document.getElementById('f-progressUpdated')?.value.trim() || null,
+      buildingRenderUrl: document.getElementById('f-buildingRender')?.value.trim() || null,
     };
   }
 
@@ -1822,6 +1843,7 @@
       progress_percent: data.progressPercent ?? 0,
       progress_stage:  data.progressStage || null,
       progress_updated: data.progressUpdated || null,
+      building_render_url: data.buildingRenderUrl || null,
     };
     try {
       if (id) {
@@ -2560,13 +2582,15 @@
   /* ── FLOOR PLAN DESIGNER ─────────────────────── */
   let dProjId   = null;
   let dFloor    = null;
-  let dApts     = [];      // all apts on this floor (in-memory)
-  let dDeleted  = [];      // IDs to delete on save
-  let dSelId    = null;    // tempId of selected apt
-  let dTool     = 'draw';  // 'draw' | 'select'
+  let dApts     = [];
+  let dDeleted  = [];
+  let dSelId    = null;
+  let dTool     = 'draw';
   let dDrawing  = false;
   let dStart    = null;
   let dTempCtr  = 0;
+  // Per-project floor plan config
+  let dConfig   = { corridorY1: 160, corridorY2: 270, stairwells: [{x:350,w:80,label:'I'},{x:645,w:80,label:'II'}] };
 
   const STATUS_FILL   = { free:'rgba(61,190,108,0.25)', reserved:'rgba(245,158,11,0.2)', sold:'rgba(180,180,180,0.2)' };
   const STATUS_STROKE = { free:'#3DBE6C', reserved:'#f59e0b', sold:'#aaa' };
@@ -2604,13 +2628,81 @@
   };
 
   async function loadDesignerApts() {
+    // Load project config (building render + floor plan layout)
+    const { data: proj } = await db.from('projects').select('floor_plan_config').eq('id', dProjId).single();
+    if (proj?.floor_plan_config) {
+      dConfig = proj.floor_plan_config;
+    } else {
+      dConfig = { corridorY1: 160, corridorY2: 270, stairwells: [{x:350,w:80,label:'I'},{x:645,w:80,label:'II'}] };
+    }
+    // Populate layout inputs
+    document.getElementById('dc-corY1').value = dConfig.corridorY1 ?? 160;
+    document.getElementById('dc-corY2').value = dConfig.corridorY2 ?? 270;
+    renderStairwellsList();
+
+    // Load apartments
     const { data } = await db.from('apartments').select('*')
       .eq('project_id', dProjId).eq('floor', dFloor);
     dApts = (data || []).map(a => ({ ...a, tempId: 'db_' + a.id }));
     renderDesigner();
   }
 
+  function renderStairwellsList() {
+    const list = document.getElementById('dc-stairwells-list');
+    if (!list) return;
+    list.innerHTML = (dConfig.stairwells || []).map((s, i) => `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:4px;align-items:center;margin-bottom:6px">
+        <input type="number" value="${s.x}" placeholder="X" style="padding:5px 8px;border:1.5px solid #e0e0e0;border-radius:5px;font-size:12px"
+          oninput="updateStairwell(${i},'x',+this.value)"/>
+        <input type="number" value="${s.w||80}" placeholder="W" style="padding:5px 8px;border:1.5px solid #e0e0e0;border-radius:5px;font-size:12px"
+          oninput="updateStairwell(${i},'w',+this.value)"/>
+        <input type="text" value="${escHtml(s.label||'')}" placeholder="Label" style="padding:5px 8px;border:1.5px solid #e0e0e0;border-radius:5px;font-size:12px"
+          oninput="updateStairwell(${i},'label',this.value)"/>
+        <button onclick="removeStairwell(${i})" style="background:none;border:none;color:#e53e3e;cursor:pointer;font-size:14px;padding:2px 4px">✕</button>
+      </div>
+    `).join('');
+  }
+
+  window.updateDesignerLayout = function() {
+    dConfig.corridorY1 = parseInt(document.getElementById('dc-corY1').value) || 160;
+    dConfig.corridorY2 = parseInt(document.getElementById('dc-corY2').value) || 270;
+    renderDesigner();
+  };
+
+  window.updateStairwell = function(i, key, val) {
+    if (dConfig.stairwells[i]) { dConfig.stairwells[i][key] = val; renderDesigner(); }
+  };
+
+  window.addDesignerStairwell = function() {
+    dConfig.stairwells.push({ x: 400, w: 80, label: String(dConfig.stairwells.length + 1) });
+    renderStairwellsList();
+    renderDesigner();
+  };
+
+  window.removeStairwell = function(i) {
+    dConfig.stairwells.splice(i, 1);
+    renderStairwellsList();
+    renderDesigner();
+  };
+
   function renderDesigner() {
+    // Render corridor + stairwells from dConfig
+    const lg = document.getElementById('designer-layout-group');
+    if (lg) {
+      const c1 = dConfig.corridorY1 ?? 160;
+      const c2 = dConfig.corridorY2 ?? 270;
+      const ch = c2 - c1;
+      const sw = (dConfig.stairwells || []).map(s => `
+        <rect x="${s.x}" y="${c1}" width="${s.w||80}" height="${ch}" fill="#d4cfc6" stroke="#b0aca4" stroke-width="0.5"/>
+        <text x="${s.x + (s.w||80)/2}" y="${c1 + ch/2 + 4}" text-anchor="middle" font-size="10" fill="#888" font-family="system-ui,sans-serif">სად. ${escHtml(s.label||'')}</text>
+      `).join('');
+      lg.innerHTML = `
+        <rect x="20" y="${c1}" width="760" height="${ch}" fill="#e8e4dc" stroke="#c8c4bc" stroke-width="0.5"/>
+        <text x="400" y="${c1 + ch/2 + 4}" text-anchor="middle" font-size="12" fill="#bbb" font-family="system-ui,sans-serif">დერეფანი / Corridor</text>
+        ${sw}
+      `;
+    }
+
     const g = document.getElementById('designer-apts-group');
     if (!g) return;
     g.innerHTML = '';
@@ -2703,6 +2795,9 @@
   };
 
   window.saveDesignerApts = async function() {
+    // Save floor plan config to project
+    await db.from('projects').update({ floor_plan_config: dConfig }).eq('id', dProjId);
+
     for (const id of dDeleted) {
       await db.from('apartments').delete().eq('id', id);
     }
