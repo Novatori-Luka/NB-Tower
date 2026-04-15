@@ -93,25 +93,35 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   ══════════════════════════════════════════════ */
 
   function _renderProjects(projects) {
-    const row = document.getElementById('projects-grid');
-    if (!row) return;
-    row.innerHTML = projects.map((p, i) => {
+    const grid = document.getElementById('projects-grid');
+    if (!grid) return;
+    const catKaMap = { residential: 'საცხოვრებელი', commercial: 'კომერციული' };
+    const catEnMap = { residential: 'Residential',   commercial: 'Commercial'   };
+    grid.innerHTML = projects.map((p) => {
       const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
       const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
-      const badgeEn  = p.status === 'completed' ? 'Completed' : 'Ongoing';
+      const badgeEn  = p.status === 'completed' ? 'Completed'    : 'Ongoing';
+      const catKa    = catKaMap[p.category] || p.category;
+      const catEn    = catEnMap[p.category] || p.category;
 
       const imgInner = p.imageUrl
         ? `<img src="${p.imageUrl}" alt="${p.nameKa}" loading="lazy">`
-        : `<div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>`;
+        : `<div class="proj-card-ph"><i class="fa-solid fa-building"></i></div>`;
 
       return `
-        <div class="project-circle" data-category="${p.category}" onclick="window.location.href='/project?id=${p.id}'">
-          <div class="project-circle-img">
+        <div class="proj-card" data-category="${p.category}" onclick="window.location.href='/project?id=${p.id}'">
+          <div class="proj-card-img">
             ${imgInner}
-            <span class="project-circle-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
+            <span class="proj-card-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
+            <div class="proj-card-overlay"><span data-ka="პროექტის ნახვა" data-en="View Project">პროექტის ნახვა</span> <i class="fa-solid fa-arrow-right"></i></div>
           </div>
-          <div class="project-circle-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</div>
-          <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>${p.location}</div>
+          <div class="proj-card-body">
+            <h3 class="proj-card-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</h3>
+            <div class="proj-card-meta">
+              <span class="proj-card-loc"><i class="fa-solid fa-location-dot"></i>${p.location}</span>
+              <span class="proj-card-cat" data-ka="${catKa}" data-en="${catEn}">${catKa}</span>
+            </div>
+          </div>
         </div>`;
     }).join('');
   }
