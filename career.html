@@ -360,7 +360,9 @@
             <h3 data-ka="ვაკანსია ვერ მიპოვეთ?" data-en="Didn't find a vacancy?">ვაკანსია ვერ მიპოვეთ?</h3>
             <p data-ka="გამოგვიგზავნეთ ღია განაცხადი — შეინახავთ CV-ს და შესაბამის ვაკანსიაზე დაგიკავშირდებით." data-en="Send us an open application — we'll keep your CV and contact you when a suitable role opens.">გამოგვიგზავნეთ ღია განაცხადი — შეინახავთ CV-ს და შესაბამის ვაკანსიაზე დაგიკავშირდებით.</p>
           </div>
-          <button class="btn-white" onclick="openModal('ღია განაცხადი', 'Open Application')" data-ka="ღია განაცხადი" data-en="Open Application">ღია განაცხადი</button>
+          <button class="btn-white"
+            data-job-id="" data-job-ka="ღია განაცხადი" data-job-en="Open Application"
+            onclick="openModal(this)" data-ka="ღია განაცხადი" data-en="Open Application">ღია განაცხადი</button>
         </div>
 
       </div>
@@ -374,15 +376,17 @@
       <div class="modal-title" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</div>
       <div class="modal-role" id="modal-role-label"></div>
       <div id="modal-form-wrap">
-        <div class="form-group">
-          <label data-ka="სახელი და გვარი *" data-en="Full Name *">სახელი და გვარი *</label>
-          <input type="text" id="apply-name" placeholder="" />
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group" style="margin-bottom:0">
+            <label data-ka="სახელი *" data-en="First Name *">სახელი *</label>
+            <input type="text" id="apply-firstname" placeholder="" />
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label data-ka="გვარი *" data-en="Last Name *">გვარი *</label>
+            <input type="text" id="apply-lastname" placeholder="" />
+          </div>
         </div>
-        <div class="form-group">
-          <label data-ka="ელ-ფოსტა *" data-en="Email *">ელ-ფოსტა *</label>
-          <input type="email" id="apply-email" placeholder="" />
-        </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-top:16px">
           <label data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
           <input type="tel" id="apply-phone" placeholder="+995 XXX XXX XXX" />
         </div>
@@ -390,11 +394,7 @@
           <label data-ka="CV ბმული (LinkedIn / Drive)" data-en="CV Link (LinkedIn / Drive)">CV ბმული (LinkedIn / Drive)</label>
           <input type="url" id="apply-cv" placeholder="https://" />
         </div>
-        <div class="form-group">
-          <label data-ka="საკუთარი თავის შესახებ" data-en="About Yourself">საკუთარი თავის შესახებ</label>
-          <textarea id="apply-message" rows="4"></textarea>
-        </div>
-        <button class="btn-primary" style="width:100%" onclick="submitApply()" data-ka="გაგზავნა" data-en="Submit">გაგზავნა</button>
+        <button class="btn-primary" style="width:100%;margin-top:4px" onclick="submitApply()" data-ka="განაცხადის გაგზავნა" data-en="Submit Application">განაცხადის გაგზავნა</button>
       </div>
       <div class="modal-success" id="modal-success">
         <div class="success-icon"><i class="fa-solid fa-check"></i></div>
@@ -515,7 +515,10 @@
             </div>
           </div>
           <button class="btn-primary job-apply-btn"
-            onclick="openModal(${JSON.stringify(j.title_ka||'')}, ${JSON.stringify(j.title_en||j.title_ka||'')})">
+            data-job-id="${j.id || ''}"
+            data-job-ka="${(j.title_ka||'').replace(/"/g,'&quot;')}"
+            data-job-en="${(j.title_en||j.title_ka||'').replace(/"/g,'&quot;')}"
+            onclick="openModal(this)">
             ${applyLabel}
           </button>
         </div>
@@ -561,35 +564,75 @@
   }
   _loadJobs();
 
-  let _pendingRole = '';
-  function openModal(kaRole, enRole) {
-    _pendingRole = kaRole;
+  let _pendingJobId  = '';
+  let _pendingRoleKa = '';
+  let _pendingRoleEn = '';
+
+  function openModal(btn) {
+    _pendingJobId  = btn.dataset.jobId  || '';
+    _pendingRoleKa = btn.dataset.jobKa  || '';
+    _pendingRoleEn = btn.dataset.jobEn  || _pendingRoleKa;
     const lang = localStorage.getItem('lang') || 'ka';
-    document.getElementById('modal-role-label').textContent = lang === 'ka' ? kaRole : enRole;
+    document.getElementById('modal-role-label').textContent = lang === 'ka' ? _pendingRoleKa : _pendingRoleEn;
     document.getElementById('modal-form-wrap').style.display = '';
-    document.getElementById('modal-success').style.display = 'none';
+    document.getElementById('modal-success').style.display   = 'none';
+    /* reset field borders */
+    ['apply-firstname','apply-lastname','apply-phone'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.borderColor = '';
+    });
     document.getElementById('apply-modal').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
+
   function closeModal() {
     document.getElementById('apply-modal').classList.remove('open');
     document.body.style.overflow = '';
+    /* clear form */
+    ['apply-firstname','apply-lastname','apply-phone','apply-cv'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
   }
+
   document.getElementById('apply-modal').addEventListener('click', e => {
     if (e.target === e.currentTarget) closeModal();
   });
-  function submitApply() {
-    const name  = document.getElementById('apply-name').value.trim();
-    const email = document.getElementById('apply-email').value.trim();
-    const phone = document.getElementById('apply-phone').value.trim();
-    if (!name || !email || !phone) {
-      if (!name)  document.getElementById('apply-name').style.borderColor  = '#e55';
-      if (!email) document.getElementById('apply-email').style.borderColor = '#e55';
-      if (!phone) document.getElementById('apply-phone').style.borderColor = '#e55';
-      return;
+
+  async function submitApply() {
+    const firstName = document.getElementById('apply-firstname').value.trim();
+    const lastName  = document.getElementById('apply-lastname').value.trim();
+    const phone     = document.getElementById('apply-phone').value.trim();
+    const cvUrl     = document.getElementById('apply-cv').value.trim();
+
+    let valid = true;
+    [['apply-firstname', firstName], ['apply-lastname', lastName], ['apply-phone', phone]].forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (!val) { el.style.borderColor = '#e55'; valid = false; }
+      else       { el.style.borderColor = ''; }
+    });
+    if (!valid) return;
+
+    /* disable button while saving */
+    const btn = document.querySelector('#modal-form-wrap .btn-primary');
+    if (btn) { btn.disabled = true; btn.style.opacity = '0.6'; }
+
+    try {
+      await _db.from('applications').insert([{
+        job_id:     _pendingJobId  || null,
+        job_title:  _pendingRoleKa || null,
+        first_name: firstName,
+        last_name:  lastName,
+        phone:      phone,
+        cv_url:     cvUrl || null
+      }]);
+    } catch(e) {
+      console.warn('application save error', e);
     }
+
+    /* show success regardless of DB error */
     document.getElementById('modal-form-wrap').style.display = 'none';
-    document.getElementById('modal-success').style.display = '';
+    document.getElementById('modal-success').style.display   = '';
     const lang = localStorage.getItem('lang') || 'ka';
     const s = document.getElementById('modal-success');
     s.querySelector('h3').textContent = lang === 'ka' ? 'გმადლობთ!' : 'Thank you!';

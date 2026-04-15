@@ -898,6 +898,11 @@
         განცხადებები / Listings
         <span class="nav-badge" id="listings-badge" style="display:none">0</span>
       </button>
+      <button class="nav-item" data-page="applications">
+        <i class="fa-solid fa-inbox"></i>
+        განაცხადები / Applications
+        <span class="nav-badge" id="applications-badge" style="display:none">0</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1318,6 +1323,37 @@
         </div>
       </div>
 
+      <div class="page" id="page-applications">
+        <div class="page-header">
+          <div>
+            <h2>განაცხადები / Job Applications</h2>
+            <p>career.html-დან შემოსული სამუშაო განაცხადები</p>
+          </div>
+          <button class="btn btn-secondary" onclick="renderApplicationsTable()">
+            <i class="fa-solid fa-rotate-right"></i>
+            განახლება / Refresh
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>სახელი / First</th>
+                <th>გვარი / Last</th>
+                <th>ტელეფონი</th>
+                <th>CV ბმული</th>
+                <th>ვაკანსია / Position</th>
+                <th>თარიღი</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="applications-table-body">
+              <tr class="empty-row"><td colspan="7"><i class="fa-solid fa-inbox" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>განაცხადი ჯერ არ არის</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div><!-- /page-content -->
   </div><!-- /main-content -->
 </div><!-- /admin-panel -->
@@ -1452,7 +1488,8 @@
     blog:         'ბლოგი / Blog',
     jobs:         'კარიერა / Careers',
     developers:   'დეველოპერები / Developers',
-    listings:     'განცხადებები / Property Listings',
+    listings:      'განცხადებები / Property Listings',
+    applications:  'განაცხადები / Job Applications',
   };
 
   window.navigateTo = function(pageId) {
@@ -1465,7 +1502,8 @@
     if (pageId === 'blog')         renderBlogTable();
     if (pageId === 'jobs')         renderJobsTable();
     if (pageId === 'developers')   renderDevelopersTable();
-    if (pageId === 'listings')     renderListingsTable();
+    if (pageId === 'listings')      renderListingsTable();
+    if (pageId === 'applications')  renderApplicationsTable();
   };
 
   navItems.forEach(item => {
@@ -2788,6 +2826,62 @@
   /* ═══════════════════════════════════════════════
      REFRESH ALL
   ═══════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════
+     JOB APPLICATIONS
+  ══════════════════════════════════════════════ */
+  async function loadApplications() {
+    const { data, error } = await db.from('applications').select('*').order('created_at', { ascending: false });
+    return error ? [] : (data || []);
+  }
+
+  async function renderApplicationsTable() {
+    const tbody = document.getElementById('applications-table-body');
+    const badge = document.getElementById('applications-badge');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:32px"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const apps = await loadApplications();
+    if (badge) {
+      badge.textContent = apps.length;
+      badge.style.display = apps.length ? '' : 'none';
+    }
+    if (!apps.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="7"><i class="fa-solid fa-inbox" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>განაცხადი ჯერ არ არის</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = apps.map(a => {
+      const date = a.created_at ? new Date(a.created_at).toLocaleDateString('ka-GE') : '—';
+      const cvHtml = a.cv_url
+        ? `<a href="${a.cv_url}" target="_blank" style="color:var(--green);text-decoration:underline">ნახვა</a>`
+        : '—';
+      return `<tr>
+        <td>${a.first_name || '—'}</td>
+        <td>${a.last_name  || '—'}</td>
+        <td>${a.phone      || '—'}</td>
+        <td>${cvHtml}</td>
+        <td>${a.job_title  || '—'}</td>
+        <td>${date}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" onclick="deleteApplication('${a.id}')">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.deleteApplication = function(id) {
+    confirm('განაცხადი სამუდამოდ წაიშლება.', async () => {
+      try {
+        const { error } = await db.from('applications').delete().eq('id', id);
+        if (error) throw error;
+        await renderApplicationsTable();
+        toast('განაცხადი წაშლილია / Application deleted');
+      } catch(e) {
+        toast('შეცდომა: ' + e.message, 'error');
+      }
+    });
+  };
+
   async function refreshAll() {
     await Promise.all([
       renderProjectsTable(),
@@ -2800,6 +2894,7 @@
       renderJobsTable(),
       renderDevelopersTable(),
       renderListingsTable(),
+      renderApplicationsTable(),
     ]);
   }
 
