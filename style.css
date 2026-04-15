@@ -5,27 +5,27 @@
 /* ── FiraGO Font (Georgian web standard) ───── */
 @font-face {
   font-family: 'FiraGO';
-  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Regular.woff2') format('woff2');
+  src: url('assets/fonts/FiraGO-400.woff2') format('woff2');
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'FiraGO';
-  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Medium.woff2') format('woff2');
+  src: url('assets/fonts/FiraGO-500.woff2') format('woff2');
   font-weight: 500; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'FiraGO';
-  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-SemiBold.woff2') format('woff2');
+  src: url('assets/fonts/FiraGO-600.woff2') format('woff2');
   font-weight: 600; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'FiraGO';
-  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Bold.woff2') format('woff2');
+  src: url('assets/fonts/FiraGO-700.woff2') format('woff2');
   font-weight: 700; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'FiraGO';
-  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-ExtraBold.woff2') format('woff2');
+  src: url('assets/fonts/FiraGO-800.woff2') format('woff2');
   font-weight: 800; font-style: normal; font-display: swap;
 }
 
