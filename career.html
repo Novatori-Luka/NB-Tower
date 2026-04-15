@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/assets/NB%20Tower%20logo.png">
+  <link rel="apple-touch-icon" href="/assets/NB%20Tower%20logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>კარიერა — NB Tower</title>
+  <meta name="description" content="NB Tower-ში კარიერა — გახდი გუნდის ნაწილი. ღია ვაკანსიები სამშენებლო და უძრავი ქონების სექტორში." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 56px;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero-inner { max-width: 640px; }
+    .page-hero .section-label { display: block; margin-bottom: 14px; }
+    .page-hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .page-hero p { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75; }
+
+    /* ── Why Join ── */
+    .why-join {
+      padding: 72px 0 0;
+      background: var(--bg-base);
+    }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    @media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .why-grid { grid-template-columns: 1fr; } }
+    .why-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .why-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      background: rgba(61,190,108,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      color: var(--green);
+      margin: 0 auto 16px;
+    }
+    .why-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .why-card p  { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── Jobs Section ── */
+    .jobs-section {
+      padding: 72px 0 100px;
+      background: var(--bg-base);
+    }
+    .jobs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .jobs-count {
+      background: var(--green);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    /* ── Job Card ── */
+    .job-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 20px;
+      transition: box-shadow var(--transition), border-color var(--transition);
+    }
+    .job-card:hover { box-shadow: var(--shadow-md); border-color: var(--border-green); }
+    .job-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .job-title-wrap {}
+    .job-dept {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+    .job-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .job-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .job-tag {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .job-tag i { font-size: 0.68rem; color: var(--green); }
+    .job-apply-btn { flex-shrink: 0; align-self: flex-start; }
+
+    .job-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .job-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 700px) { .job-body { grid-template-columns: 1fr; } }
+
+    .job-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .job-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .job-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .job-list li::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 640px) {
+      .job-card { padding: 24px 20px; }
+      .job-card-top { flex-direction: column; }
+    }
+
+    /* ── Open Application CTA ── */
+    .open-apply {
+      margin-top: 56px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+      border-radius: var(--radius-lg);
+      padding: 48px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .open-apply-text h3 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .open-apply-text p  { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
+    .open-apply .btn-white {
+      background: #fff;
+      color: var(--green-dark);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .open-apply .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    @media (max-width: 640px) { .open-apply { padding: 32px 24px; flex-direction: column; } }
+
+    /* Apply Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--bg-base);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: background var(--transition);
+    }
+    .modal-close:hover { background: var(--border); color: var(--text-primary); }
+    .modal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; }
+    .modal-role  { font-size: 0.88rem; color: var(--green); font-weight: 600; margin-bottom: 28px; }
+    .form-group  { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-base);
+      font-family: inherit; font-size: 0.92rem;
+      color: var(--text-primary); outline: none;
+      transition: border-color var(--transition);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(61,190,108,0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .modal-success { text-align: center; padding: 16px 0; display: none; }
+    .modal-success .success-icon { width: 60px; height: 60px; border-radius: 50%; background: rgba(61,190,108,0.12); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--green); margin: 0 auto 16px; }
+    .modal-success h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .modal-success p { font-size: 0.9rem; color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="/" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#about"     class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects"  class="nav-link" data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"       class="nav-link" data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers" class="nav-link" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"     class="nav-link active" data-ka="კარიერა" data-en="Career">კარიერა</a></li>
+        <li><a href="/#contact"   class="nav-link" data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="/#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Page Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-inner">
+          <span class="section-label" data-ka="კარიერა" data-en="Career">კარიერა</span>
+          <h1 data-ka="გახდი ჩვენი გუნდის ნაწილი" data-en="Join Our Team">გახდი ჩვენი გუნდის ნაწილი</h1>
+          <p data-ka="NB Tower-ი მუდმივად ეძებს ნიჭიერ და მოტივირებულ ადამიანებს. ჩვენ გთავაზობთ კარიერის განვითარების შესაძლებლობებს, კონკურენტუნარიან ანაზღაურებას და პრემიუმ სამუშაო გარემოს." data-en="NB Tower is always looking for talented and motivated people. We offer career development opportunities, competitive compensation and a premium work environment.">NB Tower-ი მუდმივად ეძებს ნიჭიერ და მოტივირებულ ადამიანებს. ჩვენ გთავაზობთ კარიერის განვითარების შესაძლებლობებს, კონკურენტუნარიან ანაზღაურებას და პრემიუმ სამუშაო გარემოს.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Join -->
+    <section class="why-join">
+      <div class="container">
+        <div class="section-header reveal" style="text-align:left">
+          <span class="section-label" data-ka="რატომ NB Tower" data-en="Why NB Tower">რატომ NB Tower</span>
+          <h2 class="section-title" data-ka="რას გთავაზობთ" data-en="What We Offer" style="max-width:500px">რას გთავაზობთ</h2>
+        </div>
+        <div class="why-grid">
+          <div class="why-card reveal" style="--delay:0s">
+            <div class="why-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h4 data-ka="კარიერული ზრდა" data-en="Career Growth">კარიერული ზრდა</h4>
+            <p data-ka="ვაქვეყნებთ ვაკანსიებს შიდა რეკლამით. გუნდის 70% სწრაფ დაწინაურებას გეგმავს." data-en="We promote internally first. 70% of our team plans rapid advancement.">ვაქვეყნებთ ვაკანსიებს შიდა რეკლამით. გუნდის 70% სწრაფ დაწინაურებას გეგმავს.</p>
+          </div>
+          <div class="why-card reveal" style="--delay:0.07s">
+            <div class="why-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <h4 data-ka="კონკ. ანაზღაურება" data-en="Competitive Pay">კონკ. ანაზღაურება</h4>
+            <p data-ka="ბაზარზე საუკეთესო სალარო პაკეტი + ბონუსები გეგმის შესრულებაზე." data-en="Best salary package on the market + bonuses for target achievement.">ბაზარზე საუკეთესო სალარო პაკეტი + ბონუსები გეგმის შესრულებაზე.</p>
+          </div>
+          <div class="why-card reveal" style="--delay:0.14s">
+            <div class="why-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <h4 data-ka="ტრენინგი" data-en="Training">ტრენინგი</h4>
+            <p data-ka="რეგულარული გადამზადება, ონლაინ კურსების დაფინანსება და კონფერენციები." data-en="Regular upskilling, funded online courses and industry conferences.">რეგულარული გადამზადება, ონლაინ კურსების დაფინანსება და კონფერენციები.</p>
+          </div>
+          <div class="why-card reveal" style="--delay:0.21s">
+            <div class="why-icon"><i class="fa-solid fa-people-group"></i></div>
+            <h4 data-ka="გუნდი" data-en="Team">გუნდი</h4>
+            <p data-ka="გაერთიანება პროფესიონალების გუნდთან, სადაც ყოველი ხმა ითვლება." data-en="Join a team of professionals where every voice counts.">გაერთიანება პროფესიონალების გუნდთან, სადაც ყოველი ხმა ითვლება.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section class="jobs-section">
+      <div class="container">
+        <div class="jobs-header reveal">
+          <div>
+            <span class="section-label" data-ka="ღია ვაკანსიები" data-en="Open Positions">ღია ვაკანსიები</span>
+            <h2 class="section-title" style="margin-bottom:0" data-ka="ახლა ვეძებთ" data-en="We're Hiring Now">ახლა ვეძებთ</h2>
+          </div>
+          <span class="jobs-count" data-ka="3 ვაკანსია" data-en="3 Positions">3 ვაკანსია</span>
+        </div>
+
+        <!-- Job 1 — Sales Consultant -->
+        <div class="job-card reveal" style="--delay:0s">
+          <div class="job-card-top">
+            <div class="job-title-wrap">
+              <div class="job-dept" data-ka="გაყიდვები" data-en="Sales">გაყიდვები</div>
+              <div class="job-title" data-ka="გაყიდვების კონსულტანტი" data-en="Sales Consultant">გაყიდვების კონსულტანტი</div>
+              <div class="job-tags">
+                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 1+ წ." data-en="1+ yrs experience">გამოცდილება 1+ წ.</span></span>
+              </div>
+            </div>
+            <button class="btn-primary job-apply-btn" onclick="openModal('გაყიდვების კონსულტანტი', 'Sales Consultant')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
+          </div>
+          <div class="job-divider"></div>
+          <div class="job-body">
+            <div>
+              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
+              <ul class="job-list">
+                <li><span data-ka="კლიენტებთან კომუნიკაცია და პრეზენტაციები" data-en="Client communication and presentations">კლიენტებთან კომუნიკაცია და პრეზენტაციები</span></li>
+                <li><span data-ka="ბინების გაყიდვა და კონსულტაცია" data-en="Apartment sales and consultations">ბინების გაყიდვა და კონსულტაცია</span></li>
+                <li><span data-ka="გაყიდვების გეგმის შესრულება" data-en="Achieving sales targets">გაყიდვების გეგმის შესრულება</span></li>
+                <li><span data-ka="CRM სისტემის წარმოება" data-en="CRM system management">CRM სისტემის წარმოება</span></li>
+              </ul>
+            </div>
+            <div>
+              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
+              <ul class="job-list">
+                <li><span data-ka="გაყიდვებში გამოცდილება 1 წელი+" data-en="1+ years sales experience">გაყიდვებში გამოცდილება 1 წელი+</span></li>
+                <li><span data-ka="კომუნიკაბელურობა და დარწმუნების უნარი" data-en="Strong communication and persuasion skills">კომუნიკაბელურობა და დარწმუნების უნარი</span></li>
+                <li><span data-ka="ქართული — C2, ინგლისური — B2+" data-en="Georgian C2, English B2+">ქართული — C2, ინგლისური — B2+</span></li>
+                <li><span data-ka="უძრავი ქონების სექტორში გამოცდილება სასურველია" data-en="Real estate experience preferred">უძრავი ქონების სექტორში გამოცდილება სასურველია</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job 2 — Marketing Manager -->
+        <div class="job-card reveal" style="--delay:0.08s">
+          <div class="job-card-top">
+            <div class="job-title-wrap">
+              <div class="job-dept" data-ka="მარკეტინგი" data-en="Marketing">მარკეტინგი</div>
+              <div class="job-title" data-ka="მარკეტინგის მენეჯერი" data-en="Marketing Manager">მარკეტინგის მენეჯერი</div>
+              <div class="job-tags">
+                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 2+ წ." data-en="2+ yrs experience">გამოცდილება 2+ წ.</span></span>
+              </div>
+            </div>
+            <button class="btn-primary job-apply-btn" onclick="openModal('მარკეტინგის მენეჯერი', 'Marketing Manager')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
+          </div>
+          <div class="job-divider"></div>
+          <div class="job-body">
+            <div>
+              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
+              <ul class="job-list">
+                <li><span data-ka="ციფრული მარკეტინგის სტრატეგიის შემუშავება" data-en="Developing digital marketing strategy">ციფრული მარკეტინგის სტრატეგიის შემუშავება</span></li>
+                <li><span data-ka="სოციალური მედია და კონტენტ მართვა" data-en="Social media and content management">სოციალური მედია და კონტენტ მართვა</span></li>
+                <li><span data-ka="ლიდების გენერაცია და კამპანიების მართვა" data-en="Lead generation and campaign management">ლიდების გენერაცია და კამპანიების მართვა</span></li>
+                <li><span data-ka="ბრენდის ვიზუალური კომუნიკაცია" data-en="Brand visual communication">ბრენდის ვიზუალური კომუნიკაცია</span></li>
+              </ul>
+            </div>
+            <div>
+              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
+              <ul class="job-list">
+                <li><span data-ka="მარკეტინგში გამოცდილება 2+ წელი" data-en="2+ years marketing experience">მარკეტინგში გამოცდილება 2+ წელი</span></li>
+                <li><span data-ka="Google Ads, Meta Ads-ის ცოდნა" data-en="Knowledge of Google Ads, Meta Ads">Google Ads, Meta Ads-ის ცოდნა</span></li>
+                <li><span data-ka="კრეატიული და ანალიტიკური უნარები" data-en="Creative and analytical skills">კრეატიული და ანალიტიკური უნარები</span></li>
+                <li><span data-ka="Canva / Adobe Suite ცოდნა სასურველია" data-en="Canva / Adobe Suite knowledge preferred">Canva / Adobe Suite ცოდნა სასურველია</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job 3 — Real Estate Consultant -->
+        <div class="job-card reveal" style="--delay:0.16s">
+          <div class="job-card-top">
+            <div class="job-title-wrap">
+              <div class="job-dept" data-ka="კონსალტინგი" data-en="Consulting">კონსალტინგი</div>
+              <div class="job-title" data-ka="უძრავი ქონების კონსულტანტი" data-en="Real Estate Consultant">უძრავი ქონების კონსულტანტი</div>
+              <div class="job-tags">
+                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="ბათუმი" data-en="Batumi">ბათუმი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
+                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 2+ წ." data-en="2+ yrs experience">გამოცდილება 2+ წ.</span></span>
+              </div>
+            </div>
+            <button class="btn-primary job-apply-btn" onclick="openModal('უძრავი ქონების კონსულტანტი', 'Real Estate Consultant')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
+          </div>
+          <div class="job-divider"></div>
+          <div class="job-body">
+            <div>
+              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
+              <ul class="job-list">
+                <li><span data-ka="კლიენტების ბინების შეძენაში კონსულტაცია" data-en="Advising clients on property purchases">კლიენტების ბინების შეძენაში კონსულტაცია</span></li>
+                <li><span data-ka="ბათუმის ბაზრის ანალიზი და ანგარიშები" data-en="Batumi market analysis and reporting">ბათუმის ბაზრის ანალიზი და ანგარიშები</span></li>
+                <li><span data-ka="ინვესტორებთან ურთიერთობა" data-en="Investor relations">ინვესტორებთან ურთიერთობა</span></li>
+                <li><span data-ka="ხელშეკრულებების მომზადება და ხელმოწერა" data-en="Contract preparation and signing">ხელშეკრულებების მომზადება და ხელმოწერა</span></li>
+              </ul>
+            </div>
+            <div>
+              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
+              <ul class="job-list">
+                <li><span data-ka="უძრავი ქონების გამოცდილება 2+ წელი" data-en="2+ years real estate experience">უძრავი ქონების გამოცდილება 2+ წელი</span></li>
+                <li><span data-ka="ბათუმის ბაზრის ცოდნა" data-en="Knowledge of the Batumi market">ბათუმის ბაზრის ცოდნა</span></li>
+                <li><span data-ka="რუსული ან ინგლისური — B2+" data-en="Russian or English B2+">რუსული ან ინგლისური — B2+</span></li>
+                <li><span data-ka="სამართლებრივი საბაზო ცოდნა სასურველია" data-en="Basic legal knowledge preferred">სამართლებრივი საბაზო ცოდნა სასურველია</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Open application CTA -->
+        <div class="open-apply reveal" style="--delay:0.1s">
+          <div class="open-apply-text">
+            <h3 data-ka="ვაკანსია ვერ მიპოვეთ?" data-en="Didn't find a vacancy?">ვაკანსია ვერ მიპოვეთ?</h3>
+            <p data-ka="გამოგვიგზავნეთ ღია განაცხადი — შეინახავთ CV-ს და შესაბამის ვაკანსიაზე დაგიკავშირდებით." data-en="Send us an open application — we'll keep your CV and contact you when a suitable role opens.">გამოგვიგზავნეთ ღია განაცხადი — შეინახავთ CV-ს და შესაბამის ვაკანსიაზე დაგიკავშირდებით.</p>
+          </div>
+          <button class="btn-white" onclick="openModal('ღია განაცხადი', 'Open Application')" data-ka="ღია განაცხადი" data-en="Open Application">ღია განაცხადი</button>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Apply Modal -->
+  <div class="modal-backdrop" id="apply-modal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-title" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</div>
+      <div class="modal-role" id="modal-role-label"></div>
+      <div id="modal-form-wrap">
+        <div class="form-group">
+          <label data-ka="სახელი და გვარი *" data-en="Full Name *">სახელი და გვარი *</label>
+          <input type="text" id="apply-name" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label data-ka="ელ-ფოსტა *" data-en="Email *">ელ-ფოსტა *</label>
+          <input type="email" id="apply-email" placeholder="" />
+        </div>
+        <div class="form-group">
+          <label data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
+          <input type="tel" id="apply-phone" placeholder="+995 XXX XXX XXX" />
+        </div>
+        <div class="form-group">
+          <label data-ka="CV ბმული (LinkedIn / Drive)" data-en="CV Link (LinkedIn / Drive)">CV ბმული (LinkedIn / Drive)</label>
+          <input type="url" id="apply-cv" placeholder="https://" />
+        </div>
+        <div class="form-group">
+          <label data-ka="საკუთარი თავის შესახებ" data-en="About Yourself">საკუთარი თავის შესახებ</label>
+          <textarea id="apply-message" rows="4"></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%" onclick="submitApply()" data-ka="გაგზავნა" data-en="Submit">გაგზავნა</button>
+      </div>
+      <div class="modal-success" id="modal-success">
+        <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+        <h3 data-ka="გმადლობთ!" data-en="Thank you!">გმადლობთ!</h3>
+        <p data-ka="თქვენი განაცხადი მიღებულია. 3 სამუშაო დღეში დაგიკავშირდებით." data-en="Your application has been received. We will contact you within 3 business days.">თქვენი განაცხადი მიღებულია. 3 სამუშაო დღეში დაგიკავშირდებით.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo"><img src="assets/NB Tower logo.png" alt="NB Tower" height="40" /></a>
+        <p class="footer-desc" data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს." data-en="Georgia's premier construction company. Building tomorrow, today.">საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/NBTower2021" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/nb_tower/" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/nb-tower" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="/#about"     data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"  data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"       data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"     data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+          <li><a href="/#contact"   data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p><span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl) langKaEl.classList.toggle('active', lang === 'ka');
+      if (langEnEl) langEnEl.classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+    langToggle?.addEventListener('click', () => applyLang(currentLang === 'ka' ? 'en' : 'ka'));
+    applyLang(currentLang);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header')?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const hamburger  = document.getElementById('hamburger');
+    const navLinksEl = document.getElementById('nav-links');
+    hamburger?.addEventListener('click', () => {
+      const isOpen = navLinksEl.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  })();
+
+  let _pendingRole = '';
+  function openModal(kaRole, enRole) {
+    _pendingRole = kaRole;
+    const lang = localStorage.getItem('lang') || 'ka';
+    document.getElementById('modal-role-label').textContent = lang === 'ka' ? kaRole : enRole;
+    document.getElementById('modal-form-wrap').style.display = '';
+    document.getElementById('modal-success').style.display = 'none';
+    document.getElementById('apply-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('apply-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('apply-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+  function submitApply() {
+    const name  = document.getElementById('apply-name').value.trim();
+    const email = document.getElementById('apply-email').value.trim();
+    const phone = document.getElementById('apply-phone').value.trim();
+    if (!name || !email || !phone) {
+      if (!name)  document.getElementById('apply-name').style.borderColor  = '#e55';
+      if (!email) document.getElementById('apply-email').style.borderColor = '#e55';
+      if (!phone) document.getElementById('apply-phone').style.borderColor = '#e55';
+      return;
+    }
+    document.getElementById('modal-form-wrap').style.display = 'none';
+    document.getElementById('modal-success').style.display = '';
+    const lang = localStorage.getItem('lang') || 'ka';
+    const s = document.getElementById('modal-success');
+    s.querySelector('h3').textContent = lang === 'ka' ? 'გმადლობთ!' : 'Thank you!';
+    s.querySelector('p').textContent  = lang === 'ka'
+      ? 'თქვენი განაცხადი მიღებულია. 3 სამუშაო დღეში დაგიკავშირდებით.'
+      : 'Your application has been received. We will contact you within 3 business days.';
+  }
+  </script>
+</body>
+</html>

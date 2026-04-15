@@ -1,9 +1,13 @@
 {
   "rewrites": [
-    { "source": "/admin",      "destination": "/admin.html"      },
-    { "source": "/admin/(.*)", "destination": "/admin.html"      },
-    { "source": "/search",     "destination": "/search.html"     },
-    { "source": "/project",    "destination": "/project.html"    },
-    { "source": "/floor-plan", "destination": "/floor-plan.html" }
+    { "source": "/admin",        "destination": "/admin.html"        },
+    { "source": "/admin/(.*)",   "destination": "/admin.html"        },
+    { "source": "/search",       "destination": "/search.html"       },
+    { "source": "/project",      "destination": "/project.html"      },
+    { "source": "/floor-plan",   "destination": "/floor-plan.html"   },
+    { "source": "/blog",         "destination": "/blog.html"         },
+    { "source": "/career",       "destination": "/career.html"       },
+    { "source": "/developers",   "destination": "/developers.html"   },
+    { "source": "/property-add", "destination": "/property-add.html" }
   ]
 }

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/assets/NB%20Tower%20logo.png">
+  <link rel="apple-touch-icon" href="/assets/NB%20Tower%20logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>დეველოპერები — NB Tower</title>
+  <meta name="description" content="საქართველოს წამყვანი სამშენებლო დეველოპერები და საცხოვრებელი კომპლექსები NB Tower პლატფორმაზე." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 56px;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero-inner { max-width: 640px; }
+    .page-hero .section-label { display: block; margin-bottom: 14px; }
+    .page-hero h1 { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+    .page-hero p  { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75; }
+
+    /* ── Stats Bar ── */
+    .stats-bar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    .stats-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num  { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.04em; color: var(--green); line-height: 1; }
+    .stat-lbl  { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Filter Row ── */
+    .dev-section { padding: 72px 0 100px; background: var(--bg-base); }
+    .dev-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .dev-filter-row .search-input {
+      flex: 1;
+      min-width: 200px;
+      max-width: 320px;
+      padding: 10px 16px 10px 40px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--bg-card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23888' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8' stroke='%23888' stroke-width='2.5' fill='none'/%3E%3Cpath d='m21 21-4.35-4.35' stroke='%23888' stroke-width='2.5'/%3E%3C/svg%3E") no-repeat 12px center;
+      color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .dev-filter-row .search-input:focus { border-color: var(--green); }
+    .filter-tab {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-tab:hover  { border-color: var(--green); color: var(--green); }
+    .filter-tab.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+    /* ── Developer Grid ── */
+    .dev-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 1024px) { .dev-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px)  { .dev-grid { grid-template-columns: 1fr; } }
+
+    /* ── Developer Card ── */
+    .dev-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      cursor: pointer;
+    }
+    .dev-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-green);
+    }
+    .dev-card-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dev-logo {
+      width: 60px; height: 60px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-base);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      color: var(--green);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .dev-logo img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .dev-name-wrap {}
+    .dev-name { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+    .dev-location { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+    .dev-location i { font-size: 0.68rem; color: var(--green); }
+
+    .dev-desc { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.7; }
+
+    .dev-stats {
+      display: flex;
+      gap: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .dev-stat { }
+    .dev-stat-num { font-size: 1.3rem; font-weight: 700; color: var(--green); line-height: 1; }
+    .dev-stat-lbl { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .dev-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .dev-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(61,190,108,0.08);
+      color: var(--green);
+      border: 1px solid rgba(61,190,108,0.2);
+    }
+
+    .dev-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .dev-view-link {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap var(--transition);
+    }
+    .dev-card:hover .dev-view-link { gap: 10px; }
+    .dev-verified {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .dev-verified i { color: var(--green); }
+
+    /* ── CTA ── */
+    .dev-cta {
+      margin-top: 64px;
+      background: var(--text-primary);
+      border-radius: var(--radius-lg);
+      padding: 48px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .dev-cta h3 { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .dev-cta p  { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+    @media (max-width: 640px) { .dev-cta { flex-direction: column; padding: 32px 24px; } }
+  </style>
+</head>
+<body>
+
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="/" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#about"     class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects"  class="nav-link" data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"       class="nav-link" data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers" class="nav-link active" data-ka="დეველოპერები" data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"     class="nav-link" data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+        <li><a href="/#contact"   class="nav-link" data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="/#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-inner">
+          <span class="section-label" data-ka="დეველოპერები" data-en="Developers">დეველოპერები</span>
+          <h1 data-ka="სამშენებლო კომპანიები" data-en="Construction Companies">სამშენებლო კომპანიები</h1>
+          <p data-ka="საქართველოს წამყვანი სამშენებლო დეველოპერები ერთ პლატფორმაზე. შეადარეთ, გაეცანით პორტფოლიოს და აირჩიეთ სანდო პარტნიორი." data-en="Georgia's leading construction developers in one platform. Compare, explore portfolios and choose a trusted partner.">საქართველოს წამყვანი სამშენებლო დეველოპერები ერთ პლატფორმაზე. შეადარეთ, გაეცანით პორტფოლიოს და აირჩიეთ სანდო პარტნიორი.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="container">
+        <div class="stats-bar-inner">
+          <div class="stat-item">
+            <div class="stat-num">24+</div>
+            <div class="stat-lbl" data-ka="რეგისტრირებული დეველოპერი" data-en="Registered Developers">რეგისტრირებული დეველოპერი</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">180+</div>
+            <div class="stat-lbl" data-ka="ჩამოთვლილი კომპლექსი" data-en="Listed Complexes">ჩამოთვლილი კომპლექსი</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">4</div>
+            <div class="stat-lbl" data-ka="ქალაქი" data-en="Cities">ქალაქი</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">12,000+</div>
+            <div class="stat-lbl" data-ka="ბინა გასაყიდად" data-en="Apartments for Sale">ბინა გასაყიდად</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Developers Section -->
+    <section class="dev-section">
+      <div class="container">
+
+        <!-- Filter Row -->
+        <div class="dev-filter-row reveal" style="--delay:0s">
+          <input type="text" class="search-input" id="dev-search" placeholder="კომპანიის ძიება..." />
+          <button class="filter-tab active" data-filter="all" data-ka="ყველა" data-en="All">ყველა</button>
+          <button class="filter-tab" data-filter="tbilisi" data-ka="თბილისი" data-en="Tbilisi">თბილისი</button>
+          <button class="filter-tab" data-filter="batumi" data-ka="ბათუმი" data-en="Batumi">ბათუმი</button>
+          <button class="filter-tab" data-filter="kutaisi" data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</button>
+        </div>
+
+        <!-- Grid -->
+        <div class="dev-grid" id="dev-grid">
+
+          <!-- NB Tower -->
+          <div class="dev-card reveal" data-city="tbilisi" style="--delay:0s">
+            <div class="dev-card-head">
+              <div class="dev-logo">NB</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">NB Tower</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="NB Tower არის საქართველოში დაფუძნებული პრემიუმ სამშენებლო კომპანია. სპეციალიზება — საცხოვრებელი კომპლექსები და კომერციული სივრცეები." data-en="NB Tower is a premium construction company based in Georgia. Specialising in residential complexes and commercial spaces.">NB Tower არის საქართველოში დაფუძნებული პრემიუმ სამშენებლო კომპანია. სპეციალიზება — საცხოვრებელი კომპლექსები და კომერციული სივრცეები.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
+              <span class="dev-tag" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">6</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">10+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">500+</div><div class="dev-stat-lbl" data-ka="კმაყ. კლიენტი" data-en="Happy Clients">კმაყ. კლიენტი</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+          <!-- M2 -->
+          <div class="dev-card reveal" data-city="tbilisi" style="--delay:0.07s">
+            <div class="dev-card-head">
+              <div class="dev-logo">M2</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">M2</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="M2 — საქართველოს ერთ-ერთი ყველაზე მსხვილი სამშენებლო კომპანია. თბილისის ყველა უბანში წარმოდგენილი კომპლექსებით." data-en="M2 is one of Georgia's largest construction companies, with complexes across all districts of Tbilisi.">M2 — საქართველოს ერთ-ერთი ყველაზე მსხვილი სამშენებლო კომპანია. თბილისის ყველა უბანში წარმოდგენილი კომპლექსებით.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
+              <span class="dev-tag" data-ka="ბიზნეს კლასი" data-en="Business Class">ბიზნეს კლასი</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">15</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">15+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">3000+</div><div class="dev-stat-lbl" data-ka="ბინა" data-en="Apartments">ბინა</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+          <!-- Axis -->
+          <div class="dev-card reveal" data-city="tbilisi" style="--delay:0.14s">
+            <div class="dev-card-head">
+              <div class="dev-logo">AX</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">Axis</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="Axis — პრემიუმ კლასის კომპლექსების დეველოპერი. ეკოლოგიური და ენერგოეფექტური შენობები, ევროპული სტანდარტებით." data-en="Axis is a premium-class complex developer. Ecological and energy-efficient buildings to European standards.">Axis — პრემიუმ კლასის კომპლექსების დეველოპერი. ეკოლოგიური და ენერგოეფექტური შენობები, ევროპული სტანდარტებით.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="პრემიუმ" data-en="Premium">პრემიუმ</span>
+              <span class="dev-tag" data-ka="ეკო" data-en="Eco">ეკო</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">8</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">8+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">1200+</div><div class="dev-stat-lbl" data-ka="ბინა" data-en="Apartments">ბინა</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+          <!-- Biltmore -->
+          <div class="dev-card reveal" data-city="batumi" style="--delay:0.07s">
+            <div class="dev-card-head">
+              <div class="dev-logo">BL</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">Biltmore Real Estate</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="ბათუმი" data-en="Batumi">ბათუმი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="Biltmore Real Estate სპეციალიზდება ბათუმის საკურორტო უძრავ ქონებაზე. ფუფუნების კლასის ბინები ზღვის სანახებით." data-en="Biltmore Real Estate specialises in Batumi resort property. Luxury class apartments with sea views.">Biltmore Real Estate სპეციალიზდება ბათუმის საკურორტო უძრავ ქონებაზე. ფუფუნების კლასის ბინები ზღვის სანახებით.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="ლუქსი" data-en="Luxury">ლუქსი</span>
+              <span class="dev-tag" data-ka="საკურორტო" data-en="Resort">საკურორტო</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">4</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">6+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">600+</div><div class="dev-stat-lbl" data-ka="ბინა" data-en="Apartments">ბინა</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+          <!-- Redix -->
+          <div class="dev-card reveal" data-city="batumi" style="--delay:0.14s">
+            <div class="dev-card-head">
+              <div class="dev-logo">RX</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">Redix Group</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="ბათუმი" data-en="Batumi">ბათუმი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="Redix Group — ბათუმის ერთ-ერთი ყველაზე სწრაფად მზარდი დეველოპერი. ეკონომ და ბიზნეს კლასის კომპლექსები." data-en="Redix Group is one of Batumi's fastest-growing developers. Economy and business class complexes.">Redix Group — ბათუმის ერთ-ერთი ყველაზე სწრაფად მზარდი დეველოპერი. ეკონომ და ბიზნეს კლასის კომპლექსები.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="ბიზნეს კლასი" data-en="Business Class">ბიზნეს კლასი</span>
+              <span class="dev-tag" data-ka="ეკონომი" data-en="Economy">ეკონომი</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">7</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">5+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">900+</div><div class="dev-stat-lbl" data-ka="ბინა" data-en="Apartments">ბინა</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+          <!-- Tegeta -->
+          <div class="dev-card reveal" data-city="kutaisi" style="--delay:0.21s">
+            <div class="dev-card-head">
+              <div class="dev-logo">TG</div>
+              <div class="dev-name-wrap">
+                <div class="dev-name">Tegeta Real Estate</div>
+                <div class="dev-location"><i class="fa-solid fa-location-dot"></i> <span data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</span></div>
+              </div>
+            </div>
+            <p class="dev-desc" data-ka="Tegeta Real Estate — ქუთაისის ბაზრის ლიდერი. ახალ ეკონომიკურ ზონასთან სიახლოვე კომერციული ინვესტიციისთვის იდეალურია." data-en="Tegeta Real Estate — Kutaisi market leader. Proximity to the new economic zone makes it ideal for commercial investment.">Tegeta Real Estate — ქუთაისის ბაზრის ლიდერი. ახალ ეკონომიკურ ზონასთან სიახლოვე კომერციული ინვესტიციისთვის იდეალურია.</p>
+            <div class="dev-tags">
+              <span class="dev-tag" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
+              <span class="dev-tag" data-ka="ინვესტიცია" data-en="Investment">ინვესტიცია</span>
+            </div>
+            <div class="dev-stats">
+              <div class="dev-stat"><div class="dev-stat-num">5</div><div class="dev-stat-lbl" data-ka="პროექტი" data-en="Projects">პროექტი</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">7+</div><div class="dev-stat-lbl" data-ka="წელი ბაზარზე" data-en="Years Active">წელი ბაზარზე</div></div>
+              <div class="dev-stat"><div class="dev-stat-num">700+</div><div class="dev-stat-lbl" data-ka="ბინა" data-en="Apartments">ბინა</div></div>
+            </div>
+            <div class="dev-card-footer">
+              <span class="dev-view-link" data-ka="პროექტების ნახვა" data-en="View Projects">პროექტების ნახვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="dev-verified"><i class="fa-solid fa-circle-check"></i> <span data-ka="ვერიფიცირებული" data-en="Verified">ვერიფიცირებული</span></span>
+            </div>
+          </div>
+
+        </div><!-- /dev-grid -->
+
+        <!-- CTA -->
+        <div class="dev-cta reveal" style="--delay:0.1s">
+          <div>
+            <h3 data-ka="ხართ დეველოპერი?" data-en="Are you a developer?">ხართ დეველოპერი?</h3>
+            <p data-ka="დაარეგისტრირეთ კომპანია NB Tower პლატფორმაზე და მიაღწიეთ ათასობით პოტენციურ მყიდველს." data-en="Register your company on the NB Tower platform and reach thousands of potential buyers.">დაარეგისტრირეთ კომპანია NB Tower პლატფორმაზე და მიაღწიეთ ათასობით პოტენციურ მყიდველს.</p>
+          </div>
+          <a href="/#contact" class="btn-primary" data-ka="პარტნიორობა" data-en="Partner With Us">პარტნიორობა</a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo"><img src="assets/NB Tower logo.png" alt="NB Tower" height="40" /></a>
+        <p class="footer-desc" data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს." data-en="Georgia's premier construction company. Building tomorrow, today.">საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/NBTower2021" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/nb_tower/" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/nb-tower" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="/#about"     data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"  data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"       data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"     data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+          <li><a href="/#contact"   data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p><span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl) langKaEl.classList.toggle('active', lang === 'ka');
+      if (langEnEl) langEnEl.classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+    langToggle?.addEventListener('click', () => applyLang(currentLang === 'ka' ? 'en' : 'ka'));
+    applyLang(currentLang);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header')?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const hamburger  = document.getElementById('hamburger');
+    const navLinksEl = document.getElementById('nav-links');
+    hamburger?.addEventListener('click', () => {
+      const isOpen = navLinksEl.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    // Filter tabs
+    const tabs  = document.querySelectorAll('.filter-tab');
+    const cards = document.querySelectorAll('.dev-card');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        cards.forEach(c => { c.style.display = (f === 'all' || c.dataset.city === f) ? '' : 'none'; });
+      });
+    });
+
+    // Search
+    document.getElementById('dev-search').addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      cards.forEach(c => {
+        const name = c.querySelector('.dev-name')?.textContent.toLowerCase() || '';
+        c.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+  })();
+  </script>
+</body>
+</html>

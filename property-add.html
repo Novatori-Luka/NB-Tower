@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/assets/NB%20Tower%20logo.png">
+  <link rel="apple-touch-icon" href="/assets/NB%20Tower%20logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>განცხადების დამატება — NB Tower</title>
+  <meta name="description" content="დაამატეთ თქვენი ქონება NB Tower პლატფორმაზე და მიაღწიეთ ათასობით პოტენციურ მყიდველს." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 56px;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero-inner { max-width: 680px; }
+    .page-hero .section-label { display: block; margin-bottom: 14px; }
+    .page-hero h1 { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; margin-bottom: 16px; }
+    .page-hero p  { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.75; }
+
+    /* ── Benefits Row ── */
+    .benefits-row {
+      display: flex;
+      gap: 24px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .benefit-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .benefit-chip i { color: var(--green); font-size: 0.9rem; }
+
+    /* ── Form Layout ── */
+    .add-section {
+      padding: 72px 0 100px;
+      background: var(--bg-base);
+    }
+    .add-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    @media (max-width: 900px) { .add-layout { grid-template-columns: 1fr; } }
+
+    /* ── Form Card ── */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+    .form-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-card-title i { color: var(--green); }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      background: var(--bg-base);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      -webkit-appearance: none;
+    }
+    .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(61,190,108,0.1);
+    }
+    .form-group input.error,
+    .form-group select.error { border-color: #e55; }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) { .form-row-2 { grid-template-columns: 1fr; } }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 600px) { .form-row-3 { grid-template-columns: 1fr; } }
+
+    /* Price with currency toggle */
+    .price-wrap { position: relative; }
+    .price-wrap input { padding-right: 90px; }
+    .currency-toggle {
+      position: absolute;
+      right: 4px; top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .currency-btn {
+      padding: 5px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+    .currency-btn.active { background: var(--green); color: #fff; }
+
+    /* Photo upload */
+    .photo-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+    .photo-upload:hover { border-color: var(--green); background: rgba(61,190,108,0.03); }
+    .photo-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .photo-upload-icon { font-size: 2rem; color: var(--green); margin-bottom: 10px; }
+    .photo-upload-text { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+    .photo-upload-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+    .photo-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .photo-thumb { width: 72px; height: 72px; border-radius: 6px; object-fit: cover; border: 1px solid var(--border); }
+
+    /* Form divider */
+    .form-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 28px 0;
+    }
+
+    /* Submit button */
+    .submit-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .submit-row .btn-primary { padding: 14px 36px; font-size: 0.95rem; }
+    .submit-note { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Success state */
+    .form-success-overlay {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .form-success-overlay .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(61,190,108,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      color: var(--green);
+      margin: 0 auto 20px;
+    }
+    .form-success-overlay h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+    .form-success-overlay p  { color: var(--text-secondary); margin-bottom: 24px; }
+
+    /* ── Sidebar ── */
+    .add-sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+    .sidebar-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .tip-list { display: flex; flex-direction: column; gap: 12px; }
+    .tip-item { display: flex; gap: 10px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; }
+    .tip-item i { color: var(--green); flex-shrink: 0; margin-top: 2px; font-size: 0.8rem; }
+    .sidebar-cta-card {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+    .sidebar-cta-card h4 { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .sidebar-cta-card p  { font-size: 0.83rem; color: rgba(255,255,255,0.8); margin-bottom: 16px; line-height: 1.55; }
+    .btn-white-sm {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff;
+      color: var(--green-dark);
+      font-weight: 700; font-size: 0.83rem;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      transition: transform var(--transition);
+    }
+    .btn-white-sm:hover { transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="/" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#about"      class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects"   class="nav-link" data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"        class="nav-link" data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers"  class="nav-link" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"      class="nav-link" data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+        <li><a href="/#contact"    class="nav-link" data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="/property-add" class="btn-primary nav-cta" data-ka="განცხადების დამატება" data-en="Add Listing">განცხადების დამატება</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-inner">
+          <span class="section-label" data-ka="განცხადების დამატება" data-en="Add Listing">განცხადების დამატება</span>
+          <h1 data-ka="გამოაქვეყნეთ თქვენი ქონება" data-en="List Your Property">გამოაქვეყნეთ თქვენი ქონება</h1>
+          <p data-ka="შეავსეთ ფორმა და ათასობით პოტენციური მყიდველი ნახავს თქვენს განცხადებას. გამოქვეყნება უფასოა." data-en="Fill in the form and thousands of potential buyers will see your listing. Publishing is free.">შეავსეთ ფორმა და ათასობით პოტენციური მყიდველი ნახავს თქვენს განცხადებას. გამოქვეყნება უფასოა.</p>
+          <div class="benefits-row">
+            <span class="benefit-chip"><i class="fa-solid fa-check-circle"></i> <span data-ka="უფასო გამოქვეყნება" data-en="Free publishing">უფასო გამოქვეყნება</span></span>
+            <span class="benefit-chip"><i class="fa-solid fa-check-circle"></i> <span data-ka="სწრაფი პასუხი" data-en="Fast response">სწრაფი პასუხი</span></span>
+            <span class="benefit-chip"><i class="fa-solid fa-check-circle"></i> <span data-ka="ათასობით მომხმარებელი" data-en="Thousands of users">ათასობით მომხმარებელი</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="add-section">
+      <div class="container">
+        <div class="add-layout">
+
+          <!-- Main Form -->
+          <div>
+            <form id="property-form" novalidate>
+
+              <!-- Property Details -->
+              <div class="form-card reveal" style="--delay:0s">
+                <div class="form-card-title"><i class="fa-solid fa-building"></i> <span data-ka="ქონების დეტალები" data-en="Property Details">ქონების დეტალები</span></div>
+
+                <div class="form-group">
+                  <label data-ka="ქონების ტიპი *" data-en="Property Type *">ქონების ტიპი *</label>
+                  <select id="prop-type" required>
+                    <option value="" data-ka="— აირჩიეთ ტიპი —" data-en="— Select Type —">— აირჩიეთ ტიპი —</option>
+                    <option value="apartment" data-ka="ბინა" data-en="Apartment">ბინა</option>
+                    <option value="house" data-ka="კერძო სახლი" data-en="Private House">კერძო სახლი</option>
+                    <option value="commercial" data-ka="კომერციული ფართი" data-en="Commercial Space">კომერციული ფართი</option>
+                    <option value="villa" data-ka="ვილა" data-en="Villa">ვილა</option>
+                    <option value="land" data-ka="მიწა" data-en="Land">მიწა</option>
+                  </select>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label data-ka="ქალაქი *" data-en="City *">ქალაქი *</label>
+                    <select id="prop-city" required>
+                      <option value="">— </option>
+                      <option value="tbilisi" data-ka="თბილისი" data-en="Tbilisi">თბილისი</option>
+                      <option value="batumi"  data-ka="ბათუმი"  data-en="Batumi">ბათუმი</option>
+                      <option value="kutaisi" data-ka="ქუთაისი" data-en="Kutaisi">ქუთაისი</option>
+                      <option value="rustavi" data-ka="რუსთავი" data-en="Rustavi">რუსთავი</option>
+                      <option value="other"   data-ka="სხვა"    data-en="Other">სხვა</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="მისამართი" data-en="Address">მისამართი</label>
+                    <input type="text" id="prop-address" placeholder="" />
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label data-ka="ფასი *" data-en="Price *">ფასი *</label>
+                    <div class="price-wrap">
+                      <input type="number" id="prop-price" placeholder="0" required min="0" />
+                      <div class="currency-toggle">
+                        <button type="button" class="currency-btn active" id="btn-gel" onclick="setCurrency('GEL')">₾</button>
+                        <button type="button" class="currency-btn"        id="btn-usd" onclick="setCurrency('USD')">$</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="ფართობი (კვ.მ) *" data-en="Area (sqm) *">ფართობი (კვ.მ) *</label>
+                    <input type="number" id="prop-area" placeholder="0" required min="1" />
+                  </div>
+                </div>
+
+                <div class="form-row-3">
+                  <div class="form-group">
+                    <label data-ka="ოთახები" data-en="Rooms">ოთახები</label>
+                    <select id="prop-rooms">
+                      <option value="">—</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5+">5+</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="სართული" data-en="Floor">სართული</label>
+                    <input type="number" id="prop-floor" placeholder="0" min="0" />
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="სართულების რ-ბა" data-en="Total Floors">სართულების რ-ბა</label>
+                    <input type="number" id="prop-floors-total" placeholder="0" min="1" />
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label data-ka="მდგომარეობა" data-en="Condition">მდგომარეობა</label>
+                    <select id="prop-condition">
+                      <option value="">—</option>
+                      <option value="black" data-ka="შავი კარკასი" data-en="Black Frame">შავი კარკასი</option>
+                      <option value="green" data-ka="მწვანე კარკასი" data-en="Green Frame">მწვანე კარკასი</option>
+                      <option value="renovated" data-ka="გარემონტებული" data-en="Renovated">გარემონტებული</option>
+                      <option value="new" data-ka="ახალი გარემონტება" data-en="Newly Renovated">ახალი გარემონტება</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="სტატუსი" data-en="Status">სტატუსი</label>
+                    <select id="prop-status">
+                      <option value="">—</option>
+                      <option value="new_built" data-ka="ახალი აშენებული" data-en="Newly Built">ახალი აშენებული</option>
+                      <option value="under_construction" data-ka="მშენებარე" data-en="Under Construction">მშენებარე</option>
+                      <option value="old" data-ka="ძველი" data-en="Old">ძველი</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label data-ka="აღწერა" data-en="Description">აღწერა</label>
+                  <textarea id="prop-desc" placeholder=""></textarea>
+                </div>
+              </div>
+
+              <!-- Photo Upload -->
+              <div class="form-card reveal" style="--delay:0.07s; margin-top:20px">
+                <div class="form-card-title"><i class="fa-solid fa-images"></i> <span data-ka="ფოტოები" data-en="Photos">ფოტოები</span></div>
+                <div class="photo-upload" id="photo-drop">
+                  <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotos(this)" />
+                  <div class="photo-upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                  <div class="photo-upload-text" data-ka="ფოტოების ატვირთვა — გადმოიტანეთ ან დააჭირეთ" data-en="Upload photos — drag & drop or click">ფოტოების ატვირთვა — გადმოიტანეთ ან დააჭირეთ</div>
+                  <div class="photo-upload-hint" data-ka="მაქს. 10 ფოტო · JPG, PNG · მაქს. 5MB" data-en="Max 10 photos · JPG, PNG · Max 5MB">მაქს. 10 ფოტო · JPG, PNG · მაქს. 5MB</div>
+                </div>
+                <div class="photo-preview" id="photo-preview"></div>
+              </div>
+
+              <!-- Contact Info -->
+              <div class="form-card reveal" style="--delay:0.14s; margin-top:20px">
+                <div class="form-card-title"><i class="fa-solid fa-user"></i> <span data-ka="საკონტაქტო ინფო" data-en="Contact Info">საკონტაქტო ინფო</span></div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label data-ka="სახელი *" data-en="Full Name *">სახელი *</label>
+                    <input type="text" id="contact-name" required />
+                  </div>
+                  <div class="form-group">
+                    <label data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
+                    <input type="tel" id="contact-phone" placeholder="+995 XXX XXX XXX" required />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label data-ka="ელ-ფოსტა" data-en="Email">ელ-ფოსტა</label>
+                  <input type="email" id="contact-email" />
+                </div>
+
+                <div class="form-divider"></div>
+
+                <div class="submit-row">
+                  <button type="submit" class="btn-primary" data-ka="განცხადების გამოქვეყნება" data-en="Publish Listing">განცხადების გამოქვეყნება</button>
+                  <p class="submit-note" data-ka="გამოქვეყნებამდე ჩვენი გუნდი განიხილავს განცხადებას. 24 საათში გეცნობებათ." data-en="Our team will review your listing before publishing. You'll be notified within 24 hours.">გამოქვეყნებამდე ჩვენი გუნდი განიხილავს განცხადებას. 24 საათში გეცნობებათ.</p>
+                </div>
+              </div>
+
+              <!-- Success -->
+              <div class="form-card form-success-overlay" id="form-success" style="display:none;margin-top:20px">
+                <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                <h3 data-ka="განცხადება გაიგზავნა!" data-en="Listing Submitted!">განცხადება გაიგზავნა!</h3>
+                <p data-ka="24 საათში ჩვენი გუნდი განიხილავს და გეცნობებათ." data-en="Our team will review it within 24 hours and notify you.">24 საათში ჩვენი გუნდი განიხილავს და გეცნობებათ.</p>
+                <a href="/" class="btn-primary" data-ka="მთავარ გვერდზე" data-en="Go to Homepage">მთავარ გვერდზე</a>
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="add-sidebar">
+            <div class="sidebar-card reveal" style="--delay:0.1s">
+              <div class="sidebar-card-title" data-ka="რჩევები" data-en="Tips">რჩევები</div>
+              <div class="tip-list">
+                <div class="tip-item"><i class="fa-solid fa-lightbulb"></i><span data-ka="დაამატეთ მინიმუმ 5 ფოტო — ეს ზრდის გამოხმაურებას 3-ჯერ." data-en="Add at least 5 photos — this triples response rate.">დაამატეთ მინიმუმ 5 ფოტო — ეს ზრდის გამოხმაურებას 3-ჯერ.</span></div>
+                <div class="tip-item"><i class="fa-solid fa-lightbulb"></i><span data-ka="დეტალური აღწერა უფრო სწრაფ გაყიდვას უზრუნველყოფს." data-en="Detailed description ensures faster sales.">დეტალური აღწერა უფრო სწრაფ გაყიდვას უზრუნველყოფს.</span></div>
+                <div class="tip-item"><i class="fa-solid fa-lightbulb"></i><span data-ka="ზუსტი ფასი იზიდავს სერიოზულ მყიდველებს." data-en="Accurate pricing attracts serious buyers.">ზუსტი ფასი იზიდავს სერიოზულ მყიდველებს.</span></div>
+                <div class="tip-item"><i class="fa-solid fa-lightbulb"></i><span data-ka="ტელეფონი ყოველთვის ხელმისაწვდომი გქონდეთ." data-en="Keep your phone reachable at all times.">ტელეფონი ყოველთვის ხელმისაწვდომი გქონდეთ.</span></div>
+              </div>
+            </div>
+            <div class="sidebar-cta-card reveal" style="--delay:0.17s">
+              <h4 data-ka="პრემიუმ განცხადება" data-en="Premium Listing">პრემიუმ განცხადება</h4>
+              <p data-ka="მოხვდით საძიებო გვერდის სათავეში და მიიღეთ 5-ჯერ მეტი ნახვა." data-en="Get to the top of search results and receive 5× more views.">მოხვდით საძიებო გვერდის სათავეში და მიიღეთ 5-ჯერ მეტი ნახვა.</p>
+              <a href="/#contact" class="btn-white-sm" data-ka="შეტყობინება" data-en="Contact Us">შეტყობინება <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo"><img src="assets/NB Tower logo.png" alt="NB Tower" height="40" /></a>
+        <p class="footer-desc" data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს." data-en="Georgia's premier construction company. Building tomorrow, today.">საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/NBTower2021" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/nb_tower/" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/nb-tower" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="/#about"      data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"   data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"        data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers"  data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"      data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+          <li><a href="/#contact"    data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p><span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'OPTION') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl) langKaEl.classList.toggle('active', lang === 'ka');
+      if (langEnEl) langEnEl.classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+    langToggle?.addEventListener('click', () => applyLang(currentLang === 'ka' ? 'en' : 'ka'));
+    applyLang(currentLang);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header')?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const hamburger  = document.getElementById('hamburger');
+    const navLinksEl = document.getElementById('nav-links');
+    hamburger?.addEventListener('click', () => {
+      const isOpen = navLinksEl.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    // Form submit
+    document.getElementById('property-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const type  = document.getElementById('prop-type').value;
+      const price = document.getElementById('prop-price').value;
+      const area  = document.getElementById('prop-area').value;
+      const name  = document.getElementById('contact-name').value.trim();
+      const phone = document.getElementById('contact-phone').value.trim();
+      let valid = true;
+      if (!type)  { document.getElementById('prop-type').classList.add('error');    valid = false; }
+      if (!price) { document.getElementById('prop-price').classList.add('error');   valid = false; }
+      if (!area)  { document.getElementById('prop-area').classList.add('error');    valid = false; }
+      if (!name)  { document.getElementById('contact-name').classList.add('error'); valid = false; }
+      if (!phone) { document.getElementById('contact-phone').classList.add('error');valid = false; }
+      if (!valid) return;
+      // Show success
+      document.querySelectorAll('.form-card:not(#form-success)').forEach(c => c.style.display = 'none');
+      const succ = document.getElementById('form-success');
+      succ.style.display = 'block';
+      window.scrollTo({ top: succ.offsetTop - 120, behavior: 'smooth' });
+    });
+  })();
+
+  let selectedCurrency = 'GEL';
+  function setCurrency(c) {
+    selectedCurrency = c;
+    document.getElementById('btn-gel').classList.toggle('active', c === 'GEL');
+    document.getElementById('btn-usd').classList.toggle('active', c === 'USD');
+  }
+
+  function handlePhotos(input) {
+    const preview = document.getElementById('photo-preview');
+    const files = Array.from(input.files).slice(0, 10);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'photo-thumb';
+        img.alt = file.name;
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  </script>
+</body>
+</html>

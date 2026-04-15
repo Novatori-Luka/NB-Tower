@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/assets/NB%20Tower%20logo.png">
+  <link rel="apple-touch-icon" href="/assets/NB%20Tower%20logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ბლოგი — NB Tower</title>
+  <meta name="description" content="NB Tower ბლოგი — სტატიები უძრავი ქონების, სამშენებლო ბაზრის და ბინის შეძენის შესახებ." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .page-hero {
+      padding-top: calc(var(--header-h) + 64px);
+      padding-bottom: 56px;
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero-inner { max-width: 640px; }
+    .page-hero .section-label { display: block; margin-bottom: 14px; }
+    .page-hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .page-hero p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    /* ── Blog Filter Tabs ── */
+    .blog-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+    .blog-tab {
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      border: 1.5px solid var(--border);
+      color: var(--text-secondary);
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .blog-tab:hover { border-color: var(--green); color: var(--green); }
+    .blog-tab.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+    /* ── Blog Grid ── */
+    .blog-section {
+      padding: 72px 0 100px;
+      background: var(--bg-base);
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    @media (max-width: 1024px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px)  { .blog-grid { grid-template-columns: 1fr; } }
+
+    /* ── Blog Card ── */
+    .blog-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--transition), box-shadow var(--transition);
+      cursor: pointer;
+    }
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    .blog-card-thumb {
+      height: 210px;
+      background: #e8e8e4;
+      position: relative;
+      overflow: hidden;
+    }
+    .blog-card-thumb-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--green);
+      background: linear-gradient(135deg, #f0eeea 0%, #e4e2dc 100%);
+    }
+    .blog-card-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .blog-card:hover .blog-card-thumb img { transform: scale(1.04); }
+    .blog-card-category {
+      position: absolute;
+      top: 14px; left: 14px;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+    .blog-card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .blog-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .blog-card-meta i { font-size: 0.7rem; }
+    .blog-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.4;
+      flex: 1;
+    }
+    .blog-card-excerpt {
+      font-size: 0.87rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .blog-card-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .blog-read-more {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap var(--transition);
+    }
+    .blog-card:hover .blog-read-more { gap: 10px; }
+    .blog-read-time {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Featured post (first card) ── */
+    .blog-card.featured {
+      grid-column: span 2;
+      flex-direction: row;
+    }
+    .blog-card.featured .blog-card-thumb {
+      width: 45%;
+      height: auto;
+      flex-shrink: 0;
+    }
+    .blog-card.featured .blog-card-title { font-size: 1.2rem; }
+    @media (max-width: 860px) {
+      .blog-card.featured { grid-column: span 1; flex-direction: column; }
+      .blog-card.featured .blog-card-thumb { width: 100%; height: 200px; }
+    }
+
+    /* ── Newsletter CTA ── */
+    .blog-cta {
+      background: var(--text-primary);
+      border-radius: var(--radius-lg);
+      padding: 48px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      margin-top: 64px;
+    }
+    .blog-cta-text h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .blog-cta-text p { font-size: 0.9rem; color: rgba(255,255,255,0.6); }
+    .blog-cta-form {
+      display: flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .blog-cta-form input {
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      width: 240px;
+      transition: border-color var(--transition);
+    }
+    .blog-cta-form input::placeholder { color: rgba(255,255,255,0.4); }
+    .blog-cta-form input:focus { border-color: var(--green); }
+    @media (max-width: 768px) {
+      .blog-cta { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
+      .blog-cta-form { flex-direction: column; width: 100%; }
+      .blog-cta-form input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="/" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#about"    class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects" class="nav-link" data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"      class="nav-link active" data-ka="ბლოგი"  data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers" class="nav-link" data-ka="დეველოპერები" data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"    class="nav-link" data-ka="კარიერა"       data-en="Career">კარიერა</a></li>
+        <li><a href="/#contact"  class="nav-link" data-ka="კონტაქტი"      data-en="Contact">კონტაქტი</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-ka active">GE</span>
+          <span class="lang-sep">|</span>
+          <span class="lang-en">EN</span>
+        </button>
+        <a href="/#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Page Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-inner">
+          <span class="section-label" data-ka="ბლოგი" data-en="Blog">ბლოგი</span>
+          <h1 data-ka="სტატიები და ანალიზი" data-en="Articles & Analysis">სტატიები და ანალიზი</h1>
+          <p data-ka="სიახლეები უძრავი ქონების ბაზრიდან, გზამკვლევები და ექსპერტული რჩევები ბინის შეძენის შესახებ." data-en="News from the real estate market, guides and expert advice on buying property.">სიახლეები უძრავი ქონების ბაზრიდან, გზამკვლევები და ექსპერტული რჩევები ბინის შეძენის შესახებ.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+      <div class="container">
+
+        <!-- Filter Tabs -->
+        <div class="blog-tabs">
+          <button class="blog-tab active" data-filter="all" data-ka="ყველა" data-en="All">ყველა</button>
+          <button class="blog-tab" data-filter="guide"  data-ka="გიდი"    data-en="Guide">გიდი</button>
+          <button class="blog-tab" data-filter="tips"   data-ka="რჩევები" data-en="Tips">რჩევები</button>
+          <button class="blog-tab" data-filter="market" data-ka="ბაზარი"  data-en="Market">ბაზარი</button>
+          <button class="blog-tab" data-filter="news"   data-ka="სიახლე"  data-en="News">სიახლე</button>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid" id="blog-grid">
+
+          <!-- Post 1 — Featured -->
+          <article class="blog-card featured reveal" data-category="guide" style="--delay:0s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-city"></i></div>
+              <span class="blog-card-category" data-ka="გიდი" data-en="Guide">გიდი</span>
+            </div>
+            <div style="display:flex;flex-direction:column;flex:1;">
+              <div class="blog-card-body">
+                <div class="blog-card-meta">
+                  <span><i class="fa-regular fa-calendar"></i> 15 აპრ, 2025</span>
+                  <span><i class="fa-regular fa-user"></i> NB Tower</span>
+                </div>
+                <h2 class="blog-card-title" data-ka="ბინის შეძენა თბილისში — სრული გზამკვლევი 2025" data-en="Buying an Apartment in Tbilisi — Complete Guide 2025">ბინის შეძენა თბილისში — სრული გზამკვლევი 2025</h2>
+                <p class="blog-card-excerpt" data-ka="თბილისში ბინის შეძენა პირველად? გაეცანით ნაბიჯ-ნაბიჯ გზამკვლევს: სად ვეძებოთ, რა ვკითხოთ დეველოპერს და სად ვნახოთ საუკეთესო ფასები. ამ სტატიაში განვიხილავთ ბაზრის ძირითად ტენდენციებს, პოპულარულ უბნებს და ფასების დიაპაზონს 2025 წელს." data-en="Buying an apartment in Tbilisi for the first time? Get a step-by-step guide: where to look, what to ask your developer and where to find the best prices. In this article we cover the main market trends, popular districts and price ranges for 2025.">თბილისში ბინის შეძენა პირველად? გაეცანით ნაბიჯ-ნაბიჯ გზამკვლევს: სად ვეძებოთ, რა ვკითხოთ დეველოპერს და სად ვნახოთ საუკეთესო ფასები. ამ სტატიაში განვიხილავთ ბაზრის ძირითად ტენდენციებს, პოპულარულ უბნებს და ფასების დიაპაზონს 2025 წელს.</p>
+              </div>
+              <div class="blog-card-footer">
+                <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+                <span class="blog-read-time" data-ka="8 წთ წასაკითხი" data-en="8 min read">8 წთ წასაკითხი</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Post 2 -->
+          <article class="blog-card reveal" data-category="tips" style="--delay:0.08s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-clipboard-question"></i></div>
+              <span class="blog-card-category" data-ka="რჩევები" data-en="Tips">რჩევები</span>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span><i class="fa-regular fa-calendar"></i> 8 აპრ, 2025</span>
+                <span><i class="fa-regular fa-user"></i> NB Tower</span>
+              </div>
+              <h2 class="blog-card-title" data-ka="10 კითხვა, რომელიც უნდა დასვათ დეველოპერს ბინის ყიდვამდე" data-en="10 Questions to Ask Your Developer Before Buying">10 კითხვა, რომელიც უნდა დასვათ დეველოპერს ბინის ყიდვამდე</h2>
+              <p class="blog-card-excerpt" data-ka="ბინის ყიდვა ერთ-ერთი ყველაზე მნიშვნელოვანი ფინანსური გადაწყვეტილებაა. ეს 10 კითხვა დაგეხმარებათ სწორი არჩევანის გაკეთებაში და მოულოდნელი სიურპრიზების თავიდან აცილებაში." data-en="Buying an apartment is one of the most important financial decisions. These 10 questions will help you make the right choice and avoid unexpected surprises.">ბინის ყიდვა ერთ-ერთი ყველაზე მნიშვნელოვანი ფინანსური გადაწყვეტილებაა. ეს 10 კითხვა დაგეხმარებათ სწორი არჩევანის გაკეთებაში.</p>
+            </div>
+            <div class="blog-card-footer">
+              <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="blog-read-time" data-ka="5 წთ წასაკითხი" data-en="5 min read">5 წთ წასაკითხი</span>
+            </div>
+          </article>
+
+          <!-- Post 3 -->
+          <article class="blog-card reveal" data-category="market" style="--delay:0.16s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-chart-line"></i></div>
+              <span class="blog-card-category" data-ka="ბაზარი" data-en="Market">ბაზარი</span>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span><i class="fa-regular fa-calendar"></i> 2 მარ, 2025</span>
+                <span><i class="fa-regular fa-user"></i> NB Tower</span>
+              </div>
+              <h2 class="blog-card-title" data-ka="ბათუმის უძრავი ქონების ბაზარი 2025 — ტენდენციები და პროგნოზი" data-en="Batumi Real Estate Market 2025 — Trends & Forecast">ბათუმის უძრავი ქონების ბაზარი 2025 — ტენდენციები და პროგნოზი</h2>
+              <p class="blog-card-excerpt" data-ka="ბათუმი სწრაფად იზრდება. ინვესტორების ინტერესი ყოველ წელს იზრდება. გაეცანით ბაზრის ანალიზს, ფასების დინამიკას და ექსპერტების პროგნოზს 2025 წლისთვის." data-en="Batumi is growing rapidly. Investor interest increases every year. Get a market analysis, price dynamics and expert forecasts for 2025.">ბათუმი სწრაფად იზრდება. ინვესტორების ინტერესი ყოველ წელს იზრდება. გაეცანით ბაზრის ანალიზს, ფასების დინამიკას და ექსპერტების პროგნოზს 2025 წლისთვის.</p>
+            </div>
+            <div class="blog-card-footer">
+              <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="blog-read-time" data-ka="6 წთ წასაკითხი" data-en="6 min read">6 წთ წასაკითხი</span>
+            </div>
+          </article>
+
+          <!-- Post 4 -->
+          <article class="blog-card reveal" data-category="news" style="--delay:0.08s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-newspaper"></i></div>
+              <span class="blog-card-category" data-ka="სიახლე" data-en="News">სიახლე</span>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span><i class="fa-regular fa-calendar"></i> 20 თებ, 2025</span>
+                <span><i class="fa-regular fa-user"></i> NB Tower</span>
+              </div>
+              <h2 class="blog-card-title" data-ka="NB Tower-ი ახალ კომპლექსს ახალციხეში ასაშენებს" data-en="NB Tower to Build New Complex in Akhaltsikhe">NB Tower-ი ახალ კომპლექსს ახალციხეში ასაშენებს</h2>
+              <p class="blog-card-excerpt" data-ka="NB Tower-მა გამოაცხადა ახალი საცხოვრებელი კომპლექსის მშენებლობა ახალციხეში. პროექტი 120 ბინას მოიცავს და 2026 წელს დასრულდება." data-en="NB Tower announced the construction of a new residential complex in Akhaltsikhe. The project includes 120 apartments and will be completed in 2026.">NB Tower-მა გამოაცხადა ახალი საცხოვრებელი კომპლექსის მშენებლობა ახალციხეში. პროექტი 120 ბინას მოიცავს.</p>
+            </div>
+            <div class="blog-card-footer">
+              <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="blog-read-time" data-ka="3 წთ წასაკითხი" data-en="3 min read">3 წთ წასაკითხი</span>
+            </div>
+          </article>
+
+          <!-- Post 5 -->
+          <article class="blog-card reveal" data-category="tips" style="--delay:0.16s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+              <span class="blog-card-category" data-ka="რჩევები" data-en="Tips">რჩევები</span>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span><i class="fa-regular fa-calendar"></i> 10 თებ, 2025</span>
+                <span><i class="fa-regular fa-user"></i> NB Tower</span>
+              </div>
+              <h2 class="blog-card-title" data-ka="იპოთეკა თუ განვადება — რომელი ჯობია 2025 წელს?" data-en="Mortgage or Installment — Which is Better in 2025?">იპოთეკა თუ განვადება — რომელი ჯობია 2025 წელს?</h2>
+              <p class="blog-card-excerpt" data-ka="ბინის შეძენის ორ მთავარ გზას შორის არჩევანი ბევრ ფაქტორზეა დამოკიდებული. ამ სტატიაში შევადარებთ განვადებასა და იპოთეკას, გავარჩევთ უპირატესობებსა და ნაკლოვანებებს." data-en="The choice between the two main ways to buy an apartment depends on many factors. In this article we compare installment plans and mortgages, analyzing pros and cons.">ბინის შეძენის ორ მთავარ გზას შორის არჩევანი ბევრ ფაქტორზეა დამოკიდებული. ამ სტატიაში შევადარებთ განვადებასა და იპოთეკას.</p>
+            </div>
+            <div class="blog-card-footer">
+              <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="blog-read-time" data-ka="7 წთ წასაკითხი" data-en="7 min read">7 წთ წასაკითხი</span>
+            </div>
+          </article>
+
+          <!-- Post 6 -->
+          <article class="blog-card reveal" data-category="market" style="--delay:0.24s">
+            <div class="blog-card-thumb">
+              <div class="blog-card-thumb-inner"><i class="fa-solid fa-building-columns"></i></div>
+              <span class="blog-card-category" data-ka="ბაზარი" data-en="Market">ბაზარი</span>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span><i class="fa-regular fa-calendar"></i> 28 იან, 2025</span>
+                <span><i class="fa-regular fa-user"></i> NB Tower</span>
+              </div>
+              <h2 class="blog-card-title" data-ka="საქართველოს სამშენებლო ბაზარი — 2024 წლის შედეგები" data-en="Georgia Construction Market — 2024 Year in Review">საქართველოს სამშენებლო ბაზარი — 2024 წლის შედეგები</h2>
+              <p class="blog-card-excerpt" data-ka="2024 წელს საქართველოს სამშენებლო სექტორი 18%-ით გაიზარდა. განვიხილოთ რა მოხდა, რა გამოწვევები იყო და რა გველოდება 2025 წელს." data-en="In 2024, Georgia's construction sector grew by 18%. Let's review what happened, what challenges arose and what awaits us in 2025.">2024 წელს საქართველოს სამშენებლო სექტორი 18%-ით გაიზარდა. განვიხილოთ რა მოხდა, რა გამოწვევები იყო და რა გველოდება 2025 წელს.</p>
+            </div>
+            <div class="blog-card-footer">
+              <span class="blog-read-more" data-ka="სრულად წაკითხვა" data-en="Read more">სრულად წაკითხვა <i class="fa-solid fa-arrow-right"></i></span>
+              <span class="blog-read-time" data-ka="9 წთ წასაკითხი" data-en="9 min read">9 წთ წასაკითხი</span>
+            </div>
+          </article>
+
+        </div><!-- /blog-grid -->
+
+        <!-- Newsletter CTA -->
+        <div class="blog-cta reveal" style="--delay:0.1s">
+          <div class="blog-cta-text">
+            <h3 data-ka="მიიღეთ სიახლეები ელ-ფოსტაზე" data-en="Get updates by email">მიიღეთ სიახლეები ელ-ფოსტაზე</h3>
+            <p data-ka="კვირაში ერთხელ — ბაზრის ანალიზი, ახალი პროექტები, ექსპერტული რჩევები." data-en="Once a week — market analysis, new projects, expert tips.">კვირაში ერთხელ — ბაზრის ანალიზი, ახალი პროექტები, ექსპერტული რჩევები.</p>
+          </div>
+          <div class="blog-cta-form">
+            <input type="email" placeholder="თქვენი ელ-ფოსტა" id="newsletter-email" />
+            <button class="btn-primary" onclick="handleNewsletter()" data-ka="გამოწერა" data-en="Subscribe">გამოწერა</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo"><img src="assets/NB Tower logo.png" alt="NB Tower" height="40" /></a>
+        <p class="footer-desc" data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს." data-en="Georgia's premier construction company. Building tomorrow, today.">საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/NBTower2021" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/nb_tower/" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.linkedin.com/company/nb-tower" class="fs-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="/#about"     data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"  data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"       data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"     data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+          <li><a href="/#contact"   data-ka="კონტაქტი"       data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, საქართველო" data-en="Tbilisi, Georgia">თბილისი, საქართველო</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 XXX XXX XXX</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p><span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    'use strict';
+    const langToggle = document.getElementById('lang-toggle');
+    const langKaEl   = document.querySelector('.lang-ka');
+    const langEnEl   = document.querySelector('.lang-en');
+    let currentLang  = localStorage.getItem('lang') || 'ka';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-ka]').forEach(el => {
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
+      });
+      if (langKaEl) langKaEl.classList.toggle('active', lang === 'ka');
+      if (langEnEl) langEnEl.classList.toggle('active', lang === 'en');
+      localStorage.setItem('lang', lang);
+    }
+    langToggle?.addEventListener('click', () => applyLang(currentLang === 'ka' ? 'en' : 'ka'));
+    applyLang(currentLang);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header')?.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const hamburger  = document.getElementById('hamburger');
+    const navLinksEl = document.getElementById('nav-links');
+    hamburger?.addEventListener('click', () => {
+      const isOpen = navLinksEl.classList.toggle('open');
+      hamburger.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    // Reveal
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+    // Filter tabs
+    const tabs  = document.querySelectorAll('.blog-tab');
+    const cards = document.querySelectorAll('.blog-card');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.dataset.filter;
+        cards.forEach(card => {
+          const show = filter === 'all' || card.dataset.category === filter;
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  })();
+
+  function handleNewsletter() {
+    const input = document.getElementById('newsletter-email');
+    if (!input.value.trim()) { input.style.borderColor = '#e55'; return; }
+    input.style.borderColor = '#3DBE6C';
+    input.value = '';
+    input.placeholder = 'გმადლობთ! ✓';
+  }
+  </script>
+</body>
+</html>

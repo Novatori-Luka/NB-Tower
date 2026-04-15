@@ -104,6 +104,94 @@
     }
     /* Override animate class so items don't stay invisible on this page */
     .animate-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
+
+    /* ── Advanced filter panel ──────────────── */
+    .adv-filter-toggle {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: none; border: 1.5px solid var(--border);
+      color: var(--text-secondary); padding: 9px 22px;
+      border-radius: 100px; cursor: pointer; font-size: 0.88rem;
+      font-family: inherit; transition: all 0.2s; margin-bottom: 20px;
+    }
+    .adv-filter-toggle:hover { border-color: var(--green); color: var(--green); }
+    .adv-filter-toggle.active { border-color: var(--green); color: var(--green); background: rgba(61,190,108,0.06); }
+    .adv-filter-toggle .chevron { font-size: 0.75rem; transition: transform 0.3s; }
+    .adv-filter-toggle.active .chevron { transform: rotate(180deg); }
+
+    .adv-filters-panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; margin-bottom: 28px; display: none;
+    }
+    .adv-filters-panel.open { display: block; }
+    .adv-filters-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    @media (max-width: 900px) { .adv-filters-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 600px) { .adv-filters-grid { grid-template-columns: 1fr; } }
+
+    .filter-group {}
+    .filter-label {
+      display: block; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-secondary); margin-bottom: 10px;
+    }
+    .filter-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-cb {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border: 1.5px solid var(--border);
+      border-radius: 100px; cursor: pointer; font-size: 0.85rem;
+      color: var(--text-secondary); transition: all 0.2s; user-select: none;
+    }
+    .filter-cb input[type="checkbox"] { display: none; }
+    .filter-cb.checked { border-color: var(--green); color: var(--green); background: rgba(61,190,108,0.06); }
+
+    .filter-range { display: flex; align-items: center; gap: 8px; }
+    .filter-range input {
+      flex: 1; background: var(--bg-base); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; color: var(--text-primary);
+      font-size: 0.88rem; font-family: inherit; outline: none;
+      transition: border-color 0.2s; width: 100%; min-width: 0;
+    }
+    .filter-range input:focus { border-color: var(--green); }
+    .filter-range .sep { color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; }
+
+    .filter-select {
+      width: 100%; background: var(--bg-base); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; color: var(--text-primary);
+      font-size: 0.88rem; font-family: inherit; outline: none;
+      transition: border-color 0.2s; cursor: pointer;
+    }
+    .filter-select:focus { border-color: var(--green); }
+
+    .adv-filters-actions {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+    }
+    .btn-apply-filters {
+      background: var(--green); color: #000; border: none;
+      padding: 10px 28px; border-radius: 8px; font-weight: 700;
+      font-size: 0.9rem; font-family: inherit; cursor: pointer; transition: background 0.2s;
+    }
+    .btn-apply-filters:hover { background: var(--green-light); }
+    .btn-reset-filters {
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 0.88rem; font-family: inherit; cursor: pointer;
+      padding: 10px 4px; transition: color 0.2s;
+    }
+    .btn-reset-filters:hover { color: var(--text-primary); }
+
+    .active-filters-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .active-filter-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; background: rgba(61,190,108,0.08);
+      border: 1px solid rgba(61,190,108,0.3); border-radius: 100px;
+      font-size: 0.8rem; color: var(--green);
+    }
+    .active-filter-tag button {
+      background: none; border: none; color: var(--green);
+      cursor: pointer; padding: 0; font-size: 0.75rem; line-height: 1; opacity: 0.7;
+    }
+    .active-filter-tag button:hover { opacity: 1; }
   </style>
 </head>
 <body>
@@ -116,11 +204,12 @@
       </a>
 
       <ul class="nav-links" id="nav-links">
-        <li><a href="/#about" class="nav-link" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
-        <li><a href="/#projects" class="nav-link" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
-        <li><a href="/#services" class="nav-link" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
-        <li><a href="/#team" class="nav-link" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
-        <li><a href="/#contact" class="nav-link" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+        <li><a href="/#about"     class="nav-link" data-ka="ჩვენს შესახებ"  data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects"  class="nav-link" data-ka="პროექტები"      data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"       class="nav-link" data-ka="ბლოგი"           data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers" class="nav-link" data-ka="დეველოპერები"   data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"     class="nav-link" data-ka="კარიერა"         data-en="Career">კარიერა</a></li>
+        <li><a href="/#contact"   class="nav-link" data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -168,6 +257,99 @@
           </button>
         </div>
 
+        <!-- Advanced filter toggle -->
+        <button class="adv-filter-toggle" id="adv-filter-toggle">
+          <i class="fa-solid fa-sliders"></i>
+          <span data-ka="გაფართოებული ფილტრი" data-en="Advanced Filters">გაფართოებული ფილტრი</span>
+          <i class="fa-solid fa-chevron-down chevron"></i>
+        </button>
+
+        <!-- Advanced filters panel -->
+        <div class="adv-filters-panel" id="adv-filters-panel">
+          <div class="adv-filters-grid">
+
+            <!-- Property type -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="ქონების ტიპი" data-en="Property Type">ქონების ტიპი</label>
+              <div class="filter-checkboxes">
+                <label class="filter-cb" id="cb-residential">
+                  <input type="checkbox" value="residential" />
+                  <span data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
+                </label>
+                <label class="filter-cb" id="cb-commercial">
+                  <input type="checkbox" value="commercial" />
+                  <span data-ka="კომერციული" data-en="Commercial">კომერციული</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Status -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="სტატუსი" data-en="Status">სტატუსი</label>
+              <div class="filter-checkboxes">
+                <label class="filter-cb" id="cb-completed">
+                  <input type="checkbox" value="completed" />
+                  <span data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+                </label>
+                <label class="filter-cb" id="cb-ongoing">
+                  <input type="checkbox" value="ongoing" />
+                  <span data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Price per sqm -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="ფასი ₾/კვ.მ" data-en="Price ₾/sqm">ფასი ₾/კვ.მ</label>
+              <div class="filter-range">
+                <input type="number" id="price-min" placeholder="მინ" min="0" />
+                <span class="sep">—</span>
+                <input type="number" id="price-max" placeholder="მაქს" min="0" />
+              </div>
+            </div>
+
+            <!-- Area -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="ფართი კვ.მ" data-en="Area sqm">ფართი კვ.მ</label>
+              <div class="filter-range">
+                <input type="number" id="area-min" placeholder="მინ" min="0" />
+                <span class="sep">—</span>
+                <input type="number" id="area-max" placeholder="მაქს" min="0" />
+              </div>
+            </div>
+
+            <!-- Rooms -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="ოთახების რაოდენობა" data-en="Number of Rooms">ოთახების რაოდენობა</label>
+              <div class="filter-range">
+                <input type="number" id="rooms-min" placeholder="მინ" min="1" max="20" />
+                <span class="sep">—</span>
+                <input type="number" id="rooms-max" placeholder="მაქს" min="1" max="20" />
+              </div>
+            </div>
+
+            <!-- Condition -->
+            <div class="filter-group">
+              <label class="filter-label" data-ka="მდგომარეობა" data-en="Condition">მდგომარეობა</label>
+              <select class="filter-select" id="filter-condition">
+                <option value="" data-ka="— ყველა —" data-en="— All —">— ყველა —</option>
+                <option value="black" data-ka="შავი კარკასი" data-en="Shell (Black Frame)">შავი კარკასი</option>
+                <option value="green" data-ka="მწვანე კარკასი" data-en="Semi-Finished (Green Frame)">მწვანე კარკასი</option>
+                <option value="renovated" data-ka="გარემონტებული" data-en="Renovated">გარემონტებული</option>
+              </select>
+            </div>
+
+          </div><!-- /adv-filters-grid -->
+
+          <div class="adv-filters-actions">
+            <button class="btn-apply-filters" id="btn-apply-filters" data-ka="გამოყენება" data-en="Apply Filters">გამოყენება</button>
+            <button class="btn-reset-filters" id="btn-reset-filters" data-ka="გასუფთავება" data-en="Reset all">გასუფთავება</button>
+          </div>
+        </div><!-- /adv-filters-panel -->
+
+        <!-- Active filter tags -->
+        <div class="active-filters-bar" id="active-filters-bar"></div>
+
         <!-- Results header -->
         <div class="results-header">
           <h2 data-ka="ძიების შედეგები" data-en="Search Results">ძიების შედეგები</h2>
@@ -211,11 +393,12 @@
       <div class="footer-nav">
         <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
         <ul>
-          <li><a href="/#about" data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
-          <li><a href="/#projects" data-ka="პროექტები" data-en="Projects">პროექტები</a></li>
-          <li><a href="/#services" data-ka="სერვისები" data-en="Services">სერვისები</a></li>
-          <li><a href="/#team" data-ka="გუნდი" data-en="Team">გუნდი</a></li>
-          <li><a href="/#contact" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+          <li><a href="/#about"     data-ka="ჩვენს შესახებ"  data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"  data-ka="პროექტები"      data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"       data-ka="ბლოგი"           data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers" data-ka="დეველოპერები"   data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"     data-ka="კარიერა"         data-en="Career">კარიერა</a></li>
+          <li><a href="/#contact"   data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
         </ul>
       </div>
 
@@ -252,7 +435,7 @@
       currentLang = lang;
       document.documentElement.lang = lang;
       document.querySelectorAll('[data-ka]').forEach(el => {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return;
         el.textContent = lang === 'ka' ? el.dataset.ka : el.dataset.en;
       });
       if (langKaEl && langEnEl) {
@@ -318,32 +501,99 @@
     setSelectValue(priceSelect, priceParam);
     setSelectValue(paymentSelect, paymentParam);
 
-    /* ── Filter helpers ───────────────────── */
-    function matchesCity(project, city) {
-      if (!city) return true;
-      return project.location === city;
+    /* ── Advanced filter state ───────────── */
+    let advFilters = {
+      types: [], statuses: [],
+      priceMin: null, priceMax: null,
+      areaMin: null, areaMax: null,
+      roomsMin: null, roomsMax: null,
+      condition: ''
+    };
+
+    /* Panel toggle */
+    const advToggle = document.getElementById('adv-filter-toggle');
+    const advPanel  = document.getElementById('adv-filters-panel');
+    advToggle?.addEventListener('click', () => {
+      const isOpen = advPanel.classList.toggle('open');
+      advToggle.classList.toggle('active', isOpen);
+    });
+
+    /* Checkbox helper */
+    function wireCheckbox(cbId, arrKey, value) {
+      const label = document.getElementById(cbId);
+      if (!label) return;
+      const input = label.querySelector('input');
+      label.addEventListener('click', (e) => {
+        e.preventDefault();
+        input.checked = !input.checked;
+        label.classList.toggle('checked', input.checked);
+        if (input.checked) { if (!advFilters[arrKey].includes(value)) advFilters[arrKey].push(value); }
+        else { advFilters[arrKey] = advFilters[arrKey].filter(v => v !== value); }
+      });
+    }
+    wireCheckbox('cb-residential', 'types',    'residential');
+    wireCheckbox('cb-commercial',  'types',    'commercial');
+    wireCheckbox('cb-completed',   'statuses', 'completed');
+    wireCheckbox('cb-ongoing',     'statuses', 'ongoing');
+
+    /* Apply filters */
+    document.getElementById('btn-apply-filters')?.addEventListener('click', () => {
+      advFilters.priceMin  = parseFloat(document.getElementById('price-min')?.value) || null;
+      advFilters.priceMax  = parseFloat(document.getElementById('price-max')?.value) || null;
+      advFilters.areaMin   = parseFloat(document.getElementById('area-min')?.value)  || null;
+      advFilters.areaMax   = parseFloat(document.getElementById('area-max')?.value)  || null;
+      advFilters.roomsMin  = parseInt(document.getElementById('rooms-min')?.value)   || null;
+      advFilters.roomsMax  = parseInt(document.getElementById('rooms-max')?.value)   || null;
+      advFilters.condition = document.getElementById('filter-condition')?.value      || '';
+      filterAndRender();
+      updateActiveFilterTags();
+    });
+
+    /* Reset filters */
+    document.getElementById('btn-reset-filters')?.addEventListener('click', () => {
+      advFilters = { types: [], statuses: [], priceMin: null, priceMax: null, areaMin: null, areaMax: null, roomsMin: null, roomsMax: null, condition: '' };
+      ['cb-residential','cb-commercial','cb-completed','cb-ongoing'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.classList.remove('checked'); el.querySelector('input').checked = false; }
+      });
+      ['price-min','price-max','area-min','area-max','rooms-min','rooms-max'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+      });
+      const condEl = document.getElementById('filter-condition'); if (condEl) condEl.value = '';
+      filterAndRender();
+      updateActiveFilterTags();
+    });
+
+    /* Active tags bar */
+    function updateActiveFilterTags() {
+      const bar = document.getElementById('active-filters-bar');
+      if (!bar) return;
+      const tags = [];
+      advFilters.types.forEach(t    => tags.push({ key:'type',    val:t, label: t === 'residential' ? 'საცხოვრებელი' : 'კომერციული' }));
+      advFilters.statuses.forEach(s => tags.push({ key:'status',  val:s, label: s === 'completed' ? 'დასრულებული' : 'მიმდინარე' }));
+      if (advFilters.priceMin)  tags.push({ key:'priceMin',  label:`ფასი ≥ ${advFilters.priceMin}` });
+      if (advFilters.priceMax)  tags.push({ key:'priceMax',  label:`ფასი ≤ ${advFilters.priceMax}` });
+      if (advFilters.areaMin)   tags.push({ key:'areaMin',   label:`ფართი ≥ ${advFilters.areaMin} კვ.მ` });
+      if (advFilters.areaMax)   tags.push({ key:'areaMax',   label:`ფართი ≤ ${advFilters.areaMax} კვ.მ` });
+      if (advFilters.roomsMin)  tags.push({ key:'roomsMin',  label:`ოთახი ≥ ${advFilters.roomsMin}` });
+      if (advFilters.roomsMax)  tags.push({ key:'roomsMax',  label:`ოთახი ≤ ${advFilters.roomsMax}` });
+      if (advFilters.condition) tags.push({ key:'condition', label: advFilters.condition === 'black' ? 'შავი კარკასი' : advFilters.condition === 'green' ? 'მწვანე კარკასი' : 'გარემონტებული' });
+      bar.innerHTML = tags.map(t => `
+        <span class="active-filter-tag">
+          ${t.label}
+          <button onclick="removeFilter('${t.key}','${t.val||''}')" aria-label="Remove">✕</button>
+        </span>`).join('');
     }
 
-    function matchesPrice(project, priceP) {
-      if (!priceP || priceP === 'any') return true;
-      const priceRange = (typeof NB_CONSTANTS !== 'undefined' ? NB_CONSTANTS.priceRanges : []).find(r => r.value === priceP);
-      if (!priceRange || priceRange.value === 'any') return true;
-      const prices = [
-        project.price_per_sqm_full,
-        project.price_per_sqm_mortgage,
-        project.price_per_sqm_installment
-      ].filter(p => p && p > 0);
-      if (!prices.length) return true;
-      return prices.some(p => p >= priceRange.min && p <= priceRange.max);
-    }
-
-    function matchesPayment(project, paymentP) {
-      if (!paymentP || paymentP === 'ყველა') return true;
-      console.log('Project payment:', project.payment_type, '| Payment filter:', paymentP);
-      if (!project.payment_type) return true;
-      if (project.payment_type === 'ყველა') return true;
-      return project.payment_type === paymentP;
-    }
+    window.removeFilter = function(key, val) {
+      if (key === 'type')   { advFilters.types    = advFilters.types.filter(v => v !== val);    const el = document.getElementById(val === 'residential' ? 'cb-residential' : 'cb-commercial'); if(el){el.classList.remove('checked');el.querySelector('input').checked=false;} }
+      if (key === 'status') { advFilters.statuses = advFilters.statuses.filter(v => v !== val); const el = document.getElementById(val === 'completed' ? 'cb-completed' : 'cb-ongoing'); if(el){el.classList.remove('checked');el.querySelector('input').checked=false;} }
+      const numMap = { priceMin:'price-min', priceMax:'price-max', areaMin:'area-min', areaMax:'area-max', roomsMin:'rooms-min', roomsMax:'rooms-max' };
+      if (numMap[key]) { advFilters[key] = null; const el = document.getElementById(numMap[key]); if(el) el.value = ''; }
+      if (key === 'condition') { advFilters.condition = ''; const el = document.getElementById('filter-condition'); if(el) el.value = ''; }
+      filterAndRender();
+      updateActiveFilterTags();
+    };
 
     /* ── Card renderer ────────────────────── */
     function renderCard(p) {
@@ -385,14 +635,54 @@
         </div>`;
     }
 
-    /* ── Fetch & render ───────────────────── */
+    /* ── All-projects cache ───────────────── */
+    let allProjectsCache = [];
+
+    /* ── Combined filter + render ─────────── */
+    function filterAndRender() {
+      const cityVal    = (params.get('city')    || '').trim();
+      const priceVal   = params.get('price')    || 'any';
+      const paymentVal = params.get('payment')  || 'ყველა';
+
+      const filtered = allProjectsCache.filter(p => {
+        // URL-param filters
+        if (cityVal && cityVal !== 'ნებისმიერი' && (p.location || '').trim() !== cityVal) return false;
+        if (priceVal && priceVal !== 'any' && typeof NB_CONSTANTS !== 'undefined') {
+          const pr = NB_CONSTANTS.priceRanges.find(r => r.value === priceVal);
+          if (pr) {
+            const prices = [p.price_per_sqm_full, p.price_per_sqm_mortgage, p.price_per_sqm_installment].filter(v => v && v > 0);
+            if (prices.length && !prices.some(v => v >= pr.min && v <= pr.max)) return false;
+          }
+        }
+        if (paymentVal && paymentVal !== 'ყველა' && p.payment_type !== paymentVal && p.payment_type !== 'ყველა') return false;
+
+        // Advanced filters
+        if (advFilters.types.length    && !advFilters.types.includes(p.category))  return false;
+        if (advFilters.statuses.length && !advFilters.statuses.includes(p.status)) return false;
+        if (advFilters.priceMin !== null || advFilters.priceMax !== null) {
+          const prices = [p.price_per_sqm_full, p.price_per_sqm_mortgage, p.price_per_sqm_installment].filter(v => v && v > 0);
+          if (prices.length) {
+            if (advFilters.priceMin !== null && Math.max(...prices) < advFilters.priceMin) return false;
+            if (advFilters.priceMax !== null && Math.min(...prices) > advFilters.priceMax) return false;
+          }
+        }
+        if (advFilters.areaMin  !== null && p.min_area && p.min_area < advFilters.areaMin)   return false;
+        if (advFilters.areaMax  !== null && p.max_area && p.max_area > advFilters.areaMax)   return false;
+        if (advFilters.roomsMin !== null && p.rooms    && p.rooms    < advFilters.roomsMin)  return false;
+        if (advFilters.roomsMax !== null && p.rooms    && p.rooms    > advFilters.roomsMax)  return false;
+        if (advFilters.condition && p.condition && p.condition !== advFilters.condition)     return false;
+        return true;
+      });
+
+      renderResults(filtered);
+    }
+
+    /* ── Render helper ────────────────────── */
     function renderResults(filtered) {
       const grid    = document.getElementById('results-grid');
       const noRes   = document.getElementById('no-results');
       const countEl = document.getElementById('result-count');
-
       countEl.textContent = filtered.length;
-
       if (filtered.length === 0) {
         grid.innerHTML = '';
         noRes.classList.remove('hidden');
@@ -403,50 +693,17 @@
       }
     }
 
+    /* ── Initial fetch ────────────────────── */
     async function loadAndFilter() {
       const grid  = document.getElementById('results-grid');
       const noRes = document.getElementById('no-results');
-
       grid.innerHTML = `<div class="loading-state">${currentLang === 'ka' ? 'იტვირთება...' : 'Loading...'}</div>`;
       noRes.classList.add('hidden');
-
       try {
-        const { data: allProjects } = await db.from('projects').select('*');
-        if (!allProjects) return;
-
-        const cityParam    = (params.get('city')    || '').trim();
-        const priceParam   = params.get('price')    || 'any';
-        const paymentParam = params.get('payment')  || 'ყველა';
-
-        const filtered = allProjects.filter(project => {
-          // City filter
-          if (cityParam && cityParam !== 'ნებისმიერი' && cityParam !== '') {
-            const projectCity = (project.location || '').trim();
-            if (projectCity !== cityParam) return false;
-          }
-
-          // Price filter
-          if (priceParam && priceParam !== 'any') {
-            const priceRange = NB_CONSTANTS.priceRanges.find(p => p.value === priceParam);
-            if (priceRange) {
-              const prices = [
-                project.price_per_sqm_full,
-                project.price_per_sqm_mortgage,
-                project.price_per_sqm_installment
-              ].filter(p => p && p > 0);
-              if (prices.length && !prices.some(p => p >= priceRange.min && p <= priceRange.max)) return false;
-            }
-          }
-
-          // Payment filter
-          if (paymentParam && paymentParam !== 'ყველა') {
-            if (project.payment_type !== paymentParam && project.payment_type !== 'ყველა') return false;
-          }
-
-          return true;
-        });
-
-        renderResults(filtered);
+        const { data } = await db.from('projects').select('*');
+        if (!data) return;
+        allProjectsCache = data;
+        filterAndRender();
       } catch (e) {
         console.warn('Search fetch failed', e);
         document.getElementById('results-grid').innerHTML = '';
