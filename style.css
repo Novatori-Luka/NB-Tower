@@ -1591,7 +1591,7 @@ input.error { border-color: #E85D04; }
   .nav-link:hover { color: var(--green); }
 
   /* ── Hero ───────────────────────────────── */
-  .hero { width: 100%; padding: 18px 20px 40px; overflow: hidden; }
+  .hero { width: 100%; padding: 18px 20px 40px; overflow: visible; }
   .hero-bg { overflow: hidden; }
 
   .hero-badge {
