@@ -754,7 +754,7 @@ main { counter-reset: section-num; }
    SERVICES SECTION — Editorial accordion
 ══════════════════════════════════════════════ */
 .services-section {
-  background: #0C0C0C;
+  background: #FFFFFF;
   padding: 96px 0 80px;
 }
 
@@ -766,7 +766,7 @@ main { counter-reset: section-num; }
   gap: 40px;
   margin-bottom: 64px;
   padding-bottom: 40px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 .svc-eyebrow {
   display: inline-block;
@@ -780,7 +780,7 @@ main { counter-reset: section-num; }
 .svc-heading {
   font-size: clamp(2.6rem, 4vw, 4rem);
   font-weight: 800;
-  color: #fff;
+  color: #111;
   line-height: 1.05;
   letter-spacing: -0.03em;
   margin: 0;
@@ -789,21 +789,21 @@ main { counter-reset: section-num; }
   max-width: 360px;
   font-size: 0.88rem;
   line-height: 1.75;
-  color: rgba(255,255,255,0.42);
+  color: rgba(0,0,0,0.45);
   flex-shrink: 0;
   margin-bottom: 4px;
 }
 
 /* ── Accordion list ── */
-.svc-list { border-top: 1px solid rgba(255,255,255,0.08); }
+.svc-list { border-top: 1px solid rgba(0,0,0,0.08); }
 
 .svc-item {
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
   cursor: pointer;
   transition: background 0.3s ease;
 }
 .svc-item:hover,
-.svc-item.open { background: rgba(61,190,108,0.035); }
+.svc-item.open { background: rgba(61,190,108,0.04); }
 
 /* Top row — always visible */
 .svc-item-top {
@@ -820,7 +820,7 @@ main { counter-reset: section-num; }
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.2);
+  color: rgba(0,0,0,0.2);
   transition: color 0.3s ease;
   font-variant-numeric: tabular-nums;
 }
@@ -830,13 +830,13 @@ main { counter-reset: section-num; }
 .svc-title {
   font-size: clamp(1.2rem, 2.2vw, 1.7rem);
   font-weight: 700;
-  color: rgba(255,255,255,0.75);
+  color: rgba(0,0,0,0.7);
   letter-spacing: -0.01em;
   transition: color 0.3s ease;
   line-height: 1.2;
 }
 .svc-item:hover .svc-title,
-.svc-item.open .svc-title { color: #fff; }
+.svc-item.open .svc-title { color: #111; }
 
 .svc-tags {
   display: flex;
@@ -847,8 +847,8 @@ main { counter-reset: section-num; }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
-  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(0,0,0,0.35);
+  border: 1px solid rgba(0,0,0,0.12);
   padding: 3px 10px;
   border-radius: 100px;
   transition: color 0.3s ease, border-color 0.3s ease;
@@ -856,12 +856,12 @@ main { counter-reset: section-num; }
 .svc-item:hover .svc-tags span,
 .svc-item.open .svc-tags span {
   color: var(--green);
-  border-color: rgba(61,190,108,0.35);
+  border-color: rgba(61,190,108,0.4);
 }
 
 .svc-toggle {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.25);
+  color: rgba(0,0,0,0.25);
   transition: transform 0.3s ease, color 0.3s ease;
   justify-self: end;
 }
@@ -897,7 +897,7 @@ main { counter-reset: section-num; }
 .svc-item-body p {
   font-size: 0.88rem;
   line-height: 1.75;
-  color: rgba(255,255,255,0.5);
+  color: rgba(0,0,0,0.5);
   margin: 0;
 }
 
