@@ -262,16 +262,9 @@ main { counter-reset: section-num; }
   padding: 4px 0;
   transition: color var(--transition);
 }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px; left: 0;
-  height: 1.5px; width: 0;
-  background: var(--green);
-  transition: width var(--transition);
-}
-.nav-link:hover, .nav-link.active { color: var(--text-primary); }
-.nav-link:hover::after, .nav-link.active::after { width: 100%; }
+.nav-link::after { display: none; }
+.nav-link:hover { color: var(--green); }
+.nav-link.active { color: var(--green); }
 
 .nav-actions {
   display: flex;
