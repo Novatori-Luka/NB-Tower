@@ -528,24 +528,61 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   }
 
 
-  /* ── 10. HERO SEARCH ───────────────────────── */
+  /* ── 10. HERO SEARCH — Custom Dropdowns ─────── */
 
-  // Populate selects from NB_CONSTANTS
-  (function populateHeroSearch() {
-    const cityEl    = document.getElementById('h-city');
-    const priceEl   = document.getElementById('h-price');
-    const paymentEl = document.getElementById('h-payment');
-    if (!cityEl || typeof NB_CONSTANTS === 'undefined') return;
-    cityEl.innerHTML    = NB_CONSTANTS.cities.map(c => `<option value="${c}">${c}</option>`).join('');
-    priceEl.innerHTML   = NB_CONSTANTS.priceRanges.map(r => `<option value="${r.value}">${r.label}</option>`).join('');
-    paymentEl.innerHTML = NB_CONSTANTS.paymentTypes.map(p => `<option value="${p}">${p}</option>`).join('');
+  const _csState = { city: 'თბილისი', price: 'any', payment: 'ყველა' };
+
+  function _buildPanel(panelId, items, field) {
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    panel.innerHTML = items.map(item => {
+      const val   = item.value  !== undefined ? item.value  : item;
+      const label = item.label  !== undefined ? item.label  : item;
+      const sel   = val === _csState[field] ? ' cs-selected' : '';
+      return `<div class="cs-option${sel}" data-value="${val}" onclick="csSelect('${field}','${val}','${label.replace(/'/g,"\\'")}',this)">${label}</div>`;
+    }).join('');
+  }
+
+  (function initCustomSearch() {
+    if (typeof NB_CONSTANTS === 'undefined') return;
+    _buildPanel('cs-city-panel',    NB_CONSTANTS.cities,       'city');
+    _buildPanel('cs-price-panel',   NB_CONSTANTS.priceRanges,  'price');
+    _buildPanel('cs-payment-panel', NB_CONSTANTS.paymentTypes, 'payment');
   })();
 
+  window.csToggle = function(field) {
+    const wrap = document.getElementById('csf-' + field);
+    if (!wrap) return;
+    const isOpen = wrap.classList.contains('cs-open');
+    // Close all
+    document.querySelectorAll('.cs-field.cs-open').forEach(el => el.classList.remove('cs-open'));
+    if (!isOpen) wrap.classList.add('cs-open');
+  };
+
+  window.csSelect = function(field, value, label, optEl) {
+    _csState[field] = value;
+    const valEl = document.getElementById('cs-' + field + '-val');
+    if (valEl) valEl.textContent = label;
+    // Mark selected in panel
+    optEl.closest('.cs-panel').querySelectorAll('.cs-option').forEach(o => o.classList.remove('cs-selected'));
+    optEl.classList.add('cs-selected');
+    // Close
+    document.getElementById('csf-' + field)?.classList.remove('cs-open');
+  };
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.cs-field')) {
+      document.querySelectorAll('.cs-field.cs-open').forEach(el => el.classList.remove('cs-open'));
+    }
+  });
+
   window.handleHeroSearch = function() {
-    const city    = document.getElementById('h-city')?.value    || '';
-    const price   = document.getElementById('h-price')?.value   || '';
-    const payment = document.getElementById('h-payment')?.value || '';
-    const params  = new URLSearchParams({ city, price, payment });
+    const params = new URLSearchParams({
+      city:    _csState.city,
+      price:   _csState.price,
+      payment: _csState.payment
+    });
     window.location.href = '/search?' + params.toString();
   };
 

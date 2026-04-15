@@ -109,19 +109,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </p>
 
         <div class="hero-search animate-hero" style="--delay:0.45s">
-          <div class="search-field">
+          <!-- City -->
+          <div class="search-field cs-field" id="csf-city">
             <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
-            <select id="h-city"></select>
+            <div class="cs-trigger" onclick="csToggle('city')">
+              <span class="cs-val" id="cs-city-val">თბილისი</span>
+              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="cs-panel" id="cs-city-panel" role="listbox"></div>
           </div>
           <div class="search-divider"></div>
-          <div class="search-field">
+          <!-- Price -->
+          <div class="search-field cs-field" id="csf-price">
             <label data-ka="კვ.მ ფასი" data-en="Price/sqm">კვ.მ ფასი</label>
-            <select id="h-price"></select>
+            <div class="cs-trigger" onclick="csToggle('price')">
+              <span class="cs-val" id="cs-price-val">ნებისმიერი / Any</span>
+              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="cs-panel" id="cs-price-panel" role="listbox"></div>
           </div>
           <div class="search-divider"></div>
-          <div class="search-field">
+          <!-- Payment -->
+          <div class="search-field cs-field" id="csf-payment">
             <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
-            <select id="h-payment"></select>
+            <div class="cs-trigger" onclick="csToggle('payment')">
+              <span class="cs-val" id="cs-payment-val">ყველა</span>
+              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="cs-panel" id="cs-payment-panel" role="listbox"></div>
           </div>
           <button class="search-btn" onclick="handleHeroSearch()">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
