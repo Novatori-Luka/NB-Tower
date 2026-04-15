@@ -670,7 +670,7 @@ main { counter-reset: section-num; }
   display: flex;
   align-items: baseline;
   gap: 2px;
-  font-family: var(--font-display);
+  font-family: 'Noto Sans Georgian', 'DM Sans', sans-serif;
   font-size: clamp(3rem, 5vw, 4.5rem);
   color: #ffffff;
   line-height: 1;
