@@ -256,19 +256,20 @@ main { counter-reset: section-num; }
 .lang-toggle {
   display: flex;
   align-items: center;
-  gap: 4px;
   font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  padding: 6px 10px;
-  border: 1px solid var(--border);
+  letter-spacing: 0.08em;
+  color: var(--green);
+  padding: 6px 12px;
+  border: 1.5px solid rgba(61,190,108,0.35);
   border-radius: var(--radius);
   transition: all var(--transition);
 }
-.lang-toggle:hover { color: var(--text-primary); border-color: #aaa; }
-.lang-sep { color: var(--text-faint); margin: 0 1px; }
-.lang-ka.active, .lang-en.active { color: var(--green); }
+.lang-toggle:hover {
+  background: rgba(61,190,108,0.08);
+  border-color: var(--green);
+}
+.lang-label { line-height: 1; }
 
 .nav-cta { padding: 10px 20px; font-size: 0.83rem; }
 

@@ -242,8 +242,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
   /* ── 1. LANGUAGE TOGGLE ─────────────────────── */
   const langToggle = document.getElementById('lang-toggle');
-  const langKaEl   = document.querySelector('.lang-ka');
-  const langEnEl   = document.querySelector('.lang-en');
   let currentLang  = localStorage.getItem('lang') || 'ka';
 
   function applyLang(lang) {
@@ -259,10 +257,9 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
       el.placeholder = lang === 'ka' ? el.dataset.kaPlaceholder : el.dataset.enPlaceholder;
     });
 
-    if (langKaEl && langEnEl) {
-      langKaEl.classList.toggle('active', lang === 'ka');
-      langEnEl.classList.toggle('active', lang === 'en');
-    }
+    // Show opposite language on the toggle button
+    const label = document.querySelector('.lang-label');
+    if (label) label.textContent = lang === 'ka' ? 'EN' : 'GE';
 
     // Keep filter buttons in sync
     document.querySelectorAll('.filter-btn[data-ka]').forEach(btn => {
