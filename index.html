@@ -295,132 +295,77 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- ===== PROJECTS SECTION ===== -->
     <section class="projects-section section" id="projects">
       <div class="container">
-        <div class="section-header reveal">
-          <div class="section-label" data-ka="პორტფოლიო" data-en="Portfolio">პორტფოლიო</div>
-          <h2 class="section-title" data-ka="ჩვენი პროექტები" data-en="Our Projects">ჩვენი პროექტები</h2>
-          <p class="section-subtitle" data-ka="განხორციელებული და მიმდინარე სამშენებლო პროექტები საქართველოს მასშტაბით" data-en="Completed and ongoing construction projects across Georgia">განხორციელებული და მიმდინარე სამშენებლო პროექტები საქართველოს მასშტაბით</p>
+
+        <!-- Left-aligned header -->
+        <div class="projects-header reveal">
+          <div class="projects-header-left">
+            <div class="section-label" data-ka="პორტფოლიო" data-en="Portfolio">პორტფოლიო</div>
+            <h2 class="projects-title">
+              <span data-ka="ჩვენი" data-en="Our">ჩვენი</span>
+              <span class="projects-title-accent" data-ka="პროექტები" data-en="Projects">პროექტები</span>
+            </h2>
+            <a href="/search" class="projects-view-all">
+              <span data-ka="ყველა პროექტი" data-en="All Projects">ყველა პროექტი</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
         </div>
 
-        <div class="filter-tabs reveal">
-          <button class="filter-btn active" data-filter="all" data-ka="ყველა" data-en="All">ყველა</button>
-          <button class="filter-btn" data-filter="residential" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</button>
-          <button class="filter-btn" data-filter="commercial" data-ka="კომერციული" data-en="Commercial">კომერციული</button>
-        </div>
+        <!-- Horizontal circular scroll row -->
+        <div class="projects-row" id="projects-grid">
 
-        <div class="projects-grid" id="projects-grid">
-
-          <div class="project-card reveal" data-category="residential" style="--delay:0s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+          <div class="project-circle" data-category="residential" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
-              <h3 class="project-name">NB Residence I</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Residence I" data-en="NB Residence I">NB Residence I</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
           </div>
 
-          <div class="project-card reveal" data-category="commercial" style="--delay:0.08s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+          <div class="project-circle" data-category="commercial" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
-              <h3 class="project-name">NB Business Center</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="კომერციული ცენტრი" data-en="Commercial Center">კომერციული ცენტრი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Business Center" data-en="NB Business Center">NB Business Center</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
           </div>
 
-          <div class="project-card reveal" data-category="residential" style="--delay:0.16s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+          <div class="project-circle" data-category="residential" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
-              <h3 class="project-name">NB Residence II</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>ბათუმი</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Residence II" data-en="NB Residence II">NB Residence II</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>ბათუმი</div>
           </div>
 
-          <div class="project-card reveal" data-category="commercial" style="--delay:0.24s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+          <div class="project-circle" data-category="commercial" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
-              <h3 class="project-name">NB Plaza</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="კომერციული ცენტრი" data-en="Commercial Center">კომერციული ცენტრი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Plaza" data-en="NB Plaza">NB Plaza</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>თბილისი</div>
           </div>
 
-          <div class="project-card reveal" data-category="residential" style="--delay:0.32s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+          <div class="project-circle" data-category="residential" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
-              <h3 class="project-name">NB Garden Towers</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>მცხეთა</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="საცხოვრებელი კომპლექსი" data-en="Residential Complex">საცხოვრებელი კომპლექსი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Garden Towers" data-en="NB Garden Towers">NB Garden Towers</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>მცხეთა</div>
           </div>
 
-          <div class="project-card reveal" data-category="commercial" style="--delay:0.4s">
-            <div class="project-thumb">
-              <div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>
-              <span class="project-thumb-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+          <div class="project-circle" data-category="commercial" onclick="window.location.href='#'">
+            <div class="project-circle-img">
+              <div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>
+              <span class="project-circle-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
             </div>
-            <div class="project-info">
-              <span class="project-cat-tag" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
-              <h3 class="project-name">NB Logistics Hub</h3>
-              <div class="project-location"><i class="fa-solid fa-location-dot"></i>რუსთავი</div>
-              <div class="project-card-footer">
-                <div>
-                  <div class="project-price-label" data-ka="ლოჯისტიკური ცენტრი" data-en="Logistics Center">ლოჯისტიკური ცენტრი</div>
-                  <div class="project-price-value" style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">დეტალების ნახვა</div>
-                </div>
-                <div class="project-view-btn"><i class="fa-solid fa-arrow-right"></i></div>
-              </div>
-            </div>
+            <div class="project-circle-name" data-ka="NB Logistics Hub" data-en="NB Logistics Hub">NB Logistics Hub</div>
+            <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>რუსთავი</div>
           </div>
 
         </div>

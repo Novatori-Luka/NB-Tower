@@ -93,49 +93,27 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   ══════════════════════════════════════════════ */
 
   function _renderProjects(projects) {
-    const grid = document.getElementById('projects-grid');
-    if (!grid) return;
-    grid.innerHTML = projects.map((p, i) => {
-      const delay    = (i % 3) * 0.08;
+    const row = document.getElementById('projects-grid');
+    if (!row) return;
+    row.innerHTML = projects.map((p, i) => {
       const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
       const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
       const badgeEn  = p.status === 'completed' ? 'Completed' : 'Ongoing';
-      const catKa    = p.category === 'residential' ? 'საცხოვრებელი' : 'კომერციული';
-      const catEn    = p.category === 'residential' ? 'Residential' : 'Commercial';
-      const typeKa   = p.category === 'residential' ? 'საცხოვრებელი კომპლექსი' : 'კომერციული ცენტრი';
-      const typeEn   = p.category === 'residential' ? 'Residential Complex' : 'Commercial Center';
-      const priceVal = p.pricePerSqmFull || p.price_per_sqm_full || null;
-      const priceStr = priceVal ? `$${Number(priceVal).toLocaleString()}/კვ.მ` : null;
 
-      const thumbInner = p.imageUrl
-        ? `<img class="project-thumb-img" src="${p.imageUrl}" alt="${p.nameKa}" loading="lazy">`
-        : `<div class="project-thumb-ph"><i class="fa-regular fa-building-columns"></i></div>`;
+      const imgInner = p.imageUrl
+        ? `<img src="${p.imageUrl}" alt="${p.nameKa}" loading="lazy">`
+        : `<div class="project-circle-ph"><i class="fa-regular fa-building-columns"></i></div>`;
 
       return `
-        <div class="project-card reveal" data-category="${p.category}" style="--delay:${delay}s" onclick="window.location.href='/project?id=${p.id}'">
-          <div class="project-thumb">
-            ${thumbInner}
-            <span class="project-thumb-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
+        <div class="project-circle" data-category="${p.category}" onclick="window.location.href='/project?id=${p.id}'">
+          <div class="project-circle-img">
+            ${imgInner}
+            <span class="project-circle-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
           </div>
-          <div class="project-info">
-            <span class="project-cat-tag" data-ka="${catKa}" data-en="${catEn}">${catKa}</span>
-            <h3 class="project-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</h3>
-            <div class="project-location">
-              <i class="fa-solid fa-location-dot"></i>${p.location}
-            </div>
-            <div class="project-card-footer">
-              <div>
-                <div class="project-price-label" data-ka="${priceStr ? 'კვ.მ ფასი' : typeKa}" data-en="${priceStr ? 'Price/sqm' : typeEn}">${priceStr ? (currentLang === 'ka' ? 'კვ.მ ფასი' : 'Price/sqm') : typeKa}</div>
-                <div class="project-price-value">${priceStr || `<span style="color:#888;font-size:13px" data-ka="დეტალების ნახვა" data-en="View details">${currentLang === 'ka' ? 'დეტალების ნახვა' : 'View details'}</span>`}</div>
-              </div>
-              <div class="project-view-btn" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-          </div>
+          <div class="project-circle-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</div>
+          <div class="project-circle-loc"><i class="fa-solid fa-location-dot"></i>${p.location}</div>
         </div>`;
     }).join('');
-
-    // Re-observe newly rendered cards
-    grid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
   function _renderTeam(team) {
@@ -415,25 +393,7 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   if (statsSection) statsObserver.observe(statsSection);
 
 
-  /* ── 7. PROJECT FILTER ──────────────────────── */
-  const filterBtns = document.querySelectorAll('.filter-btn');
-
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const filter = btn.dataset.filter;
-      document.querySelectorAll('.project-card').forEach(card => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.classList.toggle('hidden', !show);
-        if (show) {
-          card.classList.add('fade-in');
-          setTimeout(() => card.classList.remove('fade-in'), 400);
-        }
-      });
-    });
-  });
+  /* ── 7. PROJECT FILTER (no-op — section now uses circular scroll row) ── */
 
 
   /* ── 8. TESTIMONIALS CAROUSEL ───────────────── */
