@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .page-hero {
       padding-top: calc(var(--header-h) + 64px);
@@ -344,119 +345,14 @@
             <span class="section-label" data-ka="ღია ვაკანსიები" data-en="Open Positions">ღია ვაკანსიები</span>
             <h2 class="section-title" style="margin-bottom:0" data-ka="ახლა ვეძებთ" data-en="We're Hiring Now">ახლა ვეძებთ</h2>
           </div>
-          <span class="jobs-count" data-ka="3 ვაკანსია" data-en="3 Positions">3 ვაკანსია</span>
+          <span class="jobs-count" id="jobs-count">...</span>
         </div>
 
-        <!-- Job 1 — Sales Consultant -->
-        <div class="job-card reveal" style="--delay:0s">
-          <div class="job-card-top">
-            <div class="job-title-wrap">
-              <div class="job-dept" data-ka="გაყიდვები" data-en="Sales">გაყიდვები</div>
-              <div class="job-title" data-ka="გაყიდვების კონსულტანტი" data-en="Sales Consultant">გაყიდვების კონსულტანტი</div>
-              <div class="job-tags">
-                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 1+ წ." data-en="1+ yrs experience">გამოცდილება 1+ წ.</span></span>
-              </div>
-            </div>
-            <button class="btn-primary job-apply-btn" onclick="openModal('გაყიდვების კონსულტანტი', 'Sales Consultant')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
-          </div>
-          <div class="job-divider"></div>
-          <div class="job-body">
-            <div>
-              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
-              <ul class="job-list">
-                <li><span data-ka="კლიენტებთან კომუნიკაცია და პრეზენტაციები" data-en="Client communication and presentations">კლიენტებთან კომუნიკაცია და პრეზენტაციები</span></li>
-                <li><span data-ka="ბინების გაყიდვა და კონსულტაცია" data-en="Apartment sales and consultations">ბინების გაყიდვა და კონსულტაცია</span></li>
-                <li><span data-ka="გაყიდვების გეგმის შესრულება" data-en="Achieving sales targets">გაყიდვების გეგმის შესრულება</span></li>
-                <li><span data-ka="CRM სისტემის წარმოება" data-en="CRM system management">CRM სისტემის წარმოება</span></li>
-              </ul>
-            </div>
-            <div>
-              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
-              <ul class="job-list">
-                <li><span data-ka="გაყიდვებში გამოცდილება 1 წელი+" data-en="1+ years sales experience">გაყიდვებში გამოცდილება 1 წელი+</span></li>
-                <li><span data-ka="კომუნიკაბელურობა და დარწმუნების უნარი" data-en="Strong communication and persuasion skills">კომუნიკაბელურობა და დარწმუნების უნარი</span></li>
-                <li><span data-ka="ქართული — C2, ინგლისური — B2+" data-en="Georgian C2, English B2+">ქართული — C2, ინგლისური — B2+</span></li>
-                <li><span data-ka="უძრავი ქონების სექტორში გამოცდილება სასურველია" data-en="Real estate experience preferred">უძრავი ქონების სექტორში გამოცდილება სასურველია</span></li>
-              </ul>
-            </div>
-          </div>
+        <!-- Jobs loaded dynamically from Supabase -->
+        <div id="jobs-loading" style="text-align:center;padding:60px 0;color:#aaa">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size:1.8rem"></i>
         </div>
-
-        <!-- Job 2 — Marketing Manager -->
-        <div class="job-card reveal" style="--delay:0.08s">
-          <div class="job-card-top">
-            <div class="job-title-wrap">
-              <div class="job-dept" data-ka="მარკეტინგი" data-en="Marketing">მარკეტინგი</div>
-              <div class="job-title" data-ka="მარკეტინგის მენეჯერი" data-en="Marketing Manager">მარკეტინგის მენეჯერი</div>
-              <div class="job-tags">
-                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი" data-en="Tbilisi">თბილისი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 2+ წ." data-en="2+ yrs experience">გამოცდილება 2+ წ.</span></span>
-              </div>
-            </div>
-            <button class="btn-primary job-apply-btn" onclick="openModal('მარკეტინგის მენეჯერი', 'Marketing Manager')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
-          </div>
-          <div class="job-divider"></div>
-          <div class="job-body">
-            <div>
-              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
-              <ul class="job-list">
-                <li><span data-ka="ციფრული მარკეტინგის სტრატეგიის შემუშავება" data-en="Developing digital marketing strategy">ციფრული მარკეტინგის სტრატეგიის შემუშავება</span></li>
-                <li><span data-ka="სოციალური მედია და კონტენტ მართვა" data-en="Social media and content management">სოციალური მედია და კონტენტ მართვა</span></li>
-                <li><span data-ka="ლიდების გენერაცია და კამპანიების მართვა" data-en="Lead generation and campaign management">ლიდების გენერაცია და კამპანიების მართვა</span></li>
-                <li><span data-ka="ბრენდის ვიზუალური კომუნიკაცია" data-en="Brand visual communication">ბრენდის ვიზუალური კომუნიკაცია</span></li>
-              </ul>
-            </div>
-            <div>
-              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
-              <ul class="job-list">
-                <li><span data-ka="მარკეტინგში გამოცდილება 2+ წელი" data-en="2+ years marketing experience">მარკეტინგში გამოცდილება 2+ წელი</span></li>
-                <li><span data-ka="Google Ads, Meta Ads-ის ცოდნა" data-en="Knowledge of Google Ads, Meta Ads">Google Ads, Meta Ads-ის ცოდნა</span></li>
-                <li><span data-ka="კრეატიული და ანალიტიკური უნარები" data-en="Creative and analytical skills">კრეატიული და ანალიტიკური უნარები</span></li>
-                <li><span data-ka="Canva / Adobe Suite ცოდნა სასურველია" data-en="Canva / Adobe Suite knowledge preferred">Canva / Adobe Suite ცოდნა სასურველია</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <!-- Job 3 — Real Estate Consultant -->
-        <div class="job-card reveal" style="--delay:0.16s">
-          <div class="job-card-top">
-            <div class="job-title-wrap">
-              <div class="job-dept" data-ka="კონსალტინგი" data-en="Consulting">კონსალტინგი</div>
-              <div class="job-title" data-ka="უძრავი ქონების კონსულტანტი" data-en="Real Estate Consultant">უძრავი ქონების კონსულტანტი</div>
-              <div class="job-tags">
-                <span class="job-tag"><i class="fa-solid fa-location-dot"></i> <span data-ka="ბათუმი" data-en="Batumi">ბათუმი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-clock"></i> <span data-ka="სრული განაკვეთი" data-en="Full-time">სრული განაკვეთი</span></span>
-                <span class="job-tag"><i class="fa-solid fa-briefcase"></i> <span data-ka="გამოცდილება 2+ წ." data-en="2+ yrs experience">გამოცდილება 2+ წ.</span></span>
-              </div>
-            </div>
-            <button class="btn-primary job-apply-btn" onclick="openModal('უძრავი ქონების კონსულტანტი', 'Real Estate Consultant')" data-ka="განაცხადის გაგზავნა" data-en="Apply Now">განაცხადის გაგზავნა</button>
-          </div>
-          <div class="job-divider"></div>
-          <div class="job-body">
-            <div>
-              <div class="job-section-title" data-ka="მოვალეობები" data-en="Responsibilities">მოვალეობები</div>
-              <ul class="job-list">
-                <li><span data-ka="კლიენტების ბინების შეძენაში კონსულტაცია" data-en="Advising clients on property purchases">კლიენტების ბინების შეძენაში კონსულტაცია</span></li>
-                <li><span data-ka="ბათუმის ბაზრის ანალიზი და ანგარიშები" data-en="Batumi market analysis and reporting">ბათუმის ბაზრის ანალიზი და ანგარიშები</span></li>
-                <li><span data-ka="ინვესტორებთან ურთიერთობა" data-en="Investor relations">ინვესტორებთან ურთიერთობა</span></li>
-                <li><span data-ka="ხელშეკრულებების მომზადება და ხელმოწერა" data-en="Contract preparation and signing">ხელშეკრულებების მომზადება და ხელმოწერა</span></li>
-              </ul>
-            </div>
-            <div>
-              <div class="job-section-title" data-ka="მოთხოვნები" data-en="Requirements">მოთხოვნები</div>
-              <ul class="job-list">
-                <li><span data-ka="უძრავი ქონების გამოცდილება 2+ წელი" data-en="2+ years real estate experience">უძრავი ქონების გამოცდილება 2+ წელი</span></li>
-                <li><span data-ka="ბათუმის ბაზრის ცოდნა" data-en="Knowledge of the Batumi market">ბათუმის ბაზრის ცოდნა</span></li>
-                <li><span data-ka="რუსული ან ინგლისური — B2+" data-en="Russian or English B2+">რუსული ან ინგლისური — B2+</span></li>
-                <li><span data-ka="სამართლებრივი საბაზო ცოდნა სასურველია" data-en="Basic legal knowledge preferred">სამართლებრივი საბაზო ცოდნა სასურველია</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <div id="jobs-container"></div>
 
         <!-- Open application CTA -->
         <div class="open-apply reveal" style="--delay:0.1s">
@@ -587,6 +483,83 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
   })();
+
+  /* ── Load Jobs from Supabase ─────────────────── */
+  const _db = supabase.createClient(
+    'https://mjxndlvtzjqqjltofqbv.supabase.co',
+    'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6'
+  );
+
+  function _parseLines(text) {
+    return (text || '').split('\n').map(l => l.replace(/^[•\-\*]\s*/, '').trim()).filter(Boolean);
+  }
+
+  function _renderJobCard(j, idx) {
+    const lang = localStorage.getItem('lang') || 'ka';
+    const title = lang === 'ka' ? (j.title_ka || j.title_en || '') : (j.title_en || j.title_ka || '');
+    const resp  = _parseLines(j.responsibilities_ka);
+    const req   = _parseLines(j.requirements_ka);
+    const applyLabel = lang === 'ka' ? 'განაცხადის გაგზავნა' : 'Apply Now';
+    const respLabel  = lang === 'ka' ? 'მოვალეობები' : 'Responsibilities';
+    const reqLabel   = lang === 'ka' ? 'მოთხოვნები'  : 'Requirements';
+    return `
+      <div class="job-card visible" style="animation:none;opacity:1">
+        <div class="job-card-top">
+          <div class="job-title-wrap">
+            <div class="job-dept">${j.department || ''}</div>
+            <div class="job-title">${title}</div>
+            <div class="job-tags">
+              ${j.location   ? `<span class="job-tag"><i class="fa-solid fa-location-dot"></i> ${j.location}</span>` : ''}
+              ${j.type       ? `<span class="job-tag"><i class="fa-solid fa-clock"></i> ${j.type}</span>` : ''}
+              ${j.experience ? `<span class="job-tag"><i class="fa-solid fa-briefcase"></i> ${j.experience}</span>` : ''}
+            </div>
+          </div>
+          <button class="btn-primary job-apply-btn"
+            onclick="openModal(${JSON.stringify(j.title_ka||'')}, ${JSON.stringify(j.title_en||j.title_ka||'')})">
+            ${applyLabel}
+          </button>
+        </div>
+        ${(resp.length || req.length) ? `
+        <div class="job-divider"></div>
+        <div class="job-body">
+          ${resp.length ? `<div>
+            <div class="job-section-title">${respLabel}</div>
+            <ul class="job-list">${resp.map(l => `<li><span>${l}</span></li>`).join('')}</ul>
+          </div>` : ''}
+          ${req.length ? `<div>
+            <div class="job-section-title">${reqLabel}</div>
+            <ul class="job-list">${req.map(l => `<li><span>${l}</span></li>`).join('')}</ul>
+          </div>` : ''}
+        </div>` : ''}
+      </div>`;
+  }
+
+  async function _loadJobs() {
+    const container  = document.getElementById('jobs-container');
+    const loading    = document.getElementById('jobs-loading');
+    const countEl    = document.getElementById('jobs-count');
+    const lang = localStorage.getItem('lang') || 'ka';
+    try {
+      const { data, error } = await _db.from('jobs').select('*')
+        .eq('status', 'active').order('created_at', { ascending: false });
+      if (loading) loading.style.display = 'none';
+      const jobs = (!error && data && data.length) ? data : [];
+      const n = jobs.length;
+      if (countEl) countEl.textContent = lang === 'ka' ? `${n} ვაკანსია` : `${n} Position${n !== 1 ? 's' : ''}`;
+      if (!n) {
+        container.innerHTML = `<div style="text-align:center;padding:60px 0;color:#aaa;font-size:1rem">
+          ${lang === 'ka' ? 'ამჟამად ღია ვაკანსია არ არის.' : 'No open positions at the moment.'}
+        </div>`;
+        return;
+      }
+      container.innerHTML = jobs.map((j, i) => _renderJobCard(j, i)).join('');
+    } catch (e) {
+      console.warn('jobs load error', e);
+      if (loading) loading.style.display = 'none';
+      if (countEl) countEl.textContent = '';
+    }
+  }
+  _loadJobs();
 
   let _pendingRole = '';
   function openModal(kaRole, enRole) {
