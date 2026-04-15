@@ -262,8 +262,9 @@ main { counter-reset: section-num; }
 }
 
 .nav-link {
+  font-family: 'BPGMtavruli', 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-secondary);
   position: relative;
   padding: 4px 0;
@@ -427,28 +428,28 @@ main { counter-reset: section-num; }
   align-items: center;
 }
 .line-1 {
-  font-family: 'BPGMtavruli', 'FiraGO', 'Noto Sans Georgian', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(24px, 3vw, 42px);
-  font-weight: 700;
+  font-weight: 500;
   color: rgba(255,255,255,0.65);
   line-height: 1.1;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 .line-2 {
-  font-family: 'BPGMtavruli', 'FiraGO', 'Noto Sans Georgian', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(40px, 6vw, 80px);
-  font-weight: 700;
+  font-weight: 800;
   color: #ffffff;
   line-height: 1.1;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
 }
 .line-3 {
-  font-family: 'BPGMtavruli', 'FiraGO', 'Noto Sans Georgian', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(40px, 6vw, 80px);
-  font-weight: 700;
+  font-weight: 800;
   color: #3DBE6C;
   line-height: 1.1;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
 }
 
 .hero-subline {
