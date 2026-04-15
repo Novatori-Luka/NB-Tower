@@ -610,6 +610,15 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     setTimeout(() => toast.remove(), 3000);
   }
 
+  /* ── SERVICES ACCORDION ─────────────────────── */
+  document.querySelectorAll('.svc-item').forEach(item => {
+    item.querySelector('.svc-item-top').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.svc-item.open').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();
 
