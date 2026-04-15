@@ -262,9 +262,8 @@ main { counter-reset: section-num; }
 }
 
 .nav-link {
-  font-family: 'BPGMtavruli', 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--text-secondary);
   position: relative;
   padding: 4px 0;
