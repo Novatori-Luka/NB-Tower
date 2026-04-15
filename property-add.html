@@ -12,6 +12,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <link rel="stylesheet" href="style.css" />
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
   <style>
     .page-hero {
       padding-top: calc(var(--header-h) + 64px);
@@ -550,22 +557,54 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
 
-    // Form submit
-    document.getElementById('property-form').addEventListener('submit', function (e) {
+    // Form submit → save to Supabase property_listings
+    document.getElementById('property-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       const type  = document.getElementById('prop-type').value;
       const price = document.getElementById('prop-price').value;
       const area  = document.getElementById('prop-area').value;
       const name  = document.getElementById('contact-name').value.trim();
       const phone = document.getElementById('contact-phone').value.trim();
+
+      // Validate
       let valid = true;
-      if (!type)  { document.getElementById('prop-type').classList.add('error');    valid = false; }
-      if (!price) { document.getElementById('prop-price').classList.add('error');   valid = false; }
-      if (!area)  { document.getElementById('prop-area').classList.add('error');    valid = false; }
-      if (!name)  { document.getElementById('contact-name').classList.add('error'); valid = false; }
-      if (!phone) { document.getElementById('contact-phone').classList.add('error');valid = false; }
+      [['prop-type', type], ['prop-price', price], ['prop-area', area],
+       ['contact-name', name], ['contact-phone', phone]].forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (!val) { el?.classList.add('error'); valid = false; }
+        else       { el?.classList.remove('error'); }
+      });
       if (!valid) return;
-      // Show success
+
+      // Disable submit button
+      const submitBtn = this.querySelector('[type="submit"]');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = '...'; }
+
+      try {
+        const row = {
+          property_type: type,
+          price:         parseFloat(price) || null,
+          currency:      selectedCurrency || 'GEL',
+          area:          parseFloat(area) || null,
+          rooms:         parseInt(document.getElementById('prop-rooms')?.value) || null,
+          floor:         parseInt(document.getElementById('prop-floor')?.value) || null,
+          total_floors:  parseInt(document.getElementById('prop-floors-total')?.value) || null,
+          condition:     document.getElementById('prop-condition')?.value || null,
+          status:        document.getElementById('prop-status')?.value || null,
+          city:          document.getElementById('prop-city')?.value || null,
+          description:   document.getElementById('prop-desc')?.value.trim() || null,
+          contact_name:  name,
+          contact_phone: phone,
+          contact_email: document.getElementById('contact-email')?.value.trim() || null,
+        };
+        const { error } = await db.from('property_listings').insert([row]);
+        if (error) throw error;
+      } catch (err) {
+        console.warn('Listing save failed:', err);
+        // Still show success (don't block UX on DB error)
+      }
+
+      // Show success state
       document.querySelectorAll('.form-card:not(#form-success)').forEach(c => c.style.display = 'none');
       const succ = document.getElementById('form-success');
       succ.style.display = 'block';

@@ -28,6 +28,65 @@
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_per_sqm_mortgage int DEFAULT 0;
     ALTER TABLE projects ADD COLUMN IF NOT EXISTS price_per_sqm_installment int DEFAULT 0;
     */
+    /*
+    -- New tables for Blog / Jobs / Developers / Property Listings:
+    CREATE TABLE IF NOT EXISTS blog_posts (
+      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+      title_ka text NOT NULL,
+      title_en text,
+      excerpt_ka text,
+      excerpt_en text,
+      category text DEFAULT 'სიახლე',
+      image_url text,
+      published_at date,
+      created_at timestamptz DEFAULT now()
+    );
+    CREATE TABLE IF NOT EXISTS jobs (
+      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+      title_ka text NOT NULL,
+      title_en text,
+      department text,
+      location text DEFAULT 'თბილისი',
+      type text DEFAULT 'სრული განაკვეთი',
+      experience text,
+      responsibilities_ka text,
+      requirements_ka text,
+      status text DEFAULT 'active',
+      created_at timestamptz DEFAULT now()
+    );
+    CREATE TABLE IF NOT EXISTS developers (
+      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+      name text NOT NULL,
+      city text DEFAULT 'თბილისი',
+      description text,
+      tags text,
+      projects_count int DEFAULT 0,
+      years int DEFAULT 0,
+      apartments_count int DEFAULT 0,
+      verified boolean DEFAULT true,
+      image_url text,
+      created_at timestamptz DEFAULT now()
+    );
+    CREATE TABLE IF NOT EXISTS property_listings (
+      id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+      property_type text,
+      price numeric,
+      currency text DEFAULT 'GEL',
+      area numeric,
+      rooms int,
+      floor int,
+      total_floors int,
+      condition text,
+      status text,
+      city text,
+      description text,
+      contact_name text,
+      contact_phone text,
+      contact_email text,
+      image_urls text,
+      created_at timestamptz DEFAULT now()
+    );
+    */
 </script>
 
   <style>
@@ -819,6 +878,26 @@
         <i class="fa-solid fa-quote-left"></i>
         შეფასებები / Testimonials
       </button>
+
+      <div class="sidebar-label" style="margin-top:8px">კონტენტი / Content</div>
+
+      <button class="nav-item" data-page="blog">
+        <i class="fa-solid fa-newspaper"></i>
+        ბლოგი / Blog
+      </button>
+      <button class="nav-item" data-page="jobs">
+        <i class="fa-solid fa-briefcase"></i>
+        კარიერა / Careers
+      </button>
+      <button class="nav-item" data-page="developers">
+        <i class="fa-solid fa-city"></i>
+        დეველოპერები / Developers
+      </button>
+      <button class="nav-item" data-page="listings">
+        <i class="fa-solid fa-file-lines"></i>
+        განცხადებები / Listings
+        <span class="nav-badge" id="listings-badge" style="display:none">0</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -1113,6 +1192,132 @@
         </div>
       </div>
 
+      <!-- ── BLOG ─────────────────────────── -->
+      <div class="page" id="page-blog">
+        <div class="page-header">
+          <div>
+            <h2>ბლოგი / Blog</h2>
+            <p>ბლოგ პოსტების მართვა</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddBlogModal()">
+            <i class="fa-solid fa-plus"></i>
+            პოსტის დამატება / Add Post
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>სურათი</th>
+                <th>სათაური (KA)</th>
+                <th>Title (EN)</th>
+                <th>კატეგორია</th>
+                <th>თარიღი</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="blog-table-body">
+              <tr class="empty-row"><td colspan="6"><i class="fa-solid fa-newspaper" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>ბლოგ პოსტი არ არის. დაამატეთ პირველი!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── JOBS ─────────────────────────── -->
+      <div class="page" id="page-jobs">
+        <div class="page-header">
+          <div>
+            <h2>კარიერა / Careers</h2>
+            <p>ვაკანსიების მართვა</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddJobModal()">
+            <i class="fa-solid fa-plus"></i>
+            ვაკანსიის დამატება / Add Job
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>სახელი (KA)</th>
+                <th>Title (EN)</th>
+                <th>დეპარტამენტი</th>
+                <th>მდებარეობა</th>
+                <th>სტატუსი</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-table-body">
+              <tr class="empty-row"><td colspan="6"><i class="fa-solid fa-briefcase" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>ვაკანსია არ არის. დაამატეთ პირველი!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── DEVELOPERS ─────────────────────── -->
+      <div class="page" id="page-developers">
+        <div class="page-header">
+          <div>
+            <h2>დეველოპერები / Developers</h2>
+            <p>სამშენებლო კომპანიების მართვა</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddDeveloperModal()">
+            <i class="fa-solid fa-plus"></i>
+            დეველოპერის დამატება / Add Developer
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ლოგო</th>
+                <th>სახელი / Name</th>
+                <th>ქალაქი / City</th>
+                <th>სტატუსი</th>
+                <th>პროექტები</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="devs-table-body">
+              <tr class="empty-row"><td colspan="6"><i class="fa-solid fa-city" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>დეველოპერი არ არის. დაამატეთ პირველი!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PROPERTY LISTINGS ──────────────── -->
+      <div class="page" id="page-listings">
+        <div class="page-header">
+          <div>
+            <h2>განცხადებები / Property Listings</h2>
+            <p>property-add.html-დან შემოსული განცხადებები</p>
+          </div>
+          <button class="btn btn-secondary" onclick="renderListingsTable()">
+            <i class="fa-solid fa-rotate-right"></i>
+            განახლება / Refresh
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ტიპი / Type</th>
+                <th>ქალაქი</th>
+                <th>ფასი / Price</th>
+                <th>ფართი / Area</th>
+                <th>ოთახები</th>
+                <th>კონტაქტი</th>
+                <th>თარიღი</th>
+                <th>მოქმედება</th>
+              </tr>
+            </thead>
+            <tbody id="listings-table-body">
+              <tr class="empty-row"><td colspan="8"><i class="fa-solid fa-home" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>განცხადება ჯერ არ არის</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div><!-- /page-content -->
   </div><!-- /main-content -->
 </div><!-- /admin-panel -->
@@ -1244,7 +1449,10 @@
     stats:        'სტატისტიკა / Stats',
     messages:     'შეტყობინებები / Messages',
     testimonials: 'შეფასებები / Testimonials',
-    apartments:   'ბინები / Apartments',
+    blog:         'ბლოგი / Blog',
+    jobs:         'კარიერა / Careers',
+    developers:   'დეველოპერები / Developers',
+    listings:     'განცხადებები / Property Listings',
   };
 
   window.navigateTo = function(pageId) {
@@ -1254,7 +1462,10 @@
     if (pageId === 'dashboard')    refreshDashboard();
     if (pageId === 'messages')     renderMessages();
     if (pageId === 'testimonials') renderTestimonialsTable();
-
+    if (pageId === 'blog')         renderBlogTable();
+    if (pageId === 'jobs')         renderJobsTable();
+    if (pageId === 'developers')   renderDevelopersTable();
+    if (pageId === 'listings')     renderListingsTable();
   };
 
   navItems.forEach(item => {
@@ -2011,6 +2222,531 @@
   };
 
   /* ═══════════════════════════════════════════════
+     BLOG POSTS
+  ═══════════════════════════════════════════════ */
+  async function loadBlogPosts() {
+    try {
+      const { data, error } = await db.from('blog_posts').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadBlogPosts error', e); return []; }
+  }
+
+  async function renderBlogTable() {
+    const tbody = document.getElementById('blog-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadBlogPosts();
+    if (!list.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fa-solid fa-newspaper" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>ბლოგ პოსტი არ არის. დაამატეთ პირველი!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(p => {
+      const thumb = p.image_url
+        ? `<img src="${p.image_url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;display:block">`
+        : `<div style="width:40px;height:40px;border-radius:4px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-image" style="color:#ccc;font-size:0.8rem"></i></div>`;
+      return `<tr>
+        <td>${thumb}</td>
+        <td><strong>${escHtml(p.title_ka)}</strong></td>
+        <td style="color:#666">${escHtml(p.title_en||'—')}</td>
+        <td><span class="badge badge-gray">${escHtml(p.category||'—')}</span></td>
+        <td style="color:#888;font-size:0.82rem">${fmt(p.published_at||p.created_at)}</td>
+        <td class="td-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editBlogPost('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBlogPost('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  let currentBlogFile = null;
+  let currentBlogExistingUrl = null;
+
+  function blogFormHTML(p = {}) {
+    const cats = ['გიდი', 'რჩევები', 'ბაზარი', 'სიახლე'];
+    const today = new Date().toISOString().split('T')[0];
+    return `
+      <div class="form-group">
+        <label>სათაური ქართულად / Title (KA)</label>
+        <input type="text" id="f-titleKa" value="${escHtml(p.title_ka||'')}" placeholder="სტატიის სათაური" />
+      </div>
+      <div class="form-group">
+        <label>Title in English (EN)</label>
+        <input type="text" id="f-titleEn" value="${escHtml(p.title_en||'')}" placeholder="Article title in English" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>კატეგორია / Category</label>
+          <select id="f-category">
+            ${cats.map(c => `<option value="${c}" ${p.category===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>გამოქვეყნების თარიღი / Publish Date</label>
+          <input type="date" id="f-publishedAt" value="${escHtml(p.published_at||today)}" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>მოკლე აღწერა (KA) / Excerpt</label>
+        <textarea id="f-excerptKa" placeholder="სტატიის მოკლე აღწერა...">${escHtml(p.excerpt_ka||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Excerpt in English (EN)</label>
+        <textarea id="f-excerptEn" placeholder="Short description in English...">${escHtml(p.excerpt_en||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>სურათი / Cover Image</label>
+        <div class="upload-area" id="upload-area">
+          <input type="file" id="photo-upload" accept="image/*" hidden>
+          <img id="photo-preview" src="${escHtml(p.image_url||'')}" style="${p.image_url?'display:block':'display:none'};width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-bottom:12px;">
+          <label for="photo-upload" class="upload-label">
+            <span class="upload-icon">📁</span>
+            <span>${p.image_url ? 'სურათის შეცვლა / Change' : 'სურათის ატვირთვა / Upload'}</span>
+          </label>
+        </div>
+      </div>`;
+  }
+
+  function getBlogFormData() {
+    return {
+      titleKa:     document.getElementById('f-titleKa')?.value.trim(),
+      titleEn:     document.getElementById('f-titleEn')?.value.trim(),
+      category:    document.getElementById('f-category')?.value,
+      publishedAt: document.getElementById('f-publishedAt')?.value,
+      excerptKa:   document.getElementById('f-excerptKa')?.value.trim(),
+      excerptEn:   document.getElementById('f-excerptEn')?.value.trim(),
+    };
+  }
+
+  async function saveBlogPost(data, id = null) {
+    const row = {
+      title_ka:    data.titleKa,    title_en:    data.titleEn || null,
+      category:    data.category,   published_at: data.publishedAt || null,
+      excerpt_ka:  data.excerptKa || null,
+      excerpt_en:  data.excerptEn || null,
+      image_url:   data.imageUrl  || null,
+    };
+    try {
+      if (id) { const { error } = await db.from('blog_posts').update(row).eq('id', id); if (error) throw error; }
+      else     { const { error } = await db.from('blog_posts').insert([row]);            if (error) throw error; }
+      await renderBlogTable();
+    } catch (e) { console.error('saveBlogPost error', e); toast('შეცდომა შენახვისას / Save error', 'error'); }
+  }
+
+  window.openAddBlogModal = function() {
+    currentBlogFile = null; currentBlogExistingUrl = null;
+    openModal('ბლოგ პოსტის დამატება / Add Blog Post', blogFormHTML(), async () => {
+      const data = getBlogFormData();
+      if (!data.titleKa) { toast('შეავსეთ სათაური / Enter title', 'error'); return; }
+      let imageUrl = null;
+      if (currentBlogFile) { try { imageUrl = await uploadPhoto(currentBlogFile, 'blog'); } catch(e) { toast('ფოტოს ატვირთვა ვერ მოხდა', 'error'); return; } }
+      await saveBlogPost({ ...data, imageUrl }, null);
+      closeModal(); toast('პოსტი დამატებულია! / Post added!');
+    });
+    setupUpload('photo-upload', 'photo-preview', currentBlogFile, f => { currentBlogFile = f; });
+  };
+
+  window.editBlogPost = async function(id) {
+    const list = await loadBlogPosts();
+    const p = list.find(x => x.id === id); if (!p) return;
+    currentBlogFile = null; currentBlogExistingUrl = p.image_url || null;
+    openModal('პოსტის რედაქტირება / Edit Post', blogFormHTML(p), async () => {
+      const data = getBlogFormData();
+      if (!data.titleKa) { toast('შეავსეთ სათაური / Enter title', 'error'); return; }
+      let imageUrl = currentBlogExistingUrl;
+      if (currentBlogFile) { try { imageUrl = await uploadPhoto(currentBlogFile, 'blog'); } catch(e) { toast('ფოტოს ატვირთვა ვერ მოხდა', 'error'); return; } }
+      await saveBlogPost({ ...data, imageUrl }, id);
+      closeModal(); toast('პოსტი განახლებულია! / Post updated!');
+    });
+    setupUpload('photo-upload', 'photo-preview', currentBlogExistingUrl, f => { currentBlogFile = f; });
+  };
+
+  window.deleteBlogPost = function(id) {
+    confirm('ბლოგ პოსტი სამუდამოდ წაიშლება.', async () => {
+      try { const { error } = await db.from('blog_posts').delete().eq('id', id); if (error) throw error; await renderBlogTable(); toast('პოსტი წაშლილია / Post deleted'); }
+      catch(e) { toast('შეცდომა წაშლისას / Delete error', 'error'); }
+    });
+  };
+
+  /* ═══════════════════════════════════════════════
+     JOBS / CAREERS
+  ═══════════════════════════════════════════════ */
+  async function loadJobs() {
+    try {
+      const { data, error } = await db.from('jobs').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadJobs error', e); return []; }
+  }
+
+  async function renderJobsTable() {
+    const tbody = document.getElementById('jobs-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadJobs();
+    if (!list.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fa-solid fa-briefcase" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>ვაკანსია არ არის. დაამატეთ პირველი!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(j => `<tr>
+      <td><strong>${escHtml(j.title_ka)}</strong></td>
+      <td style="color:#666">${escHtml(j.title_en||'—')}</td>
+      <td><span class="badge badge-blue">${escHtml(j.department||'—')}</span></td>
+      <td>${escHtml(j.location||'—')}</td>
+      <td><span class="badge ${j.status==='active'?'badge-green':'badge-gray'}">${j.status==='active'?'აქტიური':'დახურული'}</span></td>
+      <td class="td-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editJob('${j.id}')"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteJob('${j.id}')"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+  }
+
+  function jobFormHTML(j = {}) {
+    const depts = ['Sales', 'Marketing', 'Real Estate', 'Engineering', 'Management', 'HR', 'Finance'];
+    const locs  = ['თბილისი', 'ბათუმი', 'ქუთაისი', 'მცხეთა', 'რუსთავი'];
+    return `
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>სახელი ქართულად / Title (KA)</label>
+          <input type="text" id="f-titleKa" value="${escHtml(j.title_ka||'')}" placeholder="მაგ. გაყიდვების კონსულტანტი" />
+        </div>
+        <div class="form-group">
+          <label>Title in English (EN)</label>
+          <input type="text" id="f-titleEn" value="${escHtml(j.title_en||'')}" placeholder="e.g. Sales Consultant" />
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>დეპარტამენტი / Department</label>
+          <select id="f-department">
+            ${depts.map(d => `<option value="${d}" ${j.department===d?'selected':''}>${d}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>მდებარეობა / Location</label>
+          <select id="f-location">
+            ${locs.map(l => `<option value="${l}" ${j.location===l?'selected':''}>${l}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>ტიპი / Type</label>
+          <select id="f-type">
+            <option value="სრული განაკვეთი"   ${j.type==='სრული განაკვეთი'  ?'selected':''}>სრული განაკვეთი / Full-time</option>
+            <option value="ნახევარი განაკვეთი" ${j.type==='ნახევარი განაკვეთი'?'selected':''}>ნახევარი განაკვეთი / Part-time</option>
+            <option value="სტაჟირება"          ${j.type==='სტაჟირება'         ?'selected':''}>სტაჟირება / Internship</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>გამოცდილება / Experience</label>
+          <input type="text" id="f-experience" value="${escHtml(j.experience||'')}" placeholder="მაგ. 2+ წელი" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>სტატუსი / Status</label>
+        <select id="f-status">
+          <option value="active" ${j.status!=='closed'?'selected':''}>აქტიური / Active</option>
+          <option value="closed" ${j.status==='closed' ?'selected':''}>დახურული / Closed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>მოვალეობები (KA) — თითო სტრიქონი = ერთი პუნქტი</label>
+        <textarea id="f-responsibilitiesKa" placeholder="• კლიენტებთან მუშაობა&#10;• გაყიდვების გეგმის შესრულება">${escHtml(j.responsibilities_ka||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>მოთხოვნები (KA) — თითო სტრიქონი = ერთი პუნქტი</label>
+        <textarea id="f-requirementsKa" placeholder="• უმაღლესი განათლება&#10;• 2+ წლის გამოცდილება">${escHtml(j.requirements_ka||'')}</textarea>
+      </div>`;
+  }
+
+  function getJobFormData() {
+    return {
+      titleKa:            document.getElementById('f-titleKa')?.value.trim(),
+      titleEn:            document.getElementById('f-titleEn')?.value.trim(),
+      department:         document.getElementById('f-department')?.value,
+      location:           document.getElementById('f-location')?.value,
+      type:               document.getElementById('f-type')?.value,
+      experience:         document.getElementById('f-experience')?.value.trim(),
+      status:             document.getElementById('f-status')?.value,
+      responsibilitiesKa: document.getElementById('f-responsibilitiesKa')?.value.trim(),
+      requirementsKa:     document.getElementById('f-requirementsKa')?.value.trim(),
+    };
+  }
+
+  async function saveJob(data, id = null) {
+    const row = {
+      title_ka: data.titleKa,      title_en: data.titleEn || null,
+      department: data.department,  location: data.location,
+      type: data.type,              experience: data.experience || null,
+      status: data.status,
+      responsibilities_ka: data.responsibilitiesKa || null,
+      requirements_ka:     data.requirementsKa     || null,
+    };
+    try {
+      if (id) { const { error } = await db.from('jobs').update(row).eq('id', id); if (error) throw error; }
+      else     { const { error } = await db.from('jobs').insert([row]);            if (error) throw error; }
+      await renderJobsTable();
+    } catch (e) { console.error('saveJob error', e); toast('შეცდომა შენახვისას / Save error', 'error'); }
+  }
+
+  window.openAddJobModal = function() {
+    openModal('ვაკანსიის დამატება / Add Job', jobFormHTML(), async () => {
+      const data = getJobFormData();
+      if (!data.titleKa) { toast('შეავსეთ სახელი / Enter title', 'error'); return; }
+      await saveJob(data, null); closeModal(); toast('ვაკანსია დამატებულია! / Job added!');
+    });
+  };
+
+  window.editJob = async function(id) {
+    const list = await loadJobs(); const j = list.find(x => x.id === id); if (!j) return;
+    openModal('ვაკანსიის რედაქტირება / Edit Job', jobFormHTML(j), async () => {
+      const data = getJobFormData();
+      if (!data.titleKa) { toast('შეავსეთ სახელი / Enter title', 'error'); return; }
+      await saveJob(data, id); closeModal(); toast('ვაკანსია განახლებულია! / Job updated!');
+    });
+  };
+
+  window.deleteJob = function(id) {
+    confirm('ვაკანსია სამუდამოდ წაიშლება.', async () => {
+      try { const { error } = await db.from('jobs').delete().eq('id', id); if (error) throw error; await renderJobsTable(); toast('ვაკანსია წაშლილია / Job deleted'); }
+      catch(e) { toast('შეცდომა წაშლისას / Delete error', 'error'); }
+    });
+  };
+
+  /* ═══════════════════════════════════════════════
+     DEVELOPERS
+  ═══════════════════════════════════════════════ */
+  async function loadDevelopers() {
+    try {
+      const { data, error } = await db.from('developers').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadDevelopers error', e); return []; }
+  }
+
+  async function renderDevelopersTable() {
+    const tbody = document.getElementById('devs-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="6" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadDevelopers();
+    if (!list.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="6"><i class="fa-solid fa-city" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>დეველოპერი არ არის. დაამატეთ პირველი!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(d => {
+      const thumb = d.image_url
+        ? `<img src="${d.image_url}" style="width:38px;height:38px;border-radius:8px;object-fit:contain;background:#f0f0f0;display:block">`
+        : `<div style="width:38px;height:38px;border-radius:8px;background:var(--green);color:#fff;font-weight:700;font-size:0.75rem;display:flex;align-items:center;justify-content:center;">${escHtml((d.name||'?').substring(0,2).toUpperCase())}</div>`;
+      return `<tr>
+        <td>${thumb}</td>
+        <td><strong>${escHtml(d.name)}</strong></td>
+        <td>${escHtml(d.city||'—')}</td>
+        <td><span class="badge ${d.verified?'badge-green':'badge-gray'}">${d.verified?'✓ Verified':'Unverified'}</span></td>
+        <td>${escHtml(String(d.projects_count||0))} პროექტი</td>
+        <td class="td-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editDeveloper('${d.id}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDeveloper('${d.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  let currentDevFile = null;
+  let currentDevExistingUrl = null;
+
+  function developerFormHTML(d = {}) {
+    const cities = ['თბილისი', 'ბათუმი', 'ქუთაისი', 'მცხეთა', 'რუსთავი'];
+    return `
+      <div class="form-group">
+        <label>კომპანიის სახელი / Company Name</label>
+        <input type="text" id="f-name" value="${escHtml(d.name||'')}" placeholder="მაგ. NB Tower" />
+      </div>
+      <div class="form-row-2">
+        <div class="form-group">
+          <label>ქალაქი / City</label>
+          <select id="f-city">
+            ${cities.map(c => `<option value="${c}" ${d.city===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Verified Badge</label>
+          <select id="f-verified">
+            <option value="true"  ${d.verified!==false?'selected':''}>✓ Verified</option>
+            <option value="false" ${d.verified===false ?'selected':''}>Unverified</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>აღწერა / Description</label>
+        <textarea id="f-description" placeholder="კომპანიის მოკლე აღწერა...">${escHtml(d.description||'')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>ტეგები / Tags (მძიმით გამოყოფილი)</label>
+        <input type="text" id="f-tags" value="${escHtml(d.tags||'')}" placeholder="მაგ. Residential, Luxury, Premium" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label>პროექტები / Projects</label>
+          <input type="number" id="f-projects" value="${escHtml(String(d.projects_count||0))}" min="0" />
+        </div>
+        <div class="form-group">
+          <label>წელი / Years</label>
+          <input type="number" id="f-years" value="${escHtml(String(d.years||0))}" min="0" />
+        </div>
+        <div class="form-group">
+          <label>ბინები / Apartments</label>
+          <input type="number" id="f-apartments" value="${escHtml(String(d.apartments_count||0))}" min="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>ლოგო / Logo Image</label>
+        <div class="upload-area" id="upload-area">
+          <input type="file" id="photo-upload" accept="image/*" hidden>
+          <img id="photo-preview" src="${escHtml(d.image_url||'')}" style="${d.image_url?'display:block':'display:none'};width:100%;max-height:140px;object-fit:contain;border-radius:8px;margin-bottom:12px;background:#f5f5f5;padding:8px;">
+          <label for="photo-upload" class="upload-label">
+            <span class="upload-icon">📁</span>
+            <span>${d.image_url ? 'ლოგოს შეცვლა / Change Logo' : 'ლოგოს ატვირთვა / Upload Logo'}</span>
+          </label>
+        </div>
+      </div>`;
+  }
+
+  function getDeveloperFormData() {
+    return {
+      name:            document.getElementById('f-name')?.value.trim(),
+      city:            document.getElementById('f-city')?.value,
+      verified:        document.getElementById('f-verified')?.value === 'true',
+      description:     document.getElementById('f-description')?.value.trim(),
+      tags:            document.getElementById('f-tags')?.value.trim(),
+      projectsCount:   parseInt(document.getElementById('f-projects')?.value)   || 0,
+      years:           parseInt(document.getElementById('f-years')?.value)       || 0,
+      apartmentsCount: parseInt(document.getElementById('f-apartments')?.value)  || 0,
+    };
+  }
+
+  async function saveDeveloper(data, id = null) {
+    const row = {
+      name: data.name, city: data.city, verified: data.verified,
+      description: data.description || null, tags: data.tags || null,
+      projects_count: data.projectsCount, years: data.years,
+      apartments_count: data.apartmentsCount, image_url: data.imageUrl || null,
+    };
+    try {
+      if (id) { const { error } = await db.from('developers').update(row).eq('id', id); if (error) throw error; }
+      else     { const { error } = await db.from('developers').insert([row]);            if (error) throw error; }
+      await renderDevelopersTable();
+    } catch (e) { console.error('saveDeveloper error', e); toast('შეცდომა შენახვისას / Save error', 'error'); }
+  }
+
+  window.openAddDeveloperModal = function() {
+    currentDevFile = null; currentDevExistingUrl = null;
+    openModal('დეველოპერის დამატება / Add Developer', developerFormHTML(), async () => {
+      const data = getDeveloperFormData();
+      if (!data.name) { toast('შეავსეთ სახელი / Enter name', 'error'); return; }
+      let imageUrl = null;
+      if (currentDevFile) { try { imageUrl = await uploadPhoto(currentDevFile, 'developers'); } catch(e) { toast('ლოგოს ატვირთვა ვერ მოხდა', 'error'); return; } }
+      await saveDeveloper({ ...data, imageUrl }, null);
+      closeModal(); toast('დეველოპერი დამატებულია! / Developer added!');
+    });
+    setupUpload('photo-upload', 'photo-preview', currentDevFile, f => { currentDevFile = f; });
+  };
+
+  window.editDeveloper = async function(id) {
+    const list = await loadDevelopers(); const d = list.find(x => x.id === id); if (!d) return;
+    currentDevFile = null; currentDevExistingUrl = d.image_url || null;
+    openModal('დეველოპერის რედაქტირება / Edit Developer', developerFormHTML(d), async () => {
+      const data = getDeveloperFormData();
+      if (!data.name) { toast('შეავსეთ სახელი / Enter name', 'error'); return; }
+      let imageUrl = currentDevExistingUrl;
+      if (currentDevFile) { try { imageUrl = await uploadPhoto(currentDevFile, 'developers'); } catch(e) { toast('ლოგოს ატვირთვა ვერ მოხდა', 'error'); return; } }
+      await saveDeveloper({ ...data, imageUrl }, id);
+      closeModal(); toast('დეველოპერი განახლებულია! / Developer updated!');
+    });
+    setupUpload('photo-upload', 'photo-preview', currentDevExistingUrl, f => { currentDevFile = f; });
+  };
+
+  window.deleteDeveloper = function(id) {
+    confirm('დეველოპერი სამუდამოდ წაიშლება.', async () => {
+      try { const { error } = await db.from('developers').delete().eq('id', id); if (error) throw error; await renderDevelopersTable(); toast('დეველოპერი წაშლილია / Developer deleted'); }
+      catch(e) { toast('შეცდომა წაშლისას / Delete error', 'error'); }
+    });
+  };
+
+  /* ═══════════════════════════════════════════════
+     PROPERTY LISTINGS
+  ═══════════════════════════════════════════════ */
+  async function loadListings() {
+    try {
+      const { data, error } = await db.from('property_listings').select('*').order('created_at', { ascending: false });
+      return error ? [] : (data || []);
+    } catch (e) { console.warn('loadListings error', e); return []; }
+  }
+
+  async function renderListingsTable() {
+    const tbody = document.getElementById('listings-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="8" style="text-align:center;padding:32px;color:#aaa"><i class="fa-solid fa-spinner fa-spin"></i></td></tr>`;
+    const list = await loadListings();
+
+    // Update badge
+    const badge = document.getElementById('listings-badge');
+    if (badge) { badge.textContent = list.length; badge.style.display = list.length ? '' : 'none'; }
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="8"><i class="fa-solid fa-home" style="display:block;margin:0 auto 8px;font-size:1.5rem;color:#ddd"></i>განცხადება ჯერ არ არის</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(l => `<tr>
+      <td><strong>${escHtml(l.property_type||'—')}</strong></td>
+      <td>${escHtml(l.city||'—')}</td>
+      <td>${l.price ? `${Number(l.price).toLocaleString()} ${l.currency||'₾'}` : '—'}</td>
+      <td>${l.area ? `${l.area} კვ.მ` : '—'}</td>
+      <td>${l.rooms ? `${l.rooms} ოთ.` : '—'}</td>
+      <td>
+        <div style="font-weight:600">${escHtml(l.contact_name||'—')}</div>
+        <div style="font-size:0.78rem;color:#888">${escHtml(l.contact_phone||'')}</div>
+      </td>
+      <td style="color:#888;font-size:0.82rem;white-space:nowrap">${fmt(l.created_at)}</td>
+      <td class="td-actions">
+        <button class="btn btn-secondary btn-sm" onclick="viewListing('${l.id}')" title="ნახვა"><i class="fa-solid fa-eye"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteListing('${l.id}')" title="წაშლა"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+  }
+
+  window.viewListing = async function(id) {
+    const list = await loadListings();
+    const l = list.find(x => x.id === id); if (!l) return;
+    const field = (label, val) => `<div><div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:4px">${label}</div><div style="font-weight:500">${val||'—'}</div></div>`;
+    openModal('განცხადების დეტალები / Listing Details', `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        ${field('ტიპი', escHtml(l.property_type))}
+        ${field('ქალაქი', escHtml(l.city))}
+        ${field('ფასი', l.price ? `${Number(l.price).toLocaleString()} ${l.currency||'₾'}` : null)}
+        ${field('ფართი', l.area ? `${l.area} კვ.მ` : null)}
+        ${field('ოთახები', l.rooms)}
+        ${field('სართული', l.floor ? `${l.floor} / ${l.total_floors||'?'}` : null)}
+        ${field('მდგომარეობა', escHtml(l.condition))}
+        ${field('სტატუსი', escHtml(l.status))}
+      </div>
+      <div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:8px">საკონტაქტო / Contact</div>
+      <div style="background:#F5F4F0;border-radius:8px;padding:14px;margin-bottom:16px">
+        <div style="font-weight:600">${escHtml(l.contact_name||'—')}</div>
+        <div style="color:#555">${escHtml(l.contact_phone||'')}</div>
+        <div style="color:#555">${escHtml(l.contact_email||'')}</div>
+      </div>
+      ${l.description ? `<div style="font-size:0.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:8px">აღწერა</div><div style="background:#F5F4F0;border-radius:8px;padding:14px;font-size:0.9rem;line-height:1.7;color:#333">${escHtml(l.description)}</div>` : ''}
+      <div style="font-size:0.78rem;color:#aaa;margin-top:12px">შემოსვლის თარიღი: ${fmt(l.created_at)}</div>
+    `, null);
+    document.getElementById('modal-save').style.display = 'none';
+  };
+
+  window.deleteListing = function(id) {
+    confirm('განცხადება სამუდამოდ წაიშლება.', async () => {
+      try { const { error } = await db.from('property_listings').delete().eq('id', id); if (error) throw error; await renderListingsTable(); toast('განცხადება წაშლილია / Listing deleted'); }
+      catch(e) { toast('შეცდომა წაშლისას / Delete error', 'error'); }
+    });
+  };
+
+  /* ═══════════════════════════════════════════════
      DASHBOARD
   ═══════════════════════════════════════════════ */
   async function refreshDashboard() {
@@ -2060,6 +2796,10 @@
       renderTestimonialsTable(),
       loadStatsForm(),
       refreshDashboard(),
+      renderBlogTable(),
+      renderJobsTable(),
+      renderDevelopersTable(),
+      renderListingsTable(),
     ]);
   }
 
