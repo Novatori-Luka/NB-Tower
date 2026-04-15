@@ -2,6 +2,33 @@
    NB TOWER — style.css  (Light Luxury Redesign)
    ============================================= */
 
+/* ── FiraGO Font (Georgian web standard) ───── */
+@font-face {
+  font-family: 'FiraGO';
+  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'FiraGO';
+  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'FiraGO';
+  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'FiraGO';
+  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'FiraGO';
+  src: url('https://cdn.jsdelivr.net/gh/bBoxType/FiraGO@1.102/Fonts/FiraGO_Woff_1102/FiraGO-ExtraBold.woff2') format('woff2');
+  font-weight: 800; font-style: normal; font-display: swap;
+}
+
 /* 1. CSS VARIABLES */
 :root {
   --green:        #3DBE6C;
@@ -31,8 +58,8 @@
   --header-h:   72px;
   --transition: 0.28s ease;
 
-  --font-display: 'Noto Sans Georgian', 'DM Sans', sans-serif;
-  --font-body:    'Noto Sans Georgian', 'DM Sans', sans-serif;
+  --font-display: 'FiraGO', 'Noto Sans Georgian', sans-serif;
+  --font-body:    'FiraGO', 'Noto Sans Georgian', sans-serif;
 }
 
 /* 2. RESET & BASE */
@@ -400,7 +427,7 @@ main { counter-reset: section-num; }
   align-items: center;
 }
 .line-1 {
-  font-family: 'Noto Sans Georgian', 'DM Sans', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(24px, 3vw, 42px);
   font-weight: 500;
   color: rgba(255,255,255,0.65);
@@ -408,7 +435,7 @@ main { counter-reset: section-num; }
   letter-spacing: -0.01em;
 }
 .line-2 {
-  font-family: 'Noto Sans Georgian', 'DM Sans', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(40px, 6vw, 80px);
   font-weight: 800;
   color: #ffffff;
@@ -416,7 +443,7 @@ main { counter-reset: section-num; }
   letter-spacing: -0.02em;
 }
 .line-3 {
-  font-family: 'Noto Sans Georgian', 'DM Sans', sans-serif;
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
   font-size: clamp(40px, 6vw, 80px);
   font-weight: 800;
   color: #3DBE6C;
