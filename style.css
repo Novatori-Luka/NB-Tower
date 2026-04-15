@@ -305,7 +305,7 @@ main { counter-reset: section-num; }
   background: var(--bg-base);
   display: flex;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Three.js WebGL hero background */
