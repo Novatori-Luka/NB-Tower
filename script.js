@@ -563,24 +563,36 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     setTimeout(() => toast.remove(), 3000);
   }
 
-  /* ── SERVICES PINNED SCROLL ─────────────────── */
+  /* ── SERVICES PINNED PANEL SWAP ─────────────── */
   (function initServicesPin() {
     const pinSection = document.querySelector('.svc-pin-section');
     const pinWrap   = document.querySelector('.svc-pin-wrap');
-    const track     = document.querySelector('.svc-panels');
-    const viewport  = document.querySelector('.svc-panels-viewport');
-    const links     = document.querySelectorAll('.svc-nav-link');
+    const links     = Array.from(document.querySelectorAll('.svc-nav-link'));
     const panels    = Array.from(document.querySelectorAll('.svc-panel'));
-    if (!pinSection || !pinWrap || !track || !viewport || !panels.length) return;
+    const progressEl = document.getElementById('svc-progress-num');
+    if (!pinSection || !pinWrap || !panels.length) return;
 
     const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const setActive = (id) => {
-      links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
+    const getHeader = () => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+      const n = parseInt(raw, 10);
+      return Number.isFinite(n) ? n : 80;
     };
 
-    // Click-to-scroll — computes target page-Y so native smooth scroll plays nicely with the pin
+    const pad2 = (n) => (n < 10 ? '0' + n : '' + n);
+
+    let currentIdx = -1;
+    const setActive = (idx) => {
+      if (idx === currentIdx) return;
+      currentIdx = idx;
+      panels.forEach((p, i) => p.classList.toggle('is-active', i === idx));
+      links.forEach((l, i) => l.classList.toggle('active', i === idx));
+      if (progressEl) progressEl.textContent = pad2(idx + 1);
+    };
+
+    // Click a nav link → jump scroll so its panel becomes the active one
     const scrollToPanel = (idx) => {
       if (!isDesktop()) {
         const el = panels[idx];
@@ -588,19 +600,13 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
         return;
       }
       const headerH = getHeader();
-      const viewportH = window.innerHeight - headerH;
-      const trackH = track.scrollHeight;
-      const translateDist = Math.max(1, trackH - viewportH);
-      const lockDur = pinSection.offsetHeight - viewportH;
-
-      // Desired translateY for this panel so it sits near the top of the viewport
-      const panelTop = panels[idx].offsetTop - (track.getBoundingClientRect().top - viewport.getBoundingClientRect().top);
-      const desiredTranslate = Math.max(0, Math.min(translateDist, panelTop));
-      const progress = desiredTranslate / translateDist;
-
-      // Map progress back to page scroll position
+      const pinH = window.innerHeight - headerH;
+      const lockDur = pinSection.offsetHeight - pinH;
+      const N = panels.length;
+      // Put the scroll midway inside the target panel's segment so it's firmly active
+      const progress = (idx + 0.5) / N;
       const pinStartY = pinSection.getBoundingClientRect().top + window.pageYOffset - headerH;
-      const targetY = pinStartY + progress * lockDur + 1;
+      const targetY = pinStartY + progress * lockDur;
       window.scrollTo({ top: targetY, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     };
 
@@ -611,64 +617,47 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
       });
     });
 
-    const getHeader = () => {
-      const raw = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
-      const n = parseInt(raw, 10);
-      return Number.isFinite(n) ? n : 80;
+    const resize = () => {
+      if (!isDesktop()) {
+        pinSection.style.height = '';
+        // Mobile fallback: use Intersection-ish logic on scroll instead
+        return;
+      }
+      const headerH = getHeader();
+      const pinH = window.innerHeight - headerH;
+      const N = panels.length;
+      // Each panel gets one full viewport of scroll as its segment; pin-wrap itself needs pinH extra
+      pinSection.style.height = (N * pinH + pinH) + 'px';
+      update();
     };
 
     let ticking = false;
     const update = () => {
       ticking = false;
       if (!isDesktop()) {
-        // Reset transform on smaller viewports
-        track.style.transform = '';
-        // Fallback: mark active via viewport midpoint
+        // Mobile: use viewport midpoint to pick active panel
         const midY = window.innerHeight / 2;
-        let activeIdx = 0;
-        panels.forEach((p, i) => {
-          const r = p.getBoundingClientRect();
-          if (r.top <= midY) activeIdx = i;
-        });
-        setActive(panels[activeIdx].id);
+        let idx = 0;
+        for (let i = 0; i < panels.length; i++) {
+          const r = panels[i].getBoundingClientRect();
+          if (r.top <= midY) idx = i;
+        }
+        setActive(idx);
         return;
       }
 
       const headerH = getHeader();
-      const viewportH = window.innerHeight - headerH;
+      const pinH = window.innerHeight - headerH;
       const rect = pinSection.getBoundingClientRect();
-      const lockDur = pinSection.offsetHeight - viewportH;
+      const lockDur = pinSection.offsetHeight - pinH;
       if (lockDur <= 0) return;
 
-      // progress = 0 when pin-section top hits the header line; 1 when it has scrolled `lockDur` further
+      // progress 0..1 through the pin zone
       const scrolledPast = headerH - rect.top;
-      const progress = Math.max(0, Math.min(1, scrolledPast / lockDur));
-
-      const trackH = track.scrollHeight;
-      const translateDist = Math.max(0, trackH - viewportH);
-      const y = -progress * translateDist;
-      track.style.transform = `translate3d(0, ${y}px, 0)`;
-
-      // Active nav — panel whose top is at or above viewport midpoint (in translated track)
-      const scanY = -y + viewportH * 0.35;
-      let activeIdx = 0;
-      for (let i = 0; i < panels.length; i++) {
-        if (panels[i].offsetTop <= scanY) activeIdx = i;
-      }
-      setActive(panels[activeIdx].id);
-    };
-
-    // Match pin-section height to panels track so scroll distance produces full translation
-    const resize = () => {
-      if (!isDesktop()) {
-        pinSection.style.height = '';
-        return;
-      }
-      // Section scroll distance we need = trackH - viewportH (inner scroll amount)
-      // Pin-wrap height is (100vh - headerH), sticky-stop when section bottom aligns with pin bottom.
-      // That means section.height = lockDur + pin-wrap.height = (trackH - viewportH) + viewportH = trackH
-      pinSection.style.height = track.scrollHeight + 'px';
-      update();
+      const progress = Math.max(0, Math.min(0.9999, scrolledPast / lockDur));
+      const N = panels.length;
+      const idx = Math.min(N - 1, Math.max(0, Math.floor(progress * N)));
+      setActive(idx);
     };
 
     window.addEventListener('scroll', () => {
@@ -679,9 +668,11 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
       requestAnimationFrame(resize);
     });
 
-    // Initial layout — wait a tick so fonts/images settle
+    // Initial — wait a tick so fonts/layout settle
     setTimeout(resize, 50);
     window.addEventListener('load', resize);
+    // Ensure first panel is visible immediately
+    setActive(0);
   })();
 
   /* ── FIRE SUPABASE INIT ─────────────────────── */

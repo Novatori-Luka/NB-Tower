@@ -1079,7 +1079,7 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
   align-self: start;
 }
 
-/* Desktop: activate pinned scroll */
+/* Desktop: activate pinned scroll with one-panel-at-a-time swap */
 @media (min-width: 1024px) {
   .svc-pin-wrap {
     position: sticky;
@@ -1088,6 +1088,7 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
     overflow: hidden;
     display: flex;
     align-items: center;
+    padding: 40px 0;
   }
   .svc-pin-wrap .svc-navigator {
     width: 100%;
@@ -1100,17 +1101,73 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
   }
   .svc-pin-wrap .svc-panels-viewport {
     height: 100%;
-    overflow: hidden;
     position: relative;
-    display: flex;
-    align-items: flex-start;
+    overflow: hidden;
   }
   .svc-pin-wrap .svc-panels {
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    width: 100%;
-    padding: 20px 0;
+    position: absolute;
+    inset: 0;
+    display: block;
+    gap: 0;
   }
+  /* Each panel stacked; only .is-active is visible */
+  .svc-pin-wrap .svc-panel {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 28px;
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.7s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    scroll-margin-top: 0;
+  }
+  .svc-pin-wrap .svc-panel.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  /* Media fills the top area; body sits beneath */
+  .svc-pin-wrap .svc-panel-media {
+    aspect-ratio: auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+  .svc-pin-wrap .svc-panel-body {
+    max-width: none;
+  }
+  .svc-pin-wrap .svc-panel-desc {
+    margin-bottom: 20px;
+  }
+  .svc-pin-wrap .svc-panel-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 0 28px;
+    padding-top: 18px;
+  }
+
+  /* Progress indicator next to the nav */
+  .svc-nav-progress {
+    margin-top: 28px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    color: rgba(0,0,0,0.4);
+    padding-left: 22px;
+  }
+  .svc-nav-progress b {
+    color: var(--green);
+    font-weight: 400;
+  }
+}
+
+/* Hide progress counter below desktop */
+.svc-nav-progress { display: none; }
+@media (min-width: 1024px) {
+  .svc-nav-progress { display: block; }
 }
 .svc-nav-list {
   list-style: none;
