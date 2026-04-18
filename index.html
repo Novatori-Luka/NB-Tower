@@ -59,14 +59,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/blog"       class="nav-link" data-ka="ბლოგი"           data-en="Blog">ბლოგი</a></li>
         <li><a href="/developers" class="nav-link" data-ka="დეველოპერები"   data-en="Developers">დეველოპერები</a></li>
         <li><a href="/career"     class="nav-link" data-ka="კარიერა"         data-en="Career">კარიერა</a></li>
-        <li><a href="#contact"    class="nav-link" data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
+        <li><a href="/contact.html"    class="nav-link" data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
       </ul>
 
       <div class="nav-actions">
         <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
           <span class="lang-label">EN</span>
         </button>
-        <a href="#contact" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+        <a href="/contact.html" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
       </div>
 
       <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
@@ -241,7 +241,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <span data-ka="სრული გარანტია" data-en="Full Warranty">სრული გარანტია</span>
             </div>
           </div>
-          <a href="#contact" class="btn-primary" data-ka="გაიგეთ მეტი" data-en="Learn More">გაიგეთ მეტი</a>
+          <a href="/contact.html" class="btn-primary" data-ka="გაიგეთ მეტი" data-en="Learn More">გაიგეთ მეტი</a>
         </div>
 
         <div class="about-visual reveal" style="--delay:0.2s">
@@ -625,7 +625,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="faq-cta reveal" style="--delay:0.2s">
           <p data-ka="კითხვა ვერ იპოვე?" data-en="Can't find your question?">კითხვა ვერ იპოვე?</p>
-          <a href="#contact" data-ka="დაგვიკავშირდი →" data-en="Get in touch →">დაგვიკავშირდი →</a>
+          <a href="/contact.html" data-ka="დაგვიკავშირდი →" data-en="Get in touch →">დაგვიკავშირდი →</a>
         </div>
       </div>
     </section>
@@ -693,6 +693,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
               </div>
               <div class="form-group">
+                <label for="contact-email" data-ka="ელ-ფოსტა (არასავალდებულო)" data-en="Email (optional)">ელ-ფოსტა (არასავალდებულო)</label>
+                <input type="email" id="contact-email" placeholder=""
+                       data-ka-placeholder="you@example.com"
+                       data-en-placeholder="you@example.com" />
+              </div>
+              <div class="form-group">
                 <label for="contact-project" data-ka="პროექტი" data-en="Project">პროექტი</label>
                 <select id="contact-project">
                   <option value="" data-ka="არ მაქვს შერჩეული პროექტი" data-en="No project selected yet">არ მაქვს შერჩეული პროექტი</option>
@@ -708,6 +714,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <span class="btn-text" data-ka="გაგზავნა" data-en="Send Message">გაგზავნა</span>
                 <i class="fa-solid fa-paper-plane btn-icon"></i>
               </button>
+              <div class="form-error" id="form-error"
+                   data-ka="შეცდომა, სცადეთ თავიდან"
+                   data-en="Error, please try again">შეცდომა, სცადეთ თავიდან</div>
 
               <div class="form-success" id="form-success">
                 <div class="success-icon"><i class="fa-solid fa-check"></i></div>
@@ -749,7 +758,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li><a href="/blog"       data-ka="ბლოგი"           data-en="Blog">ბლოგი</a></li>
           <li><a href="/developers" data-ka="დეველოპერები"   data-en="Developers">დეველოპერები</a></li>
           <li><a href="/career"     data-ka="კარიერა"         data-en="Career">კარიერა</a></li>
-          <li><a href="#contact"    data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
+          <li><a href="/contact.html"    data-ka="კონტაქტი"        data-en="Contact">კონტაქტი</a></li>
         </ul>
       </div>
 

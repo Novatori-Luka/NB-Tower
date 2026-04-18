@@ -1990,6 +1990,16 @@ input.error { border-color: #E85D04; }
 .field-error { color: #E85D04; font-size: 12px; margin-top: 4px; display: none; }
 .field-error.visible { display: block; }
 
+/* Inline form-level error (after submit button) */
+.form-error {
+  display: none;
+  margin-top: 10px;
+  color: #D14343;
+  font-size: 12px;
+  text-align: center;
+}
+.form-error.visible { display: block; }
+
 .btn-submit {
   width: 100%;
   justify-content: center;
@@ -2984,4 +2994,247 @@ input.error { border-color: #E85D04; }
   .projects-tabs button { padding: 7px 14px; font-size: 0.78rem; }
   .project-image { height: 180px; }
   .project-name { font-size: 1.35rem; }
+}
+
+/* ══════════════════════════════════════════════
+   CONTACT PAGE (/contact.html)
+══════════════════════════════════════════════ */
+.cp-hero {
+  background: #FAFAF8;
+  padding: 100px 0 40px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(15,76,46,0.06);
+}
+.cp-hero-eyebrow {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  color: #3DBE6C;
+  margin-bottom: 14px;
+}
+.cp-hero-title {
+  font-family: 'Bebas Neue', 'Noto Sans Georgian', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1;
+  color: #0D1F17;
+  margin: 0 0 16px;
+  letter-spacing: 0.01em;
+}
+html[lang="ka"] .cp-hero-title {
+  font-family: 'FiraGO', 'Noto Sans Georgian', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+.cp-hero-sub {
+  font-size: 0.95rem;
+  color: #6B7B72;
+  line-height: 1.6;
+  max-width: 680px;
+}
+
+.cp-main { padding: 40px 0 80px; background: #ffffff; }
+.cp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Info cards (LEFT) */
+.cp-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cp-card {
+  background: #ffffff;
+  border: 0.5px solid rgba(15,76,46,0.1);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.cp-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.cp-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #E8F7ED;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cp-card-label {
+  font-family: 'Bebas Neue', 'FiraGO', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6B7B72;
+  font-weight: 600;
+}
+.cp-card-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0D1F17;
+  margin-left: 38px;
+  text-decoration: none;
+  line-height: 1.45;
+  word-break: break-word;
+}
+a.cp-card-value:hover { color: #3DBE6C; }
+
+.cp-social-row {
+  display: flex;
+  gap: 6px;
+  margin-left: 0;
+  margin-top: 6px;
+}
+.cp-social {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: #F0F6F1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.cp-social:hover { background: #E0EEE3; }
+
+/* Right column: map + form */
+.cp-right {
+  display: flex;
+  flex-direction: column;
+}
+.cp-map {
+  height: 160px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(15,76,46,0.1);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.cp-map iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* Form card */
+.cp-form-card {
+  background: #ffffff;
+  border: 0.5px solid rgba(15,76,46,0.1);
+  border-radius: 8px;
+  padding: 16px;
+}
+.cp-form-helper {
+  font-size: 12px;
+  color: #6B7B72;
+  margin: 0 0 12px;
+}
+
+.cp-form-row { display: grid; gap: 10px; }
+.cp-form-row-2 { grid-template-columns: 1fr 1fr; }
+
+.cp-form { display: flex; flex-direction: column; gap: 10px; }
+
+.cp-field { display: flex; flex-direction: column; }
+.cp-field label {
+  font-size: 10px;
+  color: #8A9290;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.cp-field input,
+.cp-field select,
+.cp-field textarea {
+  background: #F7F9F7;
+  border: 0.5px solid rgba(15,76,46,0.1);
+  border-radius: 5px;
+  padding: 9px 10px;
+  font-size: 12px;
+  color: #0D1F17;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+.cp-field input:focus,
+.cp-field select:focus,
+.cp-field textarea:focus {
+  border-color: #3DBE6C;
+  background: #ffffff;
+}
+.cp-field input.error,
+.cp-field select.error,
+.cp-field textarea.error { border-color: #D14343; }
+.cp-field textarea { min-height: 90px; resize: vertical; font-family: inherit; }
+.cp-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239A9A9A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
+.cp-submit {
+  background: #3DBE6C;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+  transition: background 0.2s ease;
+}
+.cp-submit:hover:not(:disabled) { background: #2EA055; }
+.cp-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* Success state (replaces form) */
+.cp-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 12px;
+}
+.cp-success.visible { display: flex; }
+.cp-success-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #E8F7ED;
+  border: 1.5px solid #3DBE6C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cp-success-text {
+  font-size: 14px;
+  color: #0D1F17;
+  line-height: 1.5;
+  max-width: 340px;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .cp-hero { padding: 80px 0 28px; min-height: 220px; }
+  .cp-main { padding: 24px 0 48px; }
+  .cp-grid { grid-template-columns: 1fr; gap: 16px; }
+  .cp-form-row-2 { grid-template-columns: 1fr; }
+  .cp-map { height: 200px; }
 }

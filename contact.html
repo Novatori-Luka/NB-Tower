@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/assets/NB%20Tower%20logo.png">
+  <link rel="apple-touch-icon" href="/assets/NB%20Tower%20logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NB Tower — კონტაქტი / Contact</title>
+  <meta name="description" content="დაგვიკავშირდი NB Tower — ტელეფონი, ელფოსტა, მისამართი და კონტაქტის ფორმა." />
+  <link rel="canonical" href="https://nb-tower.vercel.app/contact.html" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Georgian:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://mjxndlvtzjqqjltofqbv.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Eq_XtZ8td1gADkmBa2npFg_54cJXiX6';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  </script>
+</head>
+<body>
+
+  <!-- ===== HEADER / NAV ===== -->
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="/" class="nav-logo">
+        <img src="assets/NB Tower logo.png" alt="NB Tower Logo" height="44" />
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#about"     class="nav-link" data-ka="ჩვენს შესახებ"  data-en="About">ჩვენს შესახებ</a></li>
+        <li><a href="/#projects"  class="nav-link" data-ka="პროექტები"      data-en="Projects">პროექტები</a></li>
+        <li><a href="/blog"       class="nav-link" data-ka="ბლოგი"           data-en="Blog">ბლოგი</a></li>
+        <li><a href="/developers" class="nav-link" data-ka="დეველოპერები"   data-en="Developers">დეველოპერები</a></li>
+        <li><a href="/career"     class="nav-link" data-ka="კარიერა"         data-en="Career">კარიერა</a></li>
+        <li><a href="/contact.html" class="nav-link active" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language">
+          <span class="lang-label">EN</span>
+        </button>
+        <a href="/contact.html" class="btn-primary nav-cta" data-ka="დაგვიკავშირდით" data-en="Contact Us">დაგვიკავშირდით</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO BANNER ===== -->
+    <section class="cp-hero">
+      <div class="container">
+        <div class="cp-hero-eyebrow" data-ka="კონტაქტი" data-en="CONTACT">კონტაქტი</div>
+        <h1 class="cp-hero-title" data-ka="დაგვიკავშირდი" data-en="Get in touch">დაგვიკავშირდი</h1>
+        <p class="cp-hero-sub"
+           data-ka="24 საათში გიპასუხებთ · ყოველი მიმართვა პერსონალურად განიხილება"
+           data-en="We'll respond within 24 hours · Every inquiry is personally reviewed">
+          24 საათში გიპასუხებთ · ყოველი მიმართვა პერსონალურად განიხილება
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <section class="cp-main">
+      <div class="container cp-grid">
+
+        <!-- LEFT: info cards -->
+        <aside class="cp-info">
+
+          <!-- Phone -->
+          <div class="cp-card">
+            <div class="cp-card-head">
+              <span class="cp-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.35 1.78.68 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.47a2 2 0 0 1 2.11-.45c.83.33 1.71.56 2.61.68A2 2 0 0 1 22 16.92z"/></svg>
+              </span>
+              <span class="cp-card-label" data-ka="ტელეფონი" data-en="PHONE">ტელეფონი</span>
+            </div>
+            <a href="tel:+995555528052" class="cp-card-value">+995 555 52 80 52</a>
+          </div>
+
+          <!-- Email -->
+          <div class="cp-card">
+            <div class="cp-card-head">
+              <span class="cp-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <span class="cp-card-label" data-ka="ელფოსტა" data-en="EMAIL">ელფოსტა</span>
+            </div>
+            <a href="mailto:info@nbtower.ge" class="cp-card-value">info@nbtower.ge</a>
+          </div>
+
+          <!-- Address -->
+          <div class="cp-card">
+            <div class="cp-card-head">
+              <span class="cp-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </span>
+              <span class="cp-card-label" data-ka="მისამართი" data-en="ADDRESS">მისამართი</span>
+            </div>
+            <div class="cp-card-value"
+                 data-ka="თბილისი, 17 შინდისელის გმირის ქუჩა N8"
+                 data-en="Tbilisi, 17 Shindiseli Gmiris St. N8">
+              თბილისი, 17 შინდისელის გმირის ქუჩა N8
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="cp-card">
+            <div class="cp-card-head">
+              <span class="cp-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <span class="cp-card-label" data-ka="სამუშაო საათები" data-en="HOURS">სამუშაო საათები</span>
+            </div>
+            <div class="cp-card-value"
+                 data-ka="ორშ–პარ · 10:00–18:00"
+                 data-en="Mon–Fri · 10:00–18:00">
+              ორშ–პარ · 10:00–18:00
+            </div>
+          </div>
+
+          <!-- Social -->
+          <div class="cp-card">
+            <div class="cp-card-head">
+              <span class="cp-card-label" data-ka="სოციალური ქსელები" data-en="SOCIAL">სოციალური ქსელები</span>
+            </div>
+            <div class="cp-social-row">
+              <a href="#" class="cp-social" aria-label="Facebook">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3DBE6C"><path d="M13.397 20.997v-8.196h2.765l.411-3.209h-3.176V7.548c0-.926.258-1.56 1.587-1.56h1.684V3.127c-.292-.038-1.3-.129-2.47-.129-2.446 0-4.122 1.492-4.122 4.231v2.357H7.332v3.209h2.754v8.202h3.311z"/></svg>
+              </a>
+              <a href="#" class="cp-social" aria-label="Instagram">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+              </a>
+              <a href="#" class="cp-social" aria-label="WhatsApp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3DBE6C"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- RIGHT: map + form -->
+        <div class="cp-right">
+
+          <!-- Map embed -->
+          <div class="cp-map">
+            <iframe
+              src="https://www.google.com/maps?q=17+Shindiselis+Gmiris+Street,+Tbilisi,+Georgia&output=embed"
+              width="100%" height="100%" style="border:0;"
+              allowfullscreen="" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="NB Tower location"></iframe>
+          </div>
+
+          <!-- Form card -->
+          <div class="cp-form-card">
+            <p class="cp-form-helper" data-ka="შეავსე ფორმა" data-en="Fill out the form">შეავსე ფორმა</p>
+
+            <form class="cp-form" id="cp-contact-form" novalidate>
+              <div class="cp-form-row cp-form-row-2">
+                <div class="cp-field">
+                  <label for="cp-name" data-ka="სახელი *" data-en="Name *">სახელი *</label>
+                  <input type="text" id="cp-name" required
+                         data-ka-placeholder="თქვენი სახელი" data-en-placeholder="Your name" />
+                  <div class="field-error" id="cp-err-name"
+                       data-ka="სახელი სავალდებულოა" data-en="Name is required">სახელი სავალდებულოა</div>
+                </div>
+                <div class="cp-field">
+                  <label for="cp-phone" data-ka="ტელეფონი *" data-en="Phone *">ტელეფონი *</label>
+                  <input type="tel" id="cp-phone" required placeholder="+995 XXX XXX XXX" />
+                  <div class="field-error" id="cp-err-phone"
+                       data-ka="ტელეფონი სავალდებულოა" data-en="Phone is required">ტელეფონი სავალდებულოა</div>
+                </div>
+              </div>
+
+              <div class="cp-field">
+                <label for="cp-email" data-ka="ელფოსტა" data-en="Email">ელფოსტა</label>
+                <input type="email" id="cp-email"
+                       data-ka-placeholder="you@example.com" data-en-placeholder="you@example.com" />
+              </div>
+
+              <div class="cp-field">
+                <label for="cp-project" data-ka="ინტერესი" data-en="Interest">ინტერესი</label>
+                <select id="cp-project">
+                  <option value="" data-ka="არ მაქვს შერჩეული" data-en="None selected">არ მაქვს შერჩეული</option>
+                </select>
+              </div>
+
+              <div class="cp-field">
+                <label for="cp-message" data-ka="შეტყობინება" data-en="Message">შეტყობინება</label>
+                <textarea id="cp-message" rows="4"
+                          data-ka-placeholder="მოგვიყევით თქვენს საჭიროებებზე..."
+                          data-en-placeholder="Tell us about your needs..."></textarea>
+              </div>
+
+              <button type="submit" class="cp-submit" data-ka="გაგზავნა →" data-en="Send →">გაგზავნა →</button>
+
+              <div class="form-error" id="cp-form-error"
+                   data-ka="შეცდომა, სცადეთ თავიდან"
+                   data-en="Error, please try again">შეცდომა, სცადეთ თავიდან</div>
+            </form>
+
+            <!-- Success state (replaces form) -->
+            <div class="cp-success" id="cp-form-success">
+              <div class="cp-success-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3DBE6C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <p class="cp-success-text"
+                 data-ka="გმადლობთ! თქვენი შეტყობინება მიღებულია. მალე დაგიკავშირდებით."
+                 data-en="Thank you! Your message has been received. We'll be in touch shortly.">
+                გმადლობთ! თქვენი შეტყობინება მიღებულია. მალე დაგიკავშირდებით.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <img src="assets/NB Tower logo.png" alt="NB Tower" height="40" />
+        </a>
+        <p class="footer-desc"
+           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს."
+           data-en="Georgia's premier construction company. Building tomorrow, today.">
+          საქართველოს წამყვანი სამშენებლო კომპანია. ვაშენებთ მომავალს დღეს.
+        </p>
+        <div class="footer-social">
+          <a href="#" class="fs-link" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="fs-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="fs-link" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-nav">
+        <h4 class="footer-heading" data-ka="ნავიგაცია" data-en="Navigation">ნავიგაცია</h4>
+        <ul>
+          <li><a href="/#about"     data-ka="ჩვენს შესახებ" data-en="About">ჩვენს შესახებ</a></li>
+          <li><a href="/#projects"  data-ka="პროექტები"     data-en="Projects">პროექტები</a></li>
+          <li><a href="/blog"       data-ka="ბლოგი"          data-en="Blog">ბლოგი</a></li>
+          <li><a href="/developers" data-ka="დეველოპერები"  data-en="Developers">დეველოპერები</a></li>
+          <li><a href="/career"     data-ka="კარიერა"        data-en="Career">კარიერა</a></li>
+          <li><a href="/contact.html" data-ka="კონტაქტი"     data-en="Contact">კონტაქტი</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-contact">
+        <h4 class="footer-heading" data-ka="კონტაქტი" data-en="Contact">კონტაქტი</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> <span data-ka="თბილისი, 17 შინდისელის გმირის ქუჩა N8" data-en="Tbilisi, 17 Shindiseli Gmiris St. N8">თბილისი, 17 შინდისელის გმირის ქუჩა N8</span></li>
+          <li><i class="fa-solid fa-phone"></i> +995 555 52 80 52</li>
+          <li><i class="fa-solid fa-envelope"></i> info@nbtower.ge</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>
+          <span data-ka="© 2025 NB Tower. ყველა უფლება დაცულია." data-en="© 2025 NB Tower. All rights reserved.">© 2025 NB Tower. ყველა უფლება დაცულია.</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="constants.js"></script>
+  <script src="script.js"></script>
+  <script src="contact-page.js"></script>
+</body>
+</html>

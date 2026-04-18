@@ -421,20 +421,47 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     } catch (e) { console.warn('project dropdown load error', e); }
   })();
 
+  /* Shared insert helper — used by homepage form and /contact.html form.
+     Writes a lead into the `messages` table. Returns { success, error? }. */
+  async function submitContactForm(formData, source) {
+    try {
+      const payload = {
+        name:         formData.name,
+        phone:        formData.phone,
+        email:        formData.email || null,
+        project_name: formData.project || null,
+        message:      formData.message || null,
+        source:       source || 'homepage',
+        status:       'new'
+      };
+      const { error } = await db.from('messages').insert([payload]);
+      if (error) throw error;
+      return { success: true };
+    } catch (e) {
+      console.error('Form submit failed:', e);
+      return { success: false, error: e };
+    }
+  }
+  // Expose globally so /contact.html can reuse it
+  window.submitContactForm = submitContactForm;
+
   const contactForm = document.getElementById('contact-form');
   const formSuccess = document.getElementById('form-success');
+  const formError   = document.getElementById('form-error');
 
-  if (contactForm && formSuccess) {
+  if (contactForm) {
     contactForm.addEventListener('submit', async e => {
       e.preventDefault();
 
       const nameInput  = document.getElementById('contact-name');
       const phoneInput = document.getElementById('contact-phone');
+      const emailInput = document.getElementById('contact-email');
       const errName    = document.getElementById('err-name');
       const errPhone   = document.getElementById('err-phone');
 
       const name  = nameInput?.value.trim() || '';
       const phone = phoneInput?.value.trim() || '';
+      const email = emailInput?.value.trim() || '';
 
       let valid = true;
       if (!name) {
@@ -459,31 +486,38 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
       const btnText = btn?.querySelector('.btn-text');
       const btnIcon = btn?.querySelector('.btn-icon');
 
+      const restoreBtn = () => {
+        if (btn) btn.disabled = false;
+        if (btnText) btnText.textContent = currentLang === 'ka' ? 'გაგზავნა' : 'Send Message';
+        if (btnIcon) btnIcon.className = 'fa-solid fa-paper-plane btn-icon';
+      };
+
       if (btn) btn.disabled = true;
       if (btnText) btnText.textContent = currentLang === 'ka' ? 'იგზავნება...' : 'Sending...';
       if (btnIcon) btnIcon.className = 'fa-solid fa-spinner fa-spin btn-icon';
+      formError?.classList.remove('visible');
 
       const projectSelect = document.getElementById('contact-project');
-      const projectName   = projectSelect?.options[projectSelect.selectedIndex]?.textContent || 'არ მაქვს შერჩეული';
+      const projectName   = projectSelect?.options[projectSelect.selectedIndex]?.textContent
+                           || (currentLang === 'ka' ? 'არ მაქვს შერჩეული' : 'None selected');
       const message       = document.getElementById('contact-message')?.value.trim() || '';
 
-      try {
-        const { error } = await db.from('messages').insert([{ name, phone, project_name: projectName, message }]);
-        if (error) console.warn('Message save failed', error);
-      } catch (err) {
-        console.warn('Message insert error', err);
-      }
+      const result = await submitContactForm(
+        { name, phone, email, project: projectName, message },
+        'homepage'
+      );
 
-      setTimeout(() => {
-        formSuccess.classList.add('visible');
+      if (result.success) {
+        formSuccess?.classList.add('visible');
         setTimeout(() => {
-          formSuccess.classList.remove('visible');
+          formSuccess?.classList.remove('visible');
           contactForm.reset();
-          if (btn) btn.disabled = false;
-          if (btnText) btnText.textContent = currentLang === 'ka' ? 'გაგზავნა' : 'Send Message';
-          if (btnIcon) btnIcon.className = 'fa-solid fa-paper-plane btn-icon';
+          restoreBtn();
         }, 5000);
-      }, 1200);
+      } else {
+        formError?.classList.add('visible');
+        restoreBtn();
+      }
     });
   }
 
