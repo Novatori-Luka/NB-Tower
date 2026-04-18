@@ -131,30 +131,8 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
   position: relative;
 }
 
-/* Oversized ghost section counter — the hand-crafted touch */
-main { counter-reset: section-num; }
-.section { counter-increment: section-num; }
-.section-header::before {
-  content: "0" counter(section-num);
-  position: absolute;
-  font-family: var(--font-display);
-  font-size: clamp(100px, 16vw, 200px);
-  color: rgba(0,0,0,0.035);
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  line-height: 1;
-  z-index: 0;
-  pointer-events: none;
-  user-select: none;
-  letter-spacing: -0.02em;
-}
-.section-header > * { position: relative; z-index: 1; }
-.section-header .section-title { position: relative; z-index: 1; }
-
 /* Left-aligned section headers (About, Why Us) */
 .section-header-left { text-align: left; }
-.section-header-left::before { left: 0; transform: none; }
 .section-header-left .section-subtitle { margin: 0; }
 
 /* Accent underline on a word */
