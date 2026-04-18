@@ -199,6 +199,19 @@
       display: none;
     }
     .login-error.visible { display: block; }
+    .login-success {
+      font-size: 0.82rem;
+      color: #276749;
+      background: #f0fff4;
+      border: 1px solid #9ae6b4;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .login-success.visible { display: flex; }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -819,12 +832,16 @@
     <p class="login-subtitle">შედით სისტემაში გასაგრძელებლად / Sign in to continue</p>
     <div class="login-error" id="login-error">
       <i class="fa-solid fa-triangle-exclamation"></i>
-      არასწორი მომხმარებელი ან პაროლი / Incorrect username or password
+      <span id="login-error-text">არასწორი ელფოსტა ან პაროლი / Incorrect email or password</span>
+    </div>
+    <div class="login-success" id="login-success">
+      <i class="fa-solid fa-circle-check"></i>
+      <span>წარმატებით შეხვედით / Signed in successfully</span>
     </div>
     <form id="login-form">
       <div class="form-group">
-        <label>მომხმარებელი / Username</label>
-        <input type="text" id="login-username" placeholder="admin" autocomplete="username" />
+        <label>ელფოსტა / Email</label>
+        <input type="email" id="login-username" placeholder="admin@nbtower.ge" autocomplete="email" />
       </div>
       <div class="form-group">
         <label>პაროლი / Password</label>
@@ -1441,11 +1458,6 @@
 (function () {
   'use strict';
 
-  /* ── CREDENTIALS ─────────────────────────────── */
-  const ADMIN_USER = 'admin';
-  const ADMIN_PASS = 'nbtower2025';
-  const KEY_SESSION = 'nb_admin_session';
-
   /* ── DOM REFS ────────────────────────────────── */
   const loginScreen  = document.getElementById('login-screen');
   const adminPanel   = document.getElementById('admin-panel');
@@ -1482,10 +1494,13 @@
   }
 
   /* ── AUTH ────────────────────────────────────── */
-  function checkSession() {
-    if (sessionStorage.getItem(KEY_SESSION) === 'true') {
-      showPanel();
-    }
+  const loginSuccess = document.getElementById('login-success');
+
+  function showLogin() {
+    adminPanel.classList.add('hidden');
+    loginScreen.style.display = 'flex';
+    loginError.classList.remove('visible');
+    loginSuccess.classList.remove('visible');
   }
 
   function showPanel() {
@@ -1494,24 +1509,55 @@
     refreshAll();
   }
 
-  loginForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const user = document.getElementById('login-username').value.trim();
-    const pass = document.getElementById('login-password').value;
-    if (user === ADMIN_USER && pass === ADMIN_PASS) {
-      sessionStorage.setItem(KEY_SESSION, 'true');
-      loginError.classList.remove('visible');
+  async function checkSession() {
+    const { data: { session } } = await db.auth.getSession();
+    if (session) {
       showPanel();
-    } else {
-      loginError.classList.add('visible');
-      document.getElementById('login-password').value = '';
-      document.getElementById('login-password').focus();
+    }
+  }
+
+  // Step 4 — listen for auth state changes (handles token expiry)
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT' || (event === 'TOKEN_REFRESHED' && !session)) {
+      showLogin();
     }
   });
 
-  logoutBtn.addEventListener('click', () => {
-    sessionStorage.removeItem(KEY_SESSION);
-    location.reload();
+  // Step 1 — login via Supabase Auth
+  loginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('login-username').value.trim();
+    const pass  = document.getElementById('login-password').value;
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+    submitBtn.disabled = true;
+    loginError.classList.remove('visible');
+    loginSuccess.classList.remove('visible');
+
+    const { error } = await db.auth.signInWithPassword({ email, password: pass });
+
+    submitBtn.disabled = false;
+
+    if (error) {
+      // Show specific error in console for dev, generic message to user
+      console.warn('[Admin auth error]', error.message);
+      document.getElementById('login-error-text').textContent =
+        'არასწორი ელფოსტა ან პაროლი / Incorrect email or password';
+      loginError.classList.add('visible');
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-password').focus();
+      return;
+    }
+
+    // Brief success flash before showing panel
+    loginSuccess.classList.add('visible');
+    setTimeout(() => showPanel(), 900);
+  });
+
+  // Step 3 — logout
+  logoutBtn.addEventListener('click', async () => {
+    await db.auth.signOut();
+    showLogin();
   });
 
   /* ── NAVIGATION ──────────────────────────────── */
