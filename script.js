@@ -622,4 +622,118 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();
 
+  /* ══════════════════════════════════════════════
+     PARTNERS SECTION
+  ══════════════════════════════════════════════ */
+  (function initPartners() {
+    const grid   = document.getElementById('partners-grid');
+    const detail = document.getElementById('partner-detail');
+    if (!grid || !detail) return;
+
+    let _partners = [];
+    let _selectedId = null;
+
+    function initials(name) {
+      return name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    }
+
+    function domainOnly(url) {
+      try { return new URL(url).hostname.replace(/^www\./, ''); }
+      catch { return url; }
+    }
+
+    function renderGrid(list) {
+      if (!list.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#aaa;padding:32px 0">პარტნიორი არ მოიძებნა</p>';
+        return;
+      }
+      grid.innerHTML = list.map(p => `
+        <button class="partner-card${_selectedId === p.id ? ' active' : ''}"
+                data-id="${p.id}"
+                onclick="selectPartner('${p.id}')"
+                aria-pressed="${_selectedId === p.id}"
+                title="${p.name}">
+          <div class="partner-logo-wrap">
+            ${p.logo_url
+              ? `<img src="${p.logo_url}" alt="${p.name}" loading="lazy" />`
+              : `<span class="partner-initials">${initials(p.name)}</span>`}
+          </div>
+          <span class="partner-card-name">${p.name}</span>
+        </button>
+      `).join('');
+    }
+
+    function renderDetail(p) {
+      if (!p) { detail.classList.remove('visible'); return; }
+      const isActive = p.status === 'active';
+      const badgeKa = isActive ? 'აქტიური' : 'ყოფილი';
+      const badgeEn = isActive ? 'Active' : 'Past';
+      const lang = localStorage.getItem('lang') || 'ka';
+      detail.innerHTML = `
+        <div class="partner-detail-inner">
+          <div class="pdetail-logo">
+            ${p.logo_url
+              ? `<img src="${p.logo_url}" alt="${p.name}" />`
+              : `<span class="pdetail-logo-initials">${initials(p.name)}</span>`}
+          </div>
+          <div class="pdetail-body">
+            <div class="pdetail-top">
+              <div>
+                <div class="pdetail-name">${p.name}</div>
+                <div class="pdetail-meta-line">${[p.industry, p.founded_year ? p.founded_year + ' წ.' : ''].filter(Boolean).join(' · ')}</div>
+              </div>
+              <span class="pdetail-badge${isActive ? '' : ' past'}">${lang === 'ka' ? badgeKa : badgeEn}</span>
+            </div>
+            ${p.description ? `<p class="pdetail-desc">${p.description}</p>` : ''}
+            <div class="pdetail-stats">
+              ${p.joint_projects_count ? `<div class="pdetail-stat"><span class="pdetail-stat-val">${p.joint_projects_count}</span><span class="pdetail-stat-label">ერთობლივი პროექტი</span></div>` : ''}
+              ${p.partnership_years ? `<div class="pdetail-stat"><span class="pdetail-stat-val">${p.partnership_years} წელი</span><span class="pdetail-stat-label">თანამშრომლობა</span></div>` : ''}
+              ${p.website ? `<div class="pdetail-stat"><a href="${p.website}" target="_blank" rel="noopener" class="pdetail-website">${domainOnly(p.website)} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:10px"></i></a><span class="pdetail-stat-label">ვებსაიტი</span></div>` : ''}
+            </div>
+          </div>
+        </div>`;
+      detail.classList.add('visible');
+    }
+
+    window.selectPartner = function(id) {
+      if (_selectedId === id) {
+        _selectedId = null;
+        detail.classList.remove('visible');
+        renderGrid(_partners);
+        return;
+      }
+      _selectedId = id;
+      renderGrid(_partners);
+      const p = _partners.find(x => x.id === id);
+      renderDetail(p);
+      // Scroll detail into view smoothly
+      setTimeout(() => detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    };
+
+    async function loadPartners() {
+      try {
+        const { data, error } = await db
+          .from('partners')
+          .select('*')
+          .eq('status', 'active')
+          .order('display_order', { ascending: true })
+          .limit(8);
+        return error ? [] : (data || []);
+      } catch { return []; }
+    }
+
+    async function init() {
+      _partners = await loadPartners();
+      renderGrid(_partners);
+      // Auto-select first partner
+      if (_partners.length) {
+        _selectedId = _partners[0].id;
+        renderGrid(_partners);
+        renderDetail(_partners[0]);
+      }
+    }
+
+    init();
+  })();
+
 })();
