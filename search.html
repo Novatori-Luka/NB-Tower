@@ -47,11 +47,12 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 2rem;
       letter-spacing: 0.05em;
-      color: var(--text-primary);
+      color: #111;
+      margin: 0;
     }
     .result-count {
       background: var(--green);
-      color: #000;
+      color: #fff;
       font-size: 0.85rem;
       font-weight: 700;
       padding: 4px 12px;
@@ -93,14 +94,78 @@
       padding: 8px 8px 8px 28px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.10);
       width: 100%;
-      max-width: 700px;
+      max-width: 780px;
       margin: 0 auto 48px;
+      display: flex;
+      align-items: center;
+      gap: 0;
     }
+    .hero-search .search-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 4px 18px;
+      min-width: 0;
+    }
+    .hero-search .search-field label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 2px;
+      pointer-events: none;
+    }
+    .hero-search .search-field select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: transparent url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat right 2px center;
+      background-size: 10px 6px;
+      border: none;
+      padding: 2px 22px 2px 0;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #111;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      width: 100%;
+      text-overflow: ellipsis;
+    }
+    .hero-search .search-divider {
+      width: 1px;
+      height: 34px;
+      background: rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .hero-search .search-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+    }
+    .hero-search .search-btn:hover { background: var(--green-dark, #2EA055); }
     @media (max-width: 768px) {
       .hero-search, .search-bar-container {
         border-radius: 16px;
-        padding: 16px;
+        padding: 12px;
+        flex-direction: column;
+        gap: 8px;
       }
+      .hero-search .search-field { width: 100%; padding: 6px 10px; }
+      .hero-search .search-divider { display: none; }
+      .hero-search .search-btn { width: 100%; justify-content: center; padding: 12px; }
     }
     /* Override animate class so items don't stay invisible on this page */
     .animate-hero { opacity: 1 !important; transform: none !important; animation: none !important; }
@@ -595,44 +660,58 @@
       updateActiveFilterTags();
     };
 
-    /* ── Card renderer ────────────────────── */
-    function renderCard(p) {
-      const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
-      const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
-      const typeKa   = p.category === 'residential' ? 'საცხოვრებელი კომპლექსი' : 'კომერციული ცენტრი';
-      const thumbStyle = p.image_url
-        ? `style="background-image:url('${p.image_url}');background-size:cover;background-position:center"`
+    /* ── Card renderer (matches homepage Projects v2) ── */
+    const statusLabel = {
+      completed: { ka: 'დასრულებული', en: 'Completed' },
+      ongoing:   { ka: 'მიმდინარე',   en: 'Ongoing'   }
+    };
+    const categoryLabel = {
+      residential: { ka: 'საცხოვრებელი', en: 'Residential' },
+      commercial:  { ka: 'კომერციული',   en: 'Commercial'  }
+    };
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+    function renderCard(p, i) {
+      const lang     = currentLang;
+      const status   = statusLabel[p.status] ? p.status : 'ongoing';
+      const category = categoryLabel[p.category] ? p.category : '';
+      const statusTx = statusLabel[status][lang];
+      const catTx    = category ? categoryLabel[category][lang] : '';
+      const name     = lang === 'en'
+        ? (p.name_en || p.name_ka || '')
+        : (p.name_ka || p.name_en || '');
+      const loc      = p.location || '';
+      const gradClass = 'project-ph-' + ((i || 0) % 3);
+      const imgStyle = p.image_url
+        ? `style="background-image:url('${esc(p.image_url)}')"`
         : '';
-      const isWide = p.category === 'commercial';
-      const pvClass = isWide ? 'pv-wide' : '';
+      const phInner  = p.image_url ? '' :
+        `<div class="project-ph ${gradClass}"><i class="fa-solid fa-building"></i></div>`;
+      const locInner = loc
+        ? `<span class="project-location">
+             <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true"><path d="M5.5.75C3.015.75 1 2.706 1 5.119 1 8.484 5.5 12.25 5.5 12.25s4.5-3.766 4.5-7.131C10 2.706 7.985.75 5.5.75zm0 6.06a1.68 1.68 0 1 1 0-3.36 1.68 1.68 0 0 1 0 3.36z" fill="currentColor"/></svg>
+             <span>${esc(loc)}</span>
+           </span>`
+        : `<span class="project-location"></span>`;
 
       return `
-        <div class="project-card" onclick="window.location.href='/project?id=${p.id}'" style="cursor:pointer">
-          <div class="project-thumb" ${thumbStyle}>
-            ${!p.image_url ? `<div class="project-visual">
-              <div class="pv-building ${pvClass}">
-                <div class="pv-b-body"></div>
-                ${!isWide ? '<div class="pv-b-top"></div>' : ''}
-                <div class="pv-b-windows">
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                  <div class="pv-row"><span></span><span></span><span></span></div>
-                </div>
-              </div>
-            </div>` : ''}
-            <div class="project-overlay">
-              <a href="/project?id=${p.id}" class="btn-primary btn-sm" data-ka="დეტალები" data-en="Details">დეტალები</a>
+        <a class="project-card" href="/project?id=${esc(p.id)}" data-status="${status}">
+          <div class="project-image" ${imgStyle}>
+            ${phInner}
+            <span class="project-badge project-badge-${status}">${esc(statusTx)}</span>
+          </div>
+          <div class="project-body">
+            ${category ? `<div class="project-category">${esc(catTx)}</div>` : ''}
+            <h3 class="project-name">${esc(name)}</h3>
+            <div class="project-footer">
+              ${locInner}
+              <svg class="project-arrow" width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15m0 0L11 1m5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
-          <div class="project-info">
-            <div class="project-meta">
-              <span class="project-location"><i class="fa-solid fa-location-dot"></i> ${p.location || ''}</span>
-              <span class="project-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${p.status === 'completed' ? 'Completed' : 'Ongoing'}">${badgeKa}</span>
-            </div>
-            <h3 class="project-name">${currentLang === 'ka' ? (p.name_ka || '') : (p.name_en || p.name_ka || '')}</h3>
-            <p class="project-type">${typeKa}</p>
-          </div>
-        </div>`;
+        </a>`;
     }
 
     /* ── All-projects cache ───────────────── */
@@ -688,7 +767,7 @@
         noRes.classList.remove('hidden');
       } else {
         noRes.classList.add('hidden');
-        grid.innerHTML = filtered.map(renderCard).join('');
+        grid.innerHTML = filtered.map((p, i) => renderCard(p, i)).join('');
         applyLang(currentLang);
       }
     }
