@@ -725,12 +725,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     async function init() {
       _partners = await loadPartners();
       renderGrid(_partners);
-      // Auto-select first partner
-      if (_partners.length) {
-        _selectedId = _partners[0].id;
-        renderGrid(_partners);
-        renderDetail(_partners[0]);
-      }
     }
 
     init();
