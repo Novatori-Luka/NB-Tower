@@ -2625,14 +2625,24 @@ input.error { border-color: #E85D04; }
 .projects-cta .projects-view-all {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 12px 28px;
+  background: #ffffff;
   color: var(--green);
+  border: 1.5px solid var(--green);
   font-weight: 600;
   font-size: 0.95rem;
+  border-radius: 999px;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, gap 0.2s ease;
 }
-.projects-cta .projects-view-all:hover { opacity: 0.75; }
+.projects-cta .projects-view-all:hover {
+  background: var(--green);
+  color: #ffffff;
+  gap: 14px;
+}
+.projects-cta .projects-view-all i { transition: transform 0.2s ease; }
+.projects-cta .projects-view-all:hover i { transform: translateX(3px); }
 
 /* Responsive */
 @media (max-width: 1024px) {
