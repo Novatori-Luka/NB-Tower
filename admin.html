@@ -1501,12 +1501,15 @@
     loginScreen.style.display = 'flex';
     loginError.classList.remove('visible');
     loginSuccess.classList.remove('visible');
+    if (typeof _pageLoaded !== 'undefined') _pageLoaded.clear();
   }
 
   function showPanel() {
     loginScreen.style.display = 'none';
     adminPanel.classList.remove('hidden');
-    refreshAll();
+    // Only load the dashboard on login. Other pages load lazily
+    // when navigated to (see navigateTo handlers below).
+    refreshDashboard();
   }
 
   async function checkSession() {
@@ -1576,19 +1579,36 @@
     partners:      'პარტნიორები / Partners',
   };
 
+  // Track which pages have been rendered; skip re-fetching until user explicitly refreshes
+  const _pageLoaded = new Set();
+  window.invalidatePage = function(pageId) { _pageLoaded.delete(pageId); };
+
   window.navigateTo = function(pageId) {
     navItems.forEach(item => item.classList.toggle('active', item.dataset.page === pageId));
     pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
     topbarTitle.textContent = pageTitles[pageId] || '';
-    if (pageId === 'dashboard')    refreshDashboard();
-    if (pageId === 'messages')     renderMessages();
-    if (pageId === 'testimonials') renderTestimonialsTable();
-    if (pageId === 'blog')         renderBlogTable();
-    if (pageId === 'jobs')         renderJobsTable();
-    if (pageId === 'developers')   renderDevelopersTable();
-    if (pageId === 'listings')      renderListingsTable();
-    if (pageId === 'applications')  renderApplicationsTable();
-    if (pageId === 'partners')      renderPartnersTable();
+
+    // Dashboard is always fresh (counts can change often)
+    if (pageId === 'dashboard') { refreshDashboard(); return; }
+
+    // Other pages: load once, reuse rendered table on re-visit
+    if (_pageLoaded.has(pageId)) return;
+
+    const loaders = {
+      projects:     renderProjectsTable,
+      team:         renderTeamTable,
+      stats:        loadStatsForm,
+      messages:     renderMessages,
+      testimonials: renderTestimonialsTable,
+      blog:         renderBlogTable,
+      jobs:         renderJobsTable,
+      developers:   renderDevelopersTable,
+      listings:     renderListingsTable,
+      applications: renderApplicationsTable,
+      partners:     renderPartnersTable,
+    };
+    const fn = loaders[pageId];
+    if (fn) { fn(); _pageLoaded.add(pageId); }
   };
 
   navItems.forEach(item => {
