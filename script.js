@@ -565,10 +565,19 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
   /* ── SERVICES ACCORDION ─────────────────────── */
   document.querySelectorAll('.svc-item').forEach(item => {
-    item.querySelector('.svc-item-top').addEventListener('click', () => {
+    const top = item.querySelector('.svc-item-top');
+    if (!top) return;
+    top.addEventListener('click', () => {
       const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.svc-item.open').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+      document.querySelectorAll('.svc-item.open').forEach(i => {
+        i.classList.remove('open');
+        const t = i.querySelector('.svc-item-top');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        item.classList.add('open');
+        top.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 
