@@ -573,6 +573,8 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     if (!pinSection || !pinWrap || !panels.length) return;
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    const viewport = document.querySelector('.svc-panels-viewport');
 
     const getHeader = () => {
       const raw = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
@@ -593,12 +595,18 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
     // Click a nav link → jump scroll so its panel becomes the active one
     const scrollToPanel = (idx) => {
+      if (!isDesktop()) {
+        // Mobile: horizontal scroll inside viewport
+        if (viewport) {
+          viewport.scrollTo({ left: idx * viewport.clientWidth, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        }
+        return;
+      }
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const lockDur = pinSection.offsetHeight - pinH;
       const N = panels.length;
       if (lockDur <= 0) return;
-      // Put the scroll midway inside the target panel's segment so it's firmly active
       const progress = (idx + 0.5) / N;
       const pinStartY = pinSection.getBoundingClientRect().top + window.pageYOffset - headerH;
       const targetY = pinStartY + progress * lockDur;
@@ -613,10 +621,14 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     });
 
     const resize = () => {
+      if (!isDesktop()) {
+        pinSection.style.height = '';
+        update();
+        return;
+      }
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const N = panels.length;
-      // Each panel gets one full viewport of scroll as its segment; pin-wrap itself needs pinH extra
       pinSection.style.height = (N * pinH + pinH) + 'px';
       update();
     };
@@ -624,13 +636,19 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     let ticking = false;
     const update = () => {
       ticking = false;
+      if (!isDesktop()) {
+        // Mobile: derive active panel from horizontal scroll position of viewport
+        if (!viewport) return;
+        const w = viewport.clientWidth || 1;
+        const idx = Math.min(panels.length - 1, Math.max(0, Math.round(viewport.scrollLeft / w)));
+        setActive(idx);
+        return;
+      }
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const rect = pinSection.getBoundingClientRect();
       const lockDur = pinSection.offsetHeight - pinH;
       if (lockDur <= 0) return;
-
-      // progress 0..1 through the pin zone
       const scrolledPast = headerH - rect.top;
       const progress = Math.max(0, Math.min(0.9999, scrolledPast / lockDur));
       const N = panels.length;
@@ -641,6 +659,13 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     window.addEventListener('scroll', () => {
       if (!ticking) { requestAnimationFrame(update); ticking = true; }
     }, { passive: true });
+
+    // Mobile horizontal-scroll listener
+    if (viewport) {
+      viewport.addEventListener('scroll', () => {
+        if (!ticking && !isDesktop()) { requestAnimationFrame(update); ticking = true; }
+      }, { passive: true });
+    }
 
     window.addEventListener('resize', () => {
       requestAnimationFrame(resize);
