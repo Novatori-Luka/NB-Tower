@@ -1057,6 +1057,11 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
 }
 
 /* ── Sticky-nav layout ── */
+.svc-pin-section { position: relative; }
+.svc-pin-wrap {
+  /* flat/fallback on mobile — desktop styles below activate pin */
+}
+
 .svc-navigator {
   display: grid;
   grid-template-columns: minmax(260px, 340px) 1fr;
@@ -1064,11 +1069,48 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
   align-items: start;
 }
 
-/* Left: sticky nav */
+/* Panels viewport wrapper — used by pin behavior on desktop */
+.svc-panels-viewport { min-width: 0; }
+
+/* Left: sticky nav (fallback when not pinned) */
 .svc-nav {
   position: sticky;
   top: calc(var(--header-h, 80px) + 32px);
   align-self: start;
+}
+
+/* Desktop: activate pinned scroll */
+@media (min-width: 1024px) {
+  .svc-pin-wrap {
+    position: sticky;
+    top: var(--header-h, 80px);
+    height: calc(100vh - var(--header-h, 80px));
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .svc-pin-wrap .svc-navigator {
+    width: 100%;
+    height: 100%;
+    align-items: stretch;
+  }
+  .svc-pin-wrap .svc-nav {
+    position: static;
+    align-self: center;
+  }
+  .svc-pin-wrap .svc-panels-viewport {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+  }
+  .svc-pin-wrap .svc-panels {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    width: 100%;
+    padding: 20px 0;
+  }
 }
 .svc-nav-list {
   list-style: none;

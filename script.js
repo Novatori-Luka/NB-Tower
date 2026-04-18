@@ -563,40 +563,125 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     setTimeout(() => toast.remove(), 3000);
   }
 
-  /* ── SERVICES STICKY NAVIGATOR ─────────────── */
-  (function initServicesNav() {
-    const nav = document.querySelector('.svc-nav');
-    const links = document.querySelectorAll('.svc-nav-link');
-    const panels = document.querySelectorAll('.svc-panel');
-    if (!nav || !links.length || !panels.length) return;
+  /* ── SERVICES PINNED SCROLL ─────────────────── */
+  (function initServicesPin() {
+    const pinSection = document.querySelector('.svc-pin-section');
+    const pinWrap   = document.querySelector('.svc-pin-wrap');
+    const track     = document.querySelector('.svc-panels');
+    const viewport  = document.querySelector('.svc-panels-viewport');
+    const links     = document.querySelectorAll('.svc-nav-link');
+    const panels    = Array.from(document.querySelectorAll('.svc-panel'));
+    if (!pinSection || !pinWrap || !track || !viewport || !panels.length) return;
 
-    // Smooth scroll on click (scroll-margin-top in CSS handles header offset)
-    links.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const id = link.dataset.target;
-        const target = document.getElementById(id);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
+    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Sync active state based on which panel is in view
     const setActive = (id) => {
       links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
     };
 
-    const io = new IntersectionObserver((entries) => {
-      // Prefer the entry closest to the top of the viewport
-      const visible = entries
-        .filter(e => e.isIntersecting)
-        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (visible.length) setActive(visible[0].target.id);
-    }, {
-      rootMargin: '-30% 0px -55% 0px',
-      threshold: 0
+    // Click-to-scroll — computes target page-Y so native smooth scroll plays nicely with the pin
+    const scrollToPanel = (idx) => {
+      if (!isDesktop()) {
+        const el = panels[idx];
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      const headerH = getHeader();
+      const viewportH = window.innerHeight - headerH;
+      const trackH = track.scrollHeight;
+      const translateDist = Math.max(1, trackH - viewportH);
+      const lockDur = pinSection.offsetHeight - viewportH;
+
+      // Desired translateY for this panel so it sits near the top of the viewport
+      const panelTop = panels[idx].offsetTop - (track.getBoundingClientRect().top - viewport.getBoundingClientRect().top);
+      const desiredTranslate = Math.max(0, Math.min(translateDist, panelTop));
+      const progress = desiredTranslate / translateDist;
+
+      // Map progress back to page scroll position
+      const pinStartY = pinSection.getBoundingClientRect().top + window.pageYOffset - headerH;
+      const targetY = pinStartY + progress * lockDur + 1;
+      window.scrollTo({ top: targetY, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+    };
+
+    links.forEach((link, i) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToPanel(i);
+      });
     });
 
-    panels.forEach(p => io.observe(p));
+    const getHeader = () => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue('--header-h').trim();
+      const n = parseInt(raw, 10);
+      return Number.isFinite(n) ? n : 80;
+    };
+
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      if (!isDesktop()) {
+        // Reset transform on smaller viewports
+        track.style.transform = '';
+        // Fallback: mark active via viewport midpoint
+        const midY = window.innerHeight / 2;
+        let activeIdx = 0;
+        panels.forEach((p, i) => {
+          const r = p.getBoundingClientRect();
+          if (r.top <= midY) activeIdx = i;
+        });
+        setActive(panels[activeIdx].id);
+        return;
+      }
+
+      const headerH = getHeader();
+      const viewportH = window.innerHeight - headerH;
+      const rect = pinSection.getBoundingClientRect();
+      const lockDur = pinSection.offsetHeight - viewportH;
+      if (lockDur <= 0) return;
+
+      // progress = 0 when pin-section top hits the header line; 1 when it has scrolled `lockDur` further
+      const scrolledPast = headerH - rect.top;
+      const progress = Math.max(0, Math.min(1, scrolledPast / lockDur));
+
+      const trackH = track.scrollHeight;
+      const translateDist = Math.max(0, trackH - viewportH);
+      const y = -progress * translateDist;
+      track.style.transform = `translate3d(0, ${y}px, 0)`;
+
+      // Active nav — panel whose top is at or above viewport midpoint (in translated track)
+      const scanY = -y + viewportH * 0.35;
+      let activeIdx = 0;
+      for (let i = 0; i < panels.length; i++) {
+        if (panels[i].offsetTop <= scanY) activeIdx = i;
+      }
+      setActive(panels[activeIdx].id);
+    };
+
+    // Match pin-section height to panels track so scroll distance produces full translation
+    const resize = () => {
+      if (!isDesktop()) {
+        pinSection.style.height = '';
+        return;
+      }
+      // Section scroll distance we need = trackH - viewportH (inner scroll amount)
+      // Pin-wrap height is (100vh - headerH), sticky-stop when section bottom aligns with pin bottom.
+      // That means section.height = lockDur + pin-wrap.height = (trackH - viewportH) + viewportH = trackH
+      pinSection.style.height = track.scrollHeight + 'px';
+      update();
+    };
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      requestAnimationFrame(resize);
+    });
+
+    // Initial layout — wait a tick so fonts/images settle
+    setTimeout(resize, 50);
+    window.addEventListener('load', resize);
   })();
 
   /* ── FIRE SUPABASE INIT ─────────────────────── */
