@@ -92,40 +92,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
      Defined first so initSite() can call them.
   ══════════════════════════════════════════════ */
 
-  function _renderProjects(projects) {
-    const grid = document.getElementById('projects-grid');
-    if (!grid) return;
-    const catKaMap = { residential: 'საცხოვრებელი', commercial: 'კომერციული' };
-    const catEnMap = { residential: 'Residential',   commercial: 'Commercial'   };
-    grid.innerHTML = projects.map((p) => {
-      const badgeCls = p.status === 'completed' ? 'completed' : 'ongoing';
-      const badgeKa  = p.status === 'completed' ? 'დასრულებული' : 'მიმდინარე';
-      const badgeEn  = p.status === 'completed' ? 'Completed'    : 'Ongoing';
-      const catKa    = catKaMap[p.category] || p.category;
-      const catEn    = catEnMap[p.category] || p.category;
-
-      const imgInner = p.imageUrl
-        ? `<img src="${p.imageUrl}" alt="${p.nameKa}" loading="lazy">`
-        : `<div class="proj-card-ph"><i class="fa-solid fa-building"></i></div>`;
-
-      return `
-        <div class="proj-card" data-category="${p.category}" onclick="window.location.href='/project?id=${p.id}'">
-          <div class="proj-card-img">
-            ${imgInner}
-            <span class="proj-card-badge ${badgeCls}" data-ka="${badgeKa}" data-en="${badgeEn}">${badgeKa}</span>
-            <div class="proj-card-overlay"><span data-ka="პროექტის ნახვა" data-en="View Project">პროექტის ნახვა</span> <i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-          <div class="proj-card-body">
-            <h3 class="proj-card-name" data-ka="${p.nameKa}" data-en="${p.nameEn}">${p.nameKa}</h3>
-            <div class="proj-card-meta">
-              <span class="proj-card-loc"><i class="fa-solid fa-location-dot"></i>${p.location}</span>
-              <span class="proj-card-cat" data-ka="${catKa}" data-en="${catEn}">${catKa}</span>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
   function _renderTeam(team) {
     const grid = document.querySelector('.team-grid');
     if (!grid) return;
@@ -180,22 +146,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
   ══════════════════════════════════════════════ */
 
   async function initSite() {
-    // PROJECTS
-    try {
-      const { data: projects, error } = await db.from('projects').select('*').order('created_at', { ascending: false });
-      if (!error && projects && projects.length) {
-        _renderProjects(projects.map(p => ({
-          id:       p.id,
-          nameKa:   p.name_ka,
-          nameEn:   p.name_en,
-          category: p.category,
-          location: p.location,
-          status:   p.status,
-          imageUrl: p.image_url
-        })));
-      }
-    } catch (e) { console.warn('Projects fetch failed', e); }
-
     // TEAM
     try {
       const { data: team, error } = await db.from('team').select('*').order('created_at', { ascending: false });
@@ -277,6 +227,9 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     });
 
     localStorage.setItem('lang', lang);
+
+    // Notify components that render DB-sourced bilingual fields (e.g. project names)
+    document.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
   }
 
   if (langToggle) {
@@ -621,6 +574,138 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();
+
+  /* ══════════════════════════════════════════════
+     PROJECTS SECTION (filterable grid)
+  ══════════════════════════════════════════════ */
+  (function initProjects() {
+    const grid     = document.getElementById('projects-grid');
+    const tabs     = document.getElementById('projects-tabs');
+    if (!grid || !tabs) return;
+
+    const categoryLabel = {
+      residential: { ka: 'საცხოვრებელი', en: 'Residential' },
+      commercial:  { ka: 'კომერციული',   en: 'Commercial'  }
+    };
+    const statusLabel = {
+      completed: { ka: 'დასრულებული', en: 'Completed' },
+      ongoing:   { ka: 'მიმდინარე',   en: 'Ongoing'   }
+    };
+
+    let allProjects = [];
+    let activeFilter = 'all';
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function pickName(p, lang) {
+      if (lang === 'en') return p.name_en || p.name_ka || '';
+      return p.name_ka || p.name_en || '';
+    }
+
+    function cardHTML(p, i, lang) {
+      const status   = statusLabel[p.status] ? p.status : 'ongoing';
+      const category = categoryLabel[p.category] ? p.category : '';
+      const statusTx = statusLabel[status][lang];
+      const catTx    = category ? categoryLabel[category][lang] : '';
+      const name     = pickName(p, lang);
+      const loc      = p.location || '';
+      const gradClass = 'project-ph-' + (i % 3);
+
+      const imgStyle = p.image_url
+        ? `style="background-image:url('${esc(p.image_url)}')"`
+        : '';
+      const phInner  = p.image_url ? '' :
+        `<div class="project-ph ${gradClass}"><i class="fa-solid fa-building"></i></div>`;
+
+      const locInner = loc
+        ? `<span class="project-location">
+             <svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5.5.75C3.015.75 1 2.706 1 5.119 1 8.484 5.5 12.25 5.5 12.25s4.5-3.766 4.5-7.131C10 2.706 7.985.75 5.5.75zm0 6.06a1.68 1.68 0 1 1 0-3.36 1.68 1.68 0 0 1 0 3.36z" fill="currentColor"/></svg>
+             <span>${esc(loc)}</span>
+           </span>`
+        : `<span class="project-location"></span>`;
+
+      return `
+        <a class="project-card" href="/project?id=${esc(p.id)}" data-status="${status}">
+          <div class="project-image" ${imgStyle}>
+            ${phInner}
+            <span class="project-badge project-badge-${status}">${esc(statusTx)}</span>
+          </div>
+          <div class="project-body">
+            ${category ? `<div class="project-category">${esc(catTx)}</div>` : ''}
+            <h3 class="project-name">${esc(name)}</h3>
+            <div class="project-footer">
+              ${locInner}
+              <svg class="project-arrow" width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 6h15m0 0L11 1m5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    function renderGrid() {
+      if (!allProjects.length) {
+        grid.innerHTML = `<div class="projects-empty" data-ka="ჯერ არ არის პროექტები" data-en="No projects yet">ჯერ არ არის პროექტები</div>`;
+        if (typeof applyLang === 'function') applyLang(currentLang);
+        return;
+      }
+      const lang = currentLang;
+      grid.innerHTML = allProjects.map((p, i) => cardHTML(p, i, lang)).join('');
+      applyFilter(activeFilter);
+    }
+
+    function updateCounts() {
+      const total = allProjects.length;
+      const completed = allProjects.filter(p => p.status === 'completed').length;
+      const ongoing   = allProjects.filter(p => p.status === 'ongoing').length;
+      const setCount = (key, n) => {
+        const el = tabs.querySelector(`[data-count="${key}"]`);
+        if (el) el.textContent = n;
+      };
+      setCount('all', total);
+      setCount('completed', completed);
+      setCount('ongoing', ongoing);
+    }
+
+    function applyFilter(filter) {
+      activeFilter = filter;
+      grid.querySelectorAll('.project-card').forEach(card => {
+        const match = filter === 'all' || card.dataset.status === filter;
+        card.classList.toggle('is-hidden', !match);
+      });
+    }
+
+    tabs.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-filter]');
+      if (!btn) return;
+      tabs.querySelectorAll('button').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      applyFilter(btn.dataset.filter);
+    });
+
+    // Re-render on language toggle (handles name_ka/name_en + labels)
+    document.addEventListener('langchange', () => renderGrid());
+
+    async function loadProjects() {
+      try {
+        const { data, error } = await db.from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) { console.warn('Projects fetch failed', error); return []; }
+        return data || [];
+      } catch (e) { console.warn('Projects fetch failed', e); return []; }
+    }
+
+    async function init() {
+      allProjects = await loadProjects();
+      updateCounts();
+      renderGrid();
+    }
+
+    init();
+  })();
 
   /* ══════════════════════════════════════════════
      PARTNERS SECTION

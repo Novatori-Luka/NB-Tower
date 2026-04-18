@@ -354,70 +354,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <section class="projects-section section" id="projects">
       <div class="container">
 
-        <!-- Left-aligned header -->
-        <div class="projects-header reveal">
-          <div class="projects-header-left">
-            <div class="section-label" data-ka="პორტფოლიო" data-en="Portfolio">პორტფოლიო</div>
-            <h2 class="projects-title">
-              <span data-ka="ჩვენი" data-en="Our">ჩვენი</span>
-              <span class="projects-title-accent" data-ka="პროექტები" data-en="Projects">პროექტები</span>
-            </h2>
-            <a href="/search" class="projects-view-all">
-              <span data-ka="ყველა პროექტი" data-en="All Projects">ყველა პროექტი</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </a>
-          </div>
+        <div class="section-header reveal">
+          <div class="section-label" data-ka="პორტფოლიო" data-en="Portfolio">პორტფოლიო</div>
+          <h2 class="section-title" data-ka="ჩვენი პროექტები" data-en="Our Projects">ჩვენი პროექტები</h2>
+          <p class="section-subtitle" data-ka="გაიცანით ჩვენი დასრულებული და მიმდინარე პროექტები საქართველოს მასშტაბით" data-en="Explore our completed and ongoing projects across Georgia">გაიცანით ჩვენი დასრულებული და მიმდინარე პროექტები საქართველოს მასშტაბით</p>
         </div>
 
-        <!-- Project cards grid -->
-        <div class="projects-grid" id="projects-grid">
-
-          <div class="proj-card" data-category="residential" onclick="window.location.href='#'">
-            <div class="proj-card-img">
-              <div class="proj-card-ph"><i class="fa-solid fa-building"></i></div>
-              <span class="proj-card-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
-              <div class="proj-card-overlay"><span data-ka="პროექტის ნახვა" data-en="View Project">პროექტის ნახვა</span> <i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-            <div class="proj-card-body">
-              <h3 class="proj-card-name" data-ka="NB Residence I" data-en="NB Residence I">NB Residence I</h3>
-              <div class="proj-card-meta">
-                <span class="proj-card-loc"><i class="fa-solid fa-location-dot"></i>თბილისი</span>
-                <span class="proj-card-cat" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="proj-card" data-category="commercial" onclick="window.location.href='#'">
-            <div class="proj-card-img">
-              <div class="proj-card-ph"><i class="fa-solid fa-building"></i></div>
-              <span class="proj-card-badge completed" data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
-              <div class="proj-card-overlay"><span data-ka="პროექტის ნახვა" data-en="View Project">პროექტის ნახვა</span> <i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-            <div class="proj-card-body">
-              <h3 class="proj-card-name" data-ka="NB Business Center" data-en="NB Business Center">NB Business Center</h3>
-              <div class="proj-card-meta">
-                <span class="proj-card-loc"><i class="fa-solid fa-location-dot"></i>თბილისი</span>
-                <span class="proj-card-cat" data-ka="კომერციული" data-en="Commercial">კომერციული</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="proj-card" data-category="residential" onclick="window.location.href='#'">
-            <div class="proj-card-img">
-              <div class="proj-card-ph"><i class="fa-solid fa-building"></i></div>
-              <span class="proj-card-badge ongoing" data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
-              <div class="proj-card-overlay"><span data-ka="პროექტის ნახვა" data-en="View Project">პროექტის ნახვა</span> <i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-            <div class="proj-card-body">
-              <h3 class="proj-card-name" data-ka="NB Residence II" data-en="NB Residence II">NB Residence II</h3>
-              <div class="proj-card-meta">
-                <span class="proj-card-loc"><i class="fa-solid fa-location-dot"></i>ბათუმი</span>
-                <span class="proj-card-cat" data-ka="საცხოვრებელი" data-en="Residential">საცხოვრებელი</span>
-              </div>
-            </div>
-          </div>
-
+        <div class="projects-tabs reveal" id="projects-tabs" style="--delay:0.05s">
+          <button type="button" data-filter="all" class="is-active">
+            <span data-ka="ყველა" data-en="All">ყველა</span>
+            <span class="count" data-count="all">0</span>
+          </button>
+          <button type="button" data-filter="completed">
+            <span data-ka="დასრულებული" data-en="Completed">დასრულებული</span>
+            <span class="count" data-count="completed">0</span>
+          </button>
+          <button type="button" data-filter="ongoing">
+            <span data-ka="მიმდინარე" data-en="Ongoing">მიმდინარე</span>
+            <span class="count" data-count="ongoing">0</span>
+          </button>
         </div>
+
+        <div class="projects-grid reveal" id="projects-grid" style="--delay:0.1s"></div>
+
+        <div class="projects-cta reveal" style="--delay:0.2s">
+          <a href="/search" class="projects-view-all">
+            <span data-ka="ყველა პროექტი" data-en="All Projects">ყველა პროექტი</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+
       </div>
     </section>
 
