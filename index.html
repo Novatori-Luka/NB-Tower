@@ -265,95 +265,127 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <p class="svc-header-desc" data-ka="სრული სამშენებლო ციკლი — კონცეფციიდან გასაღების ჩაბარებამდე, უმაღლესი ხარისხით." data-en="Full construction cycle — from concept to key handover, with uncompromising quality.">სრული სამშენებლო ციკლი — კონცეფციიდან გასაღების ჩაბარებამდე, უმაღლესი ხარისხით.</p>
         </div>
 
-        <!-- Bento grid -->
-        <div class="svc-bento">
+        <!-- Sticky-nav + scrolling panels -->
+        <div class="svc-navigator">
 
-          <!-- 01 — wide photo tile -->
-          <article class="svc-tile svc-tile-photo svc-tile-wide reveal" data-bg="residential">
-            <div class="svc-tile-media"></div>
-            <div class="svc-tile-scrim"></div>
-            <div class="svc-tile-content">
-              <span class="svc-tile-num">01</span>
-              <h3 class="svc-tile-title" data-ka="საცხოვრებელი კომპლექსები" data-en="Residential Complexes">საცხოვრებელი კომპლექსები</h3>
-              <p class="svc-tile-desc" data-ka="პრემიუმ საცხოვრებელი განვითარება — კონცეფციიდან გასაღების ჩაბარებამდე." data-en="Premium residential development — from concept to key handover.">პრემიუმ საცხოვრებელი განვითარება — კონცეფციიდან გასაღების ჩაბარებამდე.</p>
-              <span class="svc-tile-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </div>
-          </article>
+          <!-- Left: sticky nav -->
+          <aside class="svc-nav" aria-label="Services navigation">
+            <ol class="svc-nav-list">
+              <li><a href="#svc-panel-1" class="svc-nav-link active" data-target="svc-panel-1">
+                <span class="svc-nav-num">01</span>
+                <span class="svc-nav-label" data-ka="საცხოვრებელი კომპლექსები" data-en="Residential Complexes">საცხოვრებელი კომპლექსები</span>
+              </a></li>
+              <li><a href="#svc-panel-2" class="svc-nav-link" data-target="svc-panel-2">
+                <span class="svc-nav-num">02</span>
+                <span class="svc-nav-label" data-ka="კომერციული სივრცეები" data-en="Commercial Spaces">კომერციული სივრცეები</span>
+              </a></li>
+              <li><a href="#svc-panel-3" class="svc-nav-link" data-target="svc-panel-3">
+                <span class="svc-nav-num">03</span>
+                <span class="svc-nav-label" data-ka="გენერალური კონტრაქტინგი" data-en="General Contracting">გენერალური კონტრაქტინგი</span>
+              </a></li>
+              <li><a href="#svc-panel-4" class="svc-nav-link" data-target="svc-panel-4">
+                <span class="svc-nav-num">04</span>
+                <span class="svc-nav-label" data-ka="არქიტექტურული დიზაინი" data-en="Architectural Design">არქიტექტურული დიზაინი</span>
+              </a></li>
+              <li><a href="#svc-panel-5" class="svc-nav-link" data-target="svc-panel-5">
+                <span class="svc-nav-num">05</span>
+                <span class="svc-nav-label" data-ka="პროექტის მენეჯმენტი" data-en="Project Management">პროექტის მენეჯმენტი</span>
+              </a></li>
+              <li><a href="#svc-panel-6" class="svc-nav-link" data-target="svc-panel-6">
+                <span class="svc-nav-num">06</span>
+                <span class="svc-nav-label" data-ka="მდგრადი მშენებლობა" data-en="Sustainable Building">მდგრადი მშენებლობა</span>
+              </a></li>
+            </ol>
+          </aside>
 
-          <!-- 02 — flat square with SVG -->
-          <article class="svc-tile svc-tile-flat reveal" style="--delay:0.05s">
-            <div class="svc-tile-illus">
-              <svg viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="14" y="28" width="22" height="40"/>
-                <rect x="42" y="14" width="24" height="54"/>
-                <line x1="20" y1="36" x2="30" y2="36"/><line x1="20" y1="46" x2="30" y2="46"/><line x1="20" y1="56" x2="30" y2="56"/>
-                <line x1="48" y1="22" x2="60" y2="22"/><line x1="48" y1="32" x2="60" y2="32"/><line x1="48" y1="42" x2="60" y2="42"/><line x1="48" y1="52" x2="60" y2="52"/>
-                <line x1="10" y1="68" x2="70" y2="68"/>
-              </svg>
-            </div>
-            <span class="svc-tile-num">02</span>
-            <h3 class="svc-tile-title" data-ka="კომერციული სივრცეები" data-en="Commercial Spaces">კომერციული სივრცეები</h3>
-            <p class="svc-tile-desc" data-ka="ოფისები, სასტუმროები, სავაჭრო ცენტრები." data-en="Offices, hotels and retail centers.">ოფისები, სასტუმროები, სავაჭრო ცენტრები.</p>
-          </article>
+          <!-- Right: panels -->
+          <div class="svc-panels">
 
-          <!-- 03 — flat square with SVG -->
-          <article class="svc-tile svc-tile-flat reveal" style="--delay:0.10s">
-            <div class="svc-tile-illus">
-              <svg viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M40 14 L14 26 L40 38 L66 26 Z"/>
-                <path d="M14 26 V44 L40 56"/>
-                <path d="M66 26 V44 L40 56"/>
-                <path d="M40 38 V56"/>
-                <path d="M22 62 L40 70 L58 62"/>
-              </svg>
-            </div>
-            <span class="svc-tile-num">03</span>
-            <h3 class="svc-tile-title" data-ka="გენერალური კონტრაქტინგი" data-en="General Contracting">გენერალური კონტრაქტინგი</h3>
-            <p class="svc-tile-desc" data-ka="მშენებლობის სრული მართვა ვადაში." data-en="End-to-end construction, delivered on time.">მშენებლობის სრული მართვა ვადაში.</p>
-          </article>
+            <article class="svc-panel" id="svc-panel-1" data-bg="residential">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">01 / <span data-ka="განვითარება" data-en="Development">განვითარება</span></span>
+                <h3 class="svc-panel-title" data-ka="საცხოვრებელი კომპლექსები" data-en="Residential Complexes">საცხოვრებელი კომპლექსები</h3>
+                <p class="svc-panel-desc" data-ka="პრემიუმ საცხოვრებელი კომპლექსების სრული განვითარება — სიტუაციური ანალიზიდან, არქიტექტურული დიზაინიდან, მშენებლობამდე და ბინების ჩაბარებამდე. ვაშენებთ სივრცეებს, რომლებიც სტანდარტს აწესებენ." data-en="Full development of premium residential complexes — from site analysis and architectural design through construction and apartment handover. We build spaces that set the standard.">პრემიუმ საცხოვრებელი კომპლექსების სრული განვითარება — სიტუაციური ანალიზიდან, არქიტექტურული დიზაინიდან, მშენებლობამდე და ბინების ჩაბარებამდე. ვაშენებთ სივრცეებს, რომლებიც სტანდარტს აწესებენ.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="მაღალი კლასის აპარტამენტები" data-en="High-end apartments">მაღალი კლასის აპარტამენტები</li>
+                  <li data-ka="Smart-home ინფრასტრუქტურა" data-en="Smart-home infrastructure">Smart-home ინფრასტრუქტურა</li>
+                  <li data-ka="ლანდშაფტური დიზაინი" data-en="Landscape design">ლანდშაფტური დიზაინი</li>
+                </ul>
+              </div>
+            </article>
 
-          <!-- 04 — wide photo tile -->
-          <article class="svc-tile svc-tile-photo svc-tile-wide reveal" style="--delay:0.15s" data-bg="architecture">
-            <div class="svc-tile-media"></div>
-            <div class="svc-tile-scrim"></div>
-            <div class="svc-tile-content">
-              <span class="svc-tile-num">04</span>
-              <h3 class="svc-tile-title" data-ka="არქიტექტურული დიზაინი" data-en="Architectural Design">არქიტექტურული დიზაინი</h3>
-              <p class="svc-tile-desc" data-ka="კონცეფტუალური დიზაინიდან სამუშაო დოკუმენტაციამდე." data-en="From concept design to working documentation.">კონცეფტუალური დიზაინიდან სამუშაო დოკუმენტაციამდე.</p>
-              <span class="svc-tile-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </div>
-          </article>
+            <article class="svc-panel" id="svc-panel-2" data-bg="commercial">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">02 / <span data-ka="კომერცია" data-en="Commercial">კომერცია</span></span>
+                <h3 class="svc-panel-title" data-ka="კომერციული სივრცეები" data-en="Commercial Spaces">კომერციული სივრცეები</h3>
+                <p class="svc-panel-desc" data-ka="ოფისები, სასტუმროები, სავაჭრო ცენტრები და მრავალფუნქციური სივრცეები — ევროპული სტანდარტებით. თითოეული პროექტი ფუნქციონალურად გააზრებულია და ვიზუალურად გამორჩეული." data-en="Offices, hotels, retail centers and mixed-use spaces built to European standards. Every project is functionally considered and visually distinctive.">ოფისები, სასტუმროები, სავაჭრო ცენტრები და მრავალფუნქციური სივრცეები — ევროპული სტანდარტებით. თითოეული პროექტი ფუნქციონალურად გააზრებულია და ვიზუალურად გამორჩეული.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="Class A ოფისები" data-en="Class A offices">Class A ოფისები</li>
+                  <li data-ka="სავაჭრო და რესტორნების სივრცეები" data-en="Retail & F&B spaces">სავაჭრო და რესტორნების სივრცეები</li>
+                  <li data-ka="Mixed-use განვითარება" data-en="Mixed-use development">Mixed-use განვითარება</li>
+                </ul>
+              </div>
+            </article>
 
-          <!-- 05 — flat square with SVG -->
-          <article class="svc-tile svc-tile-flat reveal" style="--delay:0.20s">
-            <div class="svc-tile-illus">
-              <svg viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="14" y="14" width="52" height="52" rx="2"/>
-                <line x1="22" y1="28" x2="58" y2="28"/>
-                <line x1="22" y1="40" x2="50" y2="40"/>
-                <line x1="22" y1="52" x2="56" y2="52"/>
-                <circle cx="26" cy="28" r="1.6" fill="currentColor" stroke="none"/>
-                <circle cx="26" cy="40" r="1.6" fill="currentColor" stroke="none"/>
-                <circle cx="26" cy="52" r="1.6" fill="currentColor" stroke="none"/>
-              </svg>
-            </div>
-            <span class="svc-tile-num">05</span>
-            <h3 class="svc-tile-title" data-ka="პროექტის მენეჯმენტი" data-en="Project Management">პროექტის მენეჯმენტი</h3>
-            <p class="svc-tile-desc" data-ka="ბიუჯეტის, ვადებისა და ხარისხის კონტროლი." data-en="Budget, timeline and quality control.">ბიუჯეტის, ვადებისა და ხარისხის კონტროლი.</p>
-          </article>
+            <article class="svc-panel" id="svc-panel-3" data-bg="contracting">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">03 / <span data-ka="კონტრაქტინგი" data-en="Contracting">კონტრაქტინგი</span></span>
+                <h3 class="svc-panel-title" data-ka="გენერალური კონტრაქტინგი" data-en="General Contracting">გენერალური კონტრაქტინგი</h3>
+                <p class="svc-panel-desc" data-ka="მშენებლობის სრული მართვა — სახელშეკრულებო ურთიერთობებიდან, სამუშაო გეგმების შემუშავებიდან, სუბკონტრაქტორების კოორდინაციამდე. ვასრულებთ ვადაში და ბიუჯეტში." data-en="Full construction management — from contracts and work plans to subcontractor coordination. Delivered on time and on budget.">მშენებლობის სრული მართვა — სახელშეკრულებო ურთიერთობებიდან, სამუშაო გეგმების შემუშავებიდან, სუბკონტრაქტორების კოორდინაციამდე. ვასრულებთ ვადაში და ბიუჯეტში.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="ვადებისა და ბიუჯეტის კონტროლი" data-en="Schedule & budget control">ვადებისა და ბიუჯეტის კონტროლი</li>
+                  <li data-ka="სუბკონტრაქტორების კოორდინაცია" data-en="Subcontractor coordination">სუბკონტრაქტორების კოორდინაცია</li>
+                  <li data-ka="უსაფრთხოების აუდიტი" data-en="Safety auditing">უსაფრთხოების აუდიტი</li>
+                </ul>
+              </div>
+            </article>
 
-          <!-- 06 — wide photo tile -->
-          <article class="svc-tile svc-tile-photo svc-tile-wide reveal" style="--delay:0.25s" data-bg="sustainable">
-            <div class="svc-tile-media"></div>
-            <div class="svc-tile-scrim"></div>
-            <div class="svc-tile-content">
-              <span class="svc-tile-num">06</span>
-              <h3 class="svc-tile-title" data-ka="მდგრადი მშენებლობა" data-en="Sustainable Building">მდგრადი მშენებლობა</h3>
-              <p class="svc-tile-desc" data-ka="ენერგოეფექტური, ეკოლოგიური გადაწყვეტები." data-en="Energy-efficient, eco-friendly solutions.">ენერგოეფექტური, ეკოლოგიური გადაწყვეტები.</p>
-              <span class="svc-tile-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </div>
-          </article>
+            <article class="svc-panel" id="svc-panel-4" data-bg="architecture">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">04 / <span data-ka="დიზაინი" data-en="Design">დიზაინი</span></span>
+                <h3 class="svc-panel-title" data-ka="არქიტექტურული დიზაინი" data-en="Architectural Design">არქიტექტურული დიზაინი</h3>
+                <p class="svc-panel-desc" data-ka="კონცეფტუალური დიზაინიდან სამუშაო დოკუმენტაციამდე — ინდივიდუალური, ფუნქციური და ვიზუალურად დამაჯერებელი არქიტექტურა. ვქმნით ფორმებს, რომელიც გრძელვადიანია." data-en="From concept design to working documentation — individual, functional and visually compelling architecture. We create forms that endure.">კონცეფტუალური დიზაინიდან სამუშაო დოკუმენტაციამდე — ინდივიდუალური, ფუნქციური და ვიზუალურად დამაჯერებელი არქიტექტურა. ვქმნით ფორმებს, რომელიც გრძელვადიანია.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="კონცეპტუალური დიზაინი" data-en="Concept design">კონცეპტუალური დიზაინი</li>
+                  <li data-ka="3D ვიზუალიზაცია" data-en="3D visualization">3D ვიზუალიზაცია</li>
+                  <li data-ka="სამუშაო დოკუმენტაცია" data-en="Working documentation">სამუშაო დოკუმენტაცია</li>
+                </ul>
+              </div>
+            </article>
 
+            <article class="svc-panel" id="svc-panel-5" data-bg="management">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">05 / <span data-ka="მენეჯმენტი" data-en="Management">მენეჯმენტი</span></span>
+                <h3 class="svc-panel-title" data-ka="პროექტის მენეჯმენტი" data-en="Project Management">პროექტის მენეჯმენტი</h3>
+                <p class="svc-panel-desc" data-ka="გამოცდილი მენეჯერების გუნდი — ბიუჯეტის, ვადების, ხარისხის კონტროლი ყოველ ეტაპზე. სრული გამჭვირვალობა და ანგარიშგება დამკვეთის წინაშე." data-en="Experienced project managers controlling budget, timeline and quality at every stage. Full transparency and stakeholder reporting.">გამოცდილი მენეჯერების გუნდი — ბიუჯეტის, ვადების, ხარისხის კონტროლი ყოველ ეტაპზე. სრული გამჭვირვალობა და ანგარიშგება დამკვეთის წინაშე.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="ეტაპობრივი გეგმა" data-en="Phased planning">ეტაპობრივი გეგმა</li>
+                  <li data-ka="რისკების მართვა" data-en="Risk management">რისკების მართვა</li>
+                  <li data-ka="სტეიკჰოლდერების ანგარიშგება" data-en="Stakeholder reporting">სტეიკჰოლდერების ანგარიშგება</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="svc-panel" id="svc-panel-6" data-bg="sustainable">
+              <div class="svc-panel-media"></div>
+              <div class="svc-panel-body">
+                <span class="svc-panel-eyebrow">06 / <span data-ka="მდგრადობა" data-en="Sustainability">მდგრადობა</span></span>
+                <h3 class="svc-panel-title" data-ka="მდგრადი მშენებლობა" data-en="Sustainable Building">მდგრადი მშენებლობა</h3>
+                <p class="svc-panel-desc" data-ka="ენერგოეფექტური, ეკოლოგიური სამშენებლო გადაწყვეტები — მომავლის სტანდარტებით დღეს. ვამცირებთ ნახშირბადის კვალს და ვზრდით გრძელვადიან ღირებულებას." data-en="Energy-efficient, eco-friendly construction solutions built to tomorrow's standards today. We reduce carbon footprint while increasing long-term value.">ენერგოეფექტური, ეკოლოგიური სამშენებლო გადაწყვეტები — მომავლის სტანდარტებით დღეს. ვამცირებთ ნახშირბადის კვალს და ვზრდით გრძელვადიან ღირებულებას.</p>
+                <ul class="svc-panel-list">
+                  <li data-ka="ენერგოეფექტური მასალები" data-en="Energy-efficient materials">ენერგოეფექტური მასალები</li>
+                  <li data-ka="მზის პანელების ინტეგრაცია" data-en="Solar integration">მზის პანელების ინტეგრაცია</li>
+                  <li data-ka="წყლის რესურსების ოპტიმიზაცია" data-en="Water optimization">წყლის რესურსების ოპტიმიზაცია</li>
+                </ul>
+              </div>
+            </article>
+
+          </div>
         </div>
       </div>
     </section>

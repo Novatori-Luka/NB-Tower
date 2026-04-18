@@ -563,7 +563,41 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     setTimeout(() => toast.remove(), 3000);
   }
 
-  /* Services section now uses static bento tiles — no JS needed */
+  /* ── SERVICES STICKY NAVIGATOR ─────────────── */
+  (function initServicesNav() {
+    const nav = document.querySelector('.svc-nav');
+    const links = document.querySelectorAll('.svc-nav-link');
+    const panels = document.querySelectorAll('.svc-panel');
+    if (!nav || !links.length || !panels.length) return;
+
+    // Smooth scroll on click (scroll-margin-top in CSS handles header offset)
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = link.dataset.target;
+        const target = document.getElementById(id);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Sync active state based on which panel is in view
+    const setActive = (id) => {
+      links.forEach(l => l.classList.toggle('active', l.dataset.target === id));
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      // Prefer the entry closest to the top of the viewport
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible.length) setActive(visible[0].target.id);
+    }, {
+      rootMargin: '-30% 0px -55% 0px',
+      threshold: 0
+    });
+
+    panels.forEach(p => io.observe(p));
+  })();
 
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();
