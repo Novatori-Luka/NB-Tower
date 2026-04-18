@@ -572,7 +572,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     const progressEl = document.getElementById('svc-progress-num');
     if (!pinSection || !pinWrap || !panels.length) return;
 
-    const isDesktop = () => window.matchMedia('(min-width: 1024px)').matches;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const getHeader = () => {
@@ -594,15 +593,11 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
     // Click a nav link → jump scroll so its panel becomes the active one
     const scrollToPanel = (idx) => {
-      if (!isDesktop()) {
-        const el = panels[idx];
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const lockDur = pinSection.offsetHeight - pinH;
       const N = panels.length;
+      if (lockDur <= 0) return;
       // Put the scroll midway inside the target panel's segment so it's firmly active
       const progress = (idx + 0.5) / N;
       const pinStartY = pinSection.getBoundingClientRect().top + window.pageYOffset - headerH;
@@ -618,11 +613,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     });
 
     const resize = () => {
-      if (!isDesktop()) {
-        pinSection.style.height = '';
-        // Mobile fallback: use Intersection-ish logic on scroll instead
-        return;
-      }
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const N = panels.length;
@@ -634,18 +624,6 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     let ticking = false;
     const update = () => {
       ticking = false;
-      if (!isDesktop()) {
-        // Mobile: use viewport midpoint to pick active panel
-        const midY = window.innerHeight / 2;
-        let idx = 0;
-        for (let i = 0; i < panels.length; i++) {
-          const r = panels[i].getBoundingClientRect();
-          if (r.top <= midY) idx = i;
-        }
-        setActive(idx);
-        return;
-      }
-
       const headerH = getHeader();
       const pinH = window.innerHeight - headerH;
       const rect = pinSection.getBoundingClientRect();
