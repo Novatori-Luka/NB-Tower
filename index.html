@@ -86,62 +86,125 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <div class="container hero-content">
+
+        <!-- Badge -->
         <div class="hero-badge animate-hero" style="--delay:0s">
           <span class="badge-dot"></span>
           <span data-ka="საქართველოს №1 სამშენებლო კომპანია" data-en="Georgia's #1 Construction Company">საქართველოს №1 სამშენებლო კომპანია</span>
         </div>
 
-        <div class="hero-headline animate-hero" style="--delay:0.15s">
+        <!-- Headline (compact 2-line) -->
+        <div class="hero-headline animate-hero" style="--delay:0.12s">
           <div class="headline-text">
-            <span class="line-1" data-ka="მათთვის, ვინც" data-en="For Those Who">მათთვის, ვინც</span>
-            <span class="line-2" data-ka="მყუდრო ბინას" data-en="Seek a Comfortable">მყუდრო ბინას</span>
-            <span class="line-3" data-ka="ეძებს" data-en="Home">ეძებს</span>
+            <span class="line-1" data-ka="ვაშენებთ მომავალს" data-en="Building Tomorrow,">ვაშენებთ მომავალს</span>
+            <span class="line-2" data-ka="დღეს" data-en="Today">დღეს</span>
           </div>
         </div>
 
-        <p class="hero-subline animate-hero" style="--delay:0.3s"
-           data-ka="საქართველოს წამყვანი სამშენებლო კომპანია. საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით"
-           data-en="Georgia's premier construction company delivering residential and commercial excellence">
-          საქართველოს წამყვანი სამშენებლო კომპანია. საცხოვრებელი და კომერციული პროექტები უმაღლესი ხარისხით
-        </p>
+        <!-- Two-path cards -->
+        <div class="hero-paths animate-hero" style="--delay:0.28s">
 
-        <div class="hero-search animate-hero" style="--delay:0.45s">
-          <!-- City -->
-          <div class="search-field cs-field" id="csf-city">
-            <label data-ka="ქალაქი" data-en="City">ქალაქი</label>
-            <div class="cs-trigger" onclick="csToggle('city')">
-              <span class="cs-val" id="cs-city-val">თბილისი</span>
-              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <!-- Card 1 — Individuals / apartment seekers -->
+          <div class="path-card path-individual">
+            <div class="path-card-top">
+              <span class="path-icon">
+                <i class="fa-solid fa-building-user"></i>
+              </span>
+              <div class="path-card-titles">
+                <h3 data-ka="ვეძებ ბინას" data-en="Find My Home">ვეძებ ბინას</h3>
+                <p data-ka="ინდივიდუალური მყიდველებისთვის" data-en="For individual buyers">ინდივიდუალური მყიდველებისთვის</p>
+              </div>
             </div>
-            <div class="cs-panel" id="cs-city-panel" role="listbox"></div>
-          </div>
-          <div class="search-divider"></div>
-          <!-- Price -->
-          <div class="search-field cs-field" id="csf-price">
-            <label data-ka="კვ.მ ფასი" data-en="Price/sqm">კვ.მ ფასი</label>
-            <div class="cs-trigger" onclick="csToggle('price')">
-              <span class="cs-val" id="cs-price-val">ნებისმიერი / Any</span>
-              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+            <div class="path-filters">
+              <!-- City -->
+              <div class="pf-field cs-field" id="csf-city">
+                <span class="pf-label" data-ka="ქალაქი" data-en="City">ქალაქი</span>
+                <div class="cs-trigger pf-trigger" onclick="csToggle('city')">
+                  <span class="cs-val" id="cs-city-val">თბილისი</span>
+                  <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="cs-panel" id="cs-city-panel" role="listbox"></div>
+              </div>
+              <!-- Budget / price range -->
+              <div class="pf-field cs-field" id="csf-price">
+                <span class="pf-label" data-ka="ბიუჯეტი" data-en="Budget">ბიუჯეტი</span>
+                <div class="cs-trigger pf-trigger" onclick="csToggle('price')">
+                  <span class="cs-val" id="cs-price-val">ნებისმიერი / Any</span>
+                  <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="cs-panel" id="cs-price-panel" role="listbox"></div>
+              </div>
             </div>
-            <div class="cs-panel" id="cs-price-panel" role="listbox"></div>
+
+            <button class="path-btn path-btn--individual" onclick="handleHeroSearch()">
+              <span data-ka="ბინების ნახვა" data-en="Search Apartments">ბინების ნახვა</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
-          <div class="search-divider"></div>
-          <!-- Payment -->
-          <div class="search-field cs-field" id="csf-payment">
-            <label data-ka="გადახდა" data-en="Payment">გადახდა</label>
-            <div class="cs-trigger" onclick="csToggle('payment')">
-              <span class="cs-val" id="cs-payment-val">ყველა</span>
-              <svg class="cs-arrow" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+          <!-- Card 2 — Developers / investors -->
+          <div class="path-card path-developer">
+            <div class="path-card-top">
+              <span class="path-icon path-icon--dev">
+                <i class="fa-solid fa-handshake-simple"></i>
+              </span>
+              <div class="path-card-titles">
+                <h3 data-ka="დეველოპერი ვარ" data-en="I'm a Developer">დეველოპერი ვარ</h3>
+                <p data-ka="ინვესტორებისა და დეველოპერებისთვის" data-en="For investors & developers">ინვესტორებისა და დეველოპერებისთვის</p>
+              </div>
             </div>
-            <div class="cs-panel" id="cs-payment-panel" role="listbox"></div>
+
+            <div class="path-perks">
+              <div class="path-perk">
+                <i class="fa-solid fa-check"></i>
+                <span data-ka="ერთობლივი განვითარება" data-en="Joint Development">ერთობლივი განვითარება</span>
+              </div>
+              <div class="path-perk">
+                <i class="fa-solid fa-check"></i>
+                <span data-ka="გამჭვირვალე ფასწარმოება" data-en="Transparent Pricing">გამჭვირვალე ფასწარმოება</span>
+              </div>
+              <div class="path-perk">
+                <i class="fa-solid fa-check"></i>
+                <span data-ka="ევროპული ხარისხი" data-en="European Quality">ევროპული ხარისხი</span>
+              </div>
+              <div class="path-perk">
+                <i class="fa-solid fa-check"></i>
+                <span data-ka="ვადებში ჩაბარება" data-en="On-Time Delivery">ვადებში ჩაბარება</span>
+              </div>
+            </div>
+
+            <a href="/developers" class="path-btn path-btn--developer">
+              <span data-ka="გაიგე მეტი" data-en="Learn More">გაიგე მეტი</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
           </div>
-          <button class="search-btn" onclick="handleHeroSearch()">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
-            <span data-ka="ძებნა" data-en="Search">ძებნა</span>
-          </button>
+
+        </div><!-- /.hero-paths -->
+
+        <!-- Stat bar -->
+        <div class="hero-stat-bar animate-hero" style="--delay:0.44s">
+          <div class="hstat">
+            <span class="hstat-num">50+</span>
+            <span class="hstat-label" data-ka="პროექტი" data-en="Projects">პროექტი</span>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <span class="hstat-num">200+</span>
+            <span class="hstat-label" data-ka="კლიენტი" data-en="Clients">კლიენტი</span>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <span class="hstat-num">10+</span>
+            <span class="hstat-label" data-ka="გამოცდილების წელი" data-en="Years of Experience">გამოცდილების წელი</span>
+          </div>
+          <div class="hstat-sep"></div>
+          <div class="hstat">
+            <span class="hstat-num">150K+</span>
+            <span class="hstat-label" data-ka="კვ.მ" data-en="sqm Built">კვ.მ</span>
+          </div>
         </div>
+
       </div>
 
     </section>
