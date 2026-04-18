@@ -651,6 +651,10 @@ main { counter-reset: section-num; }
   width: 100%;
   max-width: 960px;
   margin: 0 auto;
+  /* Must sit above the stat bar so dropdown panels aren't clipped by
+     the stat bar's backdrop-filter stacking context */
+  position: relative;
+  z-index: 10;
 }
 
 /* Base card */
@@ -882,6 +886,8 @@ main { counter-reset: section-num; }
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   gap: 0;
+  position: relative;
+  z-index: 1; /* below hero-paths (z-index:10) so dropdowns always paint on top */
 }
 .hstat {
   display: flex;
