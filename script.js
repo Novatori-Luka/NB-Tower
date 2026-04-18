@@ -563,23 +563,7 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     setTimeout(() => toast.remove(), 3000);
   }
 
-  /* ── SERVICES ACCORDION ─────────────────────── */
-  document.querySelectorAll('.svc-item').forEach(item => {
-    const top = item.querySelector('.svc-item-top');
-    if (!top) return;
-    top.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.svc-item.open').forEach(i => {
-        i.classList.remove('open');
-        const t = i.querySelector('.svc-item-top');
-        if (t) t.setAttribute('aria-expanded', 'false');
-      });
-      if (!isOpen) {
-        item.classList.add('open');
-        top.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
+  /* Services section now uses static bento tiles — no JS needed */
 
   /* ── FIRE SUPABASE INIT ─────────────────────── */
   initSite();

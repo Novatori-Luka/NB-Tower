@@ -1056,150 +1056,213 @@ h1, h2, h3, h4 { line-height: 1.12; font-weight: 700; color: var(--text-primary)
   margin-bottom: 4px;
 }
 
-/* ── Editorial accordion list ── */
-.svc-list { border-top: 1px solid rgba(0,0,0,0.1); }
-
-.svc-item {
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  transition: background 0.25s ease;
-}
-.svc-item:hover { background: rgba(61,190,108,0.035); }
-.svc-item.open { background: rgba(61,190,108,0.05); }
-
-/* Top row — always visible (clickable button) */
-.svc-item-top {
+/* ── Bento grid ── */
+.svc-bento {
   display: grid;
-  grid-template-columns: clamp(90px, 10vw, 140px) minmax(0, 1fr) minmax(0, 1fr) 44px;
-  align-items: center;
-  gap: 0 32px;
-  padding: 36px 0;
-  width: 100%;
-  background: none;
-  border: 0;
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  transition: padding 0.25s ease;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
-.svc-item.open .svc-item-top { padding-bottom: 20px; }
 
-.svc-num {
+.svc-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.4s cubic-bezier(.4,0,.2,1), box-shadow 0.3s ease;
+  cursor: default;
+}
+.svc-tile-wide {
+  grid-column: span 2;
+}
+.svc-tile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,0.18);
+}
+
+/* ── Photo (wide) tiles ── */
+.svc-tile-photo {
+  color: #fff;
+  background: #0A0A0A;
+}
+.svc-tile-media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.svc-tile-photo:hover .svc-tile-media {
+  transform: scale(1.05);
+}
+/* Gradient placeholders — each variant distinct */
+.svc-tile[data-bg="residential"] .svc-tile-media {
+  background:
+    radial-gradient(ellipse at 20% 100%, rgba(61,190,108,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 0%, rgba(79,212,126,0.35) 0%, transparent 60%),
+    linear-gradient(135deg, #0F2A1C 0%, #1A4A2F 50%, #0A1F15 100%);
+}
+.svc-tile[data-bg="residential"] .svc-tile-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 32px, rgba(255,255,255,0.035) 32px 33px),
+    repeating-linear-gradient(90deg, transparent 0 28px, rgba(255,255,255,0.025) 28px 29px);
+}
+.svc-tile[data-bg="architecture"] .svc-tile-media {
+  background:
+    radial-gradient(ellipse at 80% 60%, rgba(61,190,108,0.25) 0%, transparent 60%),
+    linear-gradient(160deg, #1C2B2A 0%, #2E4A46 55%, #162423 100%);
+}
+.svc-tile[data-bg="architecture"] .svc-tile-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08), transparent 2%),
+    radial-gradient(circle at 65% 70%, rgba(255,255,255,0.06), transparent 2%),
+    radial-gradient(circle at 45% 20%, rgba(255,255,255,0.05), transparent 2%);
+  background-size: 80px 80px, 120px 120px, 100px 100px;
+}
+.svc-tile[data-bg="sustainable"] .svc-tile-media {
+  background:
+    radial-gradient(ellipse at 30% 80%, rgba(79,212,126,0.4) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(61,190,108,0.3) 0%, transparent 50%),
+    linear-gradient(145deg, #0A2218 0%, #174028 50%, #081A11 100%);
+}
+
+.svc-tile-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55) 100%);
+  transition: background 0.4s ease;
+}
+.svc-tile-photo:hover .svc-tile-scrim {
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.svc-tile-content {
+  position: absolute;
+  inset: 0;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 2;
+}
+.svc-tile-photo .svc-tile-num {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3rem, 6vw, 5rem);
-  line-height: 0.9;
-  letter-spacing: 0.02em;
-  color: rgba(0,0,0,0.15);
-  font-variant-numeric: tabular-nums;
-  transition: color 0.3s ease, transform 0.3s ease;
-  display: inline-block;
-}
-.svc-item:hover .svc-num,
-.svc-item.open .svc-num {
+  font-size: 1rem;
+  letter-spacing: 0.2em;
   color: var(--green);
-  transform: translateX(6px);
+  margin-bottom: auto;
+  padding-top: 4px;
+  opacity: 0.9;
 }
-
-.svc-title {
+.svc-tile-photo .svc-tile-title {
   font-family: 'Bebas Neue', 'Noto Sans Georgian', sans-serif;
-  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: 0.01em;
-  color: rgba(0,0,0,0.78);
-  margin: 0;
-  transition: color 0.3s ease;
+  color: #fff;
+  margin: 0 0 10px;
 }
-html[lang="ka"] .svc-title,
-body:lang(ka) .svc-title {
+html[lang="ka"] .svc-tile-photo .svc-tile-title,
+body:lang(ka) .svc-tile-photo .svc-tile-title {
   font-weight: 600;
   letter-spacing: -0.01em;
 }
-.svc-item:hover .svc-title,
-.svc-item.open .svc-title { color: #0A0A0A; }
-
-.svc-teaser {
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: rgba(0,0,0,0.45);
-  font-weight: 400;
-  transition: color 0.3s ease;
+.svc-tile-photo .svc-tile-desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.78);
+  margin: 0;
+  max-width: 70%;
 }
-.svc-item:hover .svc-teaser,
-.svc-item.open .svc-teaser { color: rgba(0,0,0,0.65); }
-
-.svc-plus {
-  justify-self: end;
+.svc-tile-arrow {
+  position: absolute;
+  top: 28px;
+  right: 28px;
   width: 44px;
   height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: rgba(0,0,0,0.35);
-  border: 1px solid rgba(0,0,0,0.12);
-  transition: transform 0.35s cubic-bezier(.4,0,.2,1), color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
-}
-.svc-item:hover .svc-plus {
-  color: var(--green);
-  border-color: rgba(61,190,108,0.4);
-}
-.svc-item.open .svc-plus {
-  transform: rotate(45deg);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
   color: #fff;
+  transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.svc-tile-photo:hover .svc-tile-arrow {
   background: var(--green);
   border-color: var(--green);
+  transform: translate(4px, -4px);
 }
 
-/* Expandable body — grid-rows trick for smooth, fast open */
-.svc-item-body {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.28s ease-out;
-}
-.svc-item.open .svc-item-body { grid-template-rows: 1fr; }
-
-.svc-body-inner {
-  overflow: hidden;
-  padding-left: calc(clamp(90px, 10vw, 140px) + 32px);
-  padding-right: 76px;
-}
-.svc-item.open .svc-body-inner {
-  padding-bottom: 40px;
-}
-
-.svc-desc {
-  font-size: 0.98rem;
-  line-height: 1.7;
-  color: rgba(0,0,0,0.6);
-  margin: 0 0 20px;
-  max-width: 640px;
-}
-
-.svc-bullets {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px 24px;
-  max-width: 720px;
-}
-.svc-bullets li {
+/* ── Flat (square) tiles ── */
+.svc-tile-flat {
+  background: #FFFFFF;
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  color: #0A0A0A;
   position: relative;
-  padding-left: 22px;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  color: rgba(0,0,0,0.7);
 }
-.svc-bullets li::before {
+.svc-tile-flat::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 12px;
-  height: 1px;
+  left: 0; right: 0; top: 0;
+  height: 3px;
   background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(.4,0,.2,1);
+}
+.svc-tile-flat:hover {
+  border-color: rgba(61,190,108,0.25);
+}
+.svc-tile-flat:hover::before {
+  transform: scaleX(1);
+}
+.svc-tile-illus {
+  color: var(--green);
+  margin-bottom: auto;
+  opacity: 0.9;
+  transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+}
+.svc-tile-flat:hover .svc-tile-illus {
+  transform: translateY(-4px);
+}
+.svc-tile-flat .svc-tile-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  color: rgba(0,0,0,0.35);
+  margin-bottom: 10px;
+  display: block;
+}
+.svc-tile-flat .svc-tile-title {
+  font-family: 'Bebas Neue', 'Noto Sans Georgian', sans-serif;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: #0A0A0A;
+  margin: 0 0 10px;
+}
+html[lang="ka"] .svc-tile-flat .svc-tile-title,
+body:lang(ka) .svc-tile-flat .svc-tile-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.svc-tile-flat .svc-tile-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(0,0,0,0.55);
+  margin: 0;
 }
 
 /* ══════════════════════════════════════════════
@@ -1815,11 +1878,10 @@ input.error { border-color: #E85D04; }
 
   .svc-header { flex-direction: column; align-items: flex-start; gap: 20px; }
   .svc-header-desc { max-width: 100%; }
-  .svc-item-top { grid-template-columns: 80px 1fr 40px; gap: 0 20px; padding: 28px 0; }
-  .svc-teaser { display: none; }
-  .svc-body-inner { padding-left: 100px; padding-right: 20px; }
-  .svc-num { font-size: 2.8rem; }
-  .svc-title { font-size: 1.5rem; }
+  .svc-bento { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .svc-tile-wide { grid-column: span 2; aspect-ratio: 16 / 9; }
+  .svc-tile-content { padding: 26px; }
+  .svc-tile-flat { padding: 26px; }
   .projects-grid { grid-template-columns: 1fr; }
 
 .team-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1833,16 +1895,13 @@ input.error { border-color: #E85D04; }
 
 /* Mobile */
 @media (max-width: 768px) {
-  .svc-item-top { grid-template-columns: 56px 1fr 36px; gap: 0 14px; padding: 22px 0; }
-  .svc-num { font-size: 2rem; }
-  .svc-title { font-size: 1.15rem; }
-  .svc-teaser { display: none; }
-  .svc-body-inner { padding-right: 0; padding-left: 0; }
-  .svc-item.open .svc-body-inner { padding-bottom: 24px; }
-  .svc-desc { font-size: 0.92rem; margin-bottom: 16px; }
-  .svc-bullets { grid-template-columns: 1fr; gap: 8px; }
-  .svc-plus { width: 36px; height: 36px; }
-  .svc-plus svg { width: 18px; height: 18px; }
+  .svc-bento { grid-template-columns: 1fr; gap: 14px; }
+  .svc-tile { aspect-ratio: 4 / 3; }
+  .svc-tile-wide { grid-column: span 1; aspect-ratio: 4 / 3; }
+  .svc-tile-content { padding: 22px; }
+  .svc-tile-flat { padding: 22px; }
+  .svc-tile-arrow { width: 38px; height: 38px; top: 20px; right: 20px; }
+  .svc-tile-illus svg { width: 52px; height: 52px; }
   .svc-heading { font-size: 2.2rem; letter-spacing: -0.02em; }
   .svc-header { margin-bottom: 36px; padding-bottom: 28px; gap: 20px; }
 
