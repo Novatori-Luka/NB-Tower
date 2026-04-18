@@ -730,4 +730,78 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     init();
   })();
 
+  /* ── FAQ SECTION ─────────────────────────────── */
+  (function initFAQ() {
+    const list = document.getElementById('faq-list');
+    if (!list) return;
+
+    const faqItems = [
+      {
+        q_ka: 'როდის დასრულდება NB Residence II?',
+        q_en: 'When will NB Residence II be completed?',
+        a_ka: 'NB Residence II ბათუმში 2026 წლის III კვარტალში დასრულდება. ფაზობრივი ჩაბარება იწყება 2026 წლის აგვისტოდან. დეტალური გრაფიკი და ფოტოანგარიში ხელმისაწვდომია პროექტის გვერდზე.',
+        a_en: 'NB Residence II in Batumi will be completed in Q3 2026. Phased handover begins in August 2026. A detailed schedule and photo report are available on the project page.'
+      },
+      {
+        q_ka: 'რა გადახდის ვარიანტები გაქვთ?',
+        q_en: 'What payment options do you offer?',
+        a_ka: 'გთავაზობთ 3 ძირითად ვარიანტს: სრული გადახდა ფასდაკლებით, შიდა განვადება 24-36 თვეზე წინასწარი შენატანით, და იპოთეკური სესხი პარტნიორი ბანკებიდან სწრაფი დამტკიცებით.',
+        a_en: 'We offer 3 main options: full payment with a discount, internal installment over 24–36 months with an initial deposit, and mortgage loans from partner banks with fast approval.'
+      },
+      {
+        q_ka: 'რომელ ბანკებთან თანამშრომლობთ იპოთეკით?',
+        q_en: 'Which banks do you partner with for mortgages?',
+        a_ka: 'თანამშრომლობთ საქართველოს წამყვან ბანკებთან. გაყიდვების გუნდი დაგეხმარებათ საუკეთესო პირობების მქონე ბანკის შერჩევაში თქვენი შემთხვევისთვის.',
+        a_en: 'We work with the leading banks in Georgia. Our sales team will help you select the bank with the best terms for your specific case.'
+      },
+      {
+        q_ka: 'როგორ შეიძლება ბინის დათვალიერება?',
+        q_en: 'How can I visit an apartment?',
+        a_ka: 'მშენებარე და დასრულებულ ობიექტებზე ვიზიტი ხდება წინასწარი ჩანიშვნით. დაგვიკავშირდით ტელეფონით ან მოგვწერეთ კონტაქტის ფორმის მეშვეობით — გაყიდვების მენეჯერი 24 საათში დაგიკავშირდებათ.',
+        a_en: 'Visits to our under-construction and completed sites are by appointment. Contact us by phone or through the contact form — a sales manager will get back to you within 24 hours.'
+      },
+      {
+        q_ka: 'რა გარანტიას იძლევით ხარისხზე?',
+        q_en: 'What quality guarantees do you offer?',
+        a_ka: 'ვსარგებლობთ 5-წლიანი სტრუქტურული გარანტიით ყველა საცხოვრებელ ობიექტზე და 2-წლიანი გარანტიით საინჟინრო სისტემებზე. ყოველი ბინა დოკუმენტირებულია ფოტო-ანგარიშით მშენებლობის ყოველ ეტაპზე.',
+        a_en: 'We provide a 5-year structural guarantee on all residential properties and a 2-year guarantee on engineering systems. Each apartment is documented with a photo report for every stage of construction.'
+      }
+    ];
+
+    const plusSvg = '<svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 1v8M1 5h8" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+    list.innerHTML = faqItems.map((item, i) => `
+      <div class="faq-item${i === 0 ? ' is-open' : ''}" data-index="${i}">
+        <button class="faq-question" type="button" aria-expanded="${i === 0 ? 'true' : 'false'}" aria-controls="faq-answer-${i}">
+          <span data-ka="${item.q_ka.replace(/"/g,'&quot;')}" data-en="${item.q_en.replace(/"/g,'&quot;')}">${item.q_ka}</span>
+          <span class="faq-icon" aria-hidden="true">${plusSvg}</span>
+        </button>
+        <div class="faq-answer" id="faq-answer-${i}" role="region">
+          <p data-ka="${item.a_ka.replace(/"/g,'&quot;')}" data-en="${item.a_en.replace(/"/g,'&quot;')}">${item.a_ka}</p>
+        </div>
+      </div>
+    `).join('');
+
+    // Accordion behavior — only one open at a time
+    list.addEventListener('click', e => {
+      const btn = e.target.closest('.faq-question');
+      if (!btn) return;
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('is-open');
+
+      list.querySelectorAll('.faq-item.is-open').forEach(el => {
+        el.classList.remove('is-open');
+        el.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+
+      if (!wasOpen) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    // Re-apply language to the freshly rendered nodes
+    if (typeof applyLang === 'function') applyLang(currentLang);
+  })();
+
 })();
