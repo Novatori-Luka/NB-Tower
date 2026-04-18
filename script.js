@@ -178,7 +178,7 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
 
     // STATS
     try {
-      const { data: stats, error } = await db.from('stats').select('*').limit(1).single();
+      const { data: stats, error } = await db.from('stats').select('*').limit(1).maybeSingle();
       if (!error && stats) {
         const map = {
           projects: stats.projects_count,
@@ -752,12 +752,12 @@ ALTER TABLE messages DROP COLUMN IF EXISTS email;
     }
 
     function renderGrid() {
+      const lang = currentLang;
       if (!allProjects.length) {
-        grid.innerHTML = `<div class="projects-empty" data-ka="ჯერ არ არის პროექტები" data-en="No projects yet">ჯერ არ არის პროექტები</div>`;
-        if (typeof applyLang === 'function') applyLang(currentLang);
+        const emptyText = lang === 'ka' ? 'ჯერ არ არის პროექტები' : 'No projects yet';
+        grid.innerHTML = `<div class="projects-empty">${emptyText}</div>`;
         return;
       }
-      const lang = currentLang;
       grid.innerHTML = allProjects.map((p, i) => cardHTML(p, i, lang)).join('');
       applyFilter(activeFilter);
     }
